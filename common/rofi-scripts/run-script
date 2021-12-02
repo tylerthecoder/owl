@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+  find . -type f -executable -maxdepth 2
+else
+  SCRIPT_PATH="$SCRIPTS_FOLDER/$1"
+  if [ -x "$SCRIPT_PATH" ]; then
+    bash "$SCRIPT_PATH"
+  fi
+  exit 0
+fi
+
+

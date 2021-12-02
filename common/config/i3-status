@@ -1,0 +1,89 @@
+general { 
+  output_format = "i3bar"
+  colors = true
+  interval = 5
+}
+
+
+order += "wireless wlp4s0"
+# order += "disk /"
+order += "volume master"
+# order += "run_watch DHCP"
+# order += "run_watch VPNC"
+# order += "path_exists VPN"
+# order += "wireless wlan0"
+# order += "ethernet eth0"
+order += "battery 0"
+# order += "memory"
+# order += "load"
+order += "tztime local"
+# order += "tztime berlin"
+
+wireless wlp4s0 {
+        format_up = "📡: (%quality at %essid, %bitrate) %ip"
+        format_down = "W: down"
+}
+
+volume master {
+        format = "🎵 (%devicename): %volume"
+        format_muted = "🔇 muted (%volume)"
+        device = "pulse:alsa_output.pci-0000_00_1f.3.analog-stereo"
+}
+
+ethernet eth0 {
+        format_up = "E: %ip (%speed)"
+        format_down = "E: down"
+}
+
+battery 0 {
+        format = "%status %percentage"
+        format_down = "No battery"
+        status_chr = "⚡"
+        status_bat = "🔋"
+        status_unk = "❓"
+        status_full = "☻ FULL"
+        path = "/sys/class/power_supply/BAT%d/uevent"
+        low_threshold = 10
+        last_full_capacity = true
+}
+
+run_watch DHCP {
+        pidfile = "/var/run/dhclient*.pid"
+}
+
+run_watch VPNC {
+        # file containing the PID of a vpnc process
+        pidfile = "/var/run/vpnc/pid"
+}
+
+path_exists VPN {
+        # path exists when a VPN tunnel launched by nmcli/nm-applet is active
+        path = "/proc/sys/net/ipv4/conf/tun0"
+}
+
+tztime local {
+        format = "%a %m-%d-%y %I:%M:%S"
+}
+
+load {
+        format = "%5min"
+}
+
+cpu_temperature 0 {
+        format = "T: %degrees °C"
+        path = "/sys/devices/platform/coretemp.0/temp1_input"
+}
+
+memory {
+        format = "%used"
+        threshold_degraded = "10%"
+        format_degraded = "MEMORY: %free"
+}
+
+disk "/" {
+        format = "%free"
+}
+
+read_file uptime {
+        path = "/proc/uptime"
+}

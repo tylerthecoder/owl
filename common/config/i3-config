@@ -1,0 +1,193 @@
+# i3 config file (v4)
+
+set $mod Mod4
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+
+font pango:Terminus 12px 
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# kill focused window
+bindsym $mod+Shift+q kill
+bindsym $mod+q kill
+
+# Launch Applications
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Shift+Return exec --no-startup-id urxvt -geometry 80x26 -name "floating_urxvt"
+bindsym $mod+b exec "$BROWSER"
+bindsym $mod+z exec gnome-control-center
+bindsym $mod+a exec pavucontrol
+# Rofi clipboard manager
+bindsym $mod+c exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
+
+bindsym $mod+Shift+s exec --no-startup-id spellHelper.sh
+# Screen shot commands
+bindsym Print exec maim -s | tee ~/img/$(date +%s).png | xclip -selection clipboard -t image/png
+bindsym Control+Print exec gnome-screenshot -i
+bindsym $mod+Ctrl+s exec screen-lock.sh # Put computer to sleep
+
+# Launch Scripts
+bindsym $mod+Shift+d exec choose-hardware-conf.sh
+bindsym $mod+p exec rofi -show combi
+
+# Put things where I want them
+for_window [window_role=floating] floating enable
+for_window [class="URxvt" instance="floating_urxvt$"] floating enable
+for_window [class="Blueman-manager"] floating enable
+for_window [class="Spotify"] move to workspace 10
+assign [class="Zoom Web"] 5
+
+# Audio controls
+bindsym XF86AudioRaiseVolume exec amixer -D pulse sset Master 5%+ && pkill -RTMIN+10 i3blocks 
+bindsym XF86AudioLowerVolume exec amixer -D pulse sset Master 5%- && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioMute exec amixer -D pulse set Master Playback Switch toggle && pkill -RTMIN+10 i3blocks
+bindsym $mod+m exec amixer -D pulse set Master Playback Switch toggle && pkill -RTMIN+10 i3blocks # Mute Sound
+bindsym $mod+Shift+m exec amixer set Capture toggle && pkill -RTMIN+10 i3blocks # Mute Mic
+
+# Auto Start Applications
+exec --no-startup-id nm-applet # Wifi control in the status bar
+exec --no-startup-id blueman-applet # Bluetooth control in the status bar
+exec --no-startup-id "$COMPOSITOR" # To fix screen tearing
+exec --no-startup-id set-bg-to-nasa-iotd.sh # Load the nasa image of the day as the background image
+exec --no-startup-id dunst
+
+
+# Set Gaps
+gaps inner 10
+# bindsym $mod+Shift+f gaps outer current set 0
+
+# Arrow key map
+bindsym --release Mod1+h exec xdotool key --clearmodifiers Left
+bindsym --release Mod1+j exec xdotool key --clearmodifiers Down
+bindsym --release Mod1+k exec xdotool key --clearmodifiers Up
+bindsym --release Mod1+l exec xdotool key --clearmodifiers  Right
+
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+h move left 40px
+bindsym $mod+Shift+j move down 40px
+bindsym $mod+Shift+k move up 40px
+bindsym $mod+Shift+l move right 40px
+
+# Moving workspaces
+bindsym $mod+Ctrl+h move workspace to output left
+bindsym $mod+Ctrl+j move workspace to output down
+bindsym $mod+Ctrl+k move workspace to output up
+bindsym $mod+Ctrl+l move workspace to output right
+
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
+
+# split in horizontal orientation
+# I am using n because h is taken already and n is oposite on the keyboard
+bindsym $mod+n split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+# bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# switch to workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# Start i3bar (using i3blocks)
+bar {
+        status_command i3blocks
+        font pango: DejaVu Sans Mono 10
+}
+
+
+# Screen brightness controls
+bindsym XF86MonBrightnessUp exec brightness-ctl.sh 100 # increase screen brightness
+bindsym XF86MonBrightnessDown exec brightness-ctl.sh -100 # decrease screen brightness
+
+# Spotify Commands
+bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
+
+#Hide title bar and remove borders
+for_window [class="^.*"] border pixel 0
+new_window 1pixel

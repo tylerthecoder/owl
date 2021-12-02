@@ -1,0 +1,7 @@
+prefix=${XDG_DATA_HOME}/npm
+cache=${XDG_CACHE_HOME}/npm
+tmp=${XDG_RUNTIME_DIR}/npm
+init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
+
+@meetings-fun:registry=https://npm.pkg.github.com
+//registry.npmjs.org/:_authToken=19fb5456-8825-4952-9658-13d602986069

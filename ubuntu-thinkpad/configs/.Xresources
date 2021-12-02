@@ -1,0 +1,36 @@
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+
+URxvt.font: xft:FiraMono-Regular:size=10
+URxvt.letterSpace: -3
+URxvt.cursorColor: red
+URxvt.scrollBar: false
+
+! Extensions
+URxvt.perl-ext-common: default,matcher,clipboard,selection-to-clipboard,url-select,keyboard-select
+URxvt.colorUL: #4682B
+
+! Clipboard
+URxvt.keysym.Shift-Control-C: perl:clipboard:copy
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+
+! url-select
+URxvt.keysym.M-u: perl:url-select:select_next
+URxvt.url-select.launcher: /usr/bin/xdg-open
+URxvt.url-select.underline: true
+
+! Matcher 
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.matcher.button: 1
+
+! Disable wierd keycap window
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
+! Transparency
+urxvt*depth: 32
+urxvt*background: rgba:0000/0000/0200/c800
+
