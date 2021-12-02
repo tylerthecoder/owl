@@ -1,12 +1,9 @@
 #! /bin/bash
 
-targets=$(find . -type f -name "*.targets")
+target=$(find . -maxdepth 2 -type f -name "*.targets" | \
+  fzf --height=30 --layout=reverse --prompt="Select target: ")
 
-Target=$(targets | fzf --height=30 --layout=reverse --prompt="Select target: ")
-
-TargetsPath=$(echo "targets/$Target")
-
-echo $TargetsPath
+echo $target
 
 while IFS= read -r line
 do
@@ -23,4 +20,4 @@ do
 
   # link my config file
   ln -f -T "$absFilePath" "$absTargetPath"
-done < "$TargetsPath"
+done < "$target"

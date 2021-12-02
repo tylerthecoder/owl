@@ -5,6 +5,8 @@
 desk=$(ls ~/.desk)
 
 
+
+
 for f in ~/.desk; do
 		bash $f
 done
