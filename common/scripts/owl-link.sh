@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if command -v fzf; then
-  target=$(find . -maxdepth 2 -type f -name "*.targets" | \
+  target=$(find "$OWL_PATH" -maxdepth 2 -type f -name "*.targets" | \
     fzf --height=30 --layout=reverse --prompt="Select target: ")
 else
   echo "Enter the target: ";
@@ -19,7 +19,7 @@ do
   filePath=$(echo $line | cut -d " " -f1)
   targetPath=$(echo $line | cut -d " " -f2)
 
-  absFilePath="${filePath/#~/$HOME}"
+  absFilePath="$OWL_PATH/${filePath/#~/$HOME}"
   absTargetPath="${targetPath/#~/$HOME}"
 
   echo "Linking $absFilePath to $absTargetPath"
@@ -56,5 +56,14 @@ mkdir -p ~/.desks
 for f in ./ubuntu/desks/*; do
 	echo "Linking $f"
 	ln -f -T ${f} ~/.desks/$(basename ${f})
+done
+
+
+# Link Services
+echo "Linking services"
+
+for f in ./common/services/*; do
+  echo "Linking $f"
+  sudo ln -f -T ${f} /usr/lib/systemd/user/$(basename ${f})
 done
 

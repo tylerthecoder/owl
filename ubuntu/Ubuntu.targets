@@ -12,7 +12,7 @@ common/config/gitconfig ~/.config/git/config
 common/config/.alias ~/.config/alias/main
 common/config/.alias-git ~/.config/alias/git
 ubuntu/config/.xprofile ~/.xprofile
-ubuntu/config/.Xresources ~/.config/X/.Xresources
+ubuntu/config/.Xresources ~/.Xresources
 common/config/npmrc ~/.config/npm/npmrc
 common/config/rofi.config ~/.config/rofi/config.rasi
 common/config/starship.toml ~/.config/starship.toml

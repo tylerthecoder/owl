@@ -18,5 +18,13 @@ case $1 in
 	"sync")
 		bash "$OWL_PATH/common/scripts/owl-sync.sh"
     ;;
+
+	"go")
+		ranger "$OWL_PATH"
+		;;
+
+	"code")
+		code "$OWL_PATH"
+		;;
 esac
 
