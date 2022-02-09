@@ -3,7 +3,7 @@ common/config/i3-config ~/.config/i3/config
 common/config/.bashrc ~/.bashrc
 common/config/rc.conf ~/.config/ranger/rc.conf
 common/config/.profile ~/.profile.main
-ubuntu/configs/.profile ~/.profile
+ubuntu/config/.profile ~/.profile
 common/config/config.fish ~/.config/fish/config.fish
 common/config/user-dirs.dirs ~/.config/user-dirs.dirs
 common/config/i3blocks-config ~/.config/i3blocks/config
@@ -15,3 +15,4 @@ ubuntu/config/.xprofile ~/.xprofile
 ubuntu/config/.Xresources ~/.config/X/.Xresources
 common/config/npmrc ~/.config/npm/npmrc
 common/config/rofi.config ~/.config/rofi/config.rasi
+common/config/starship.toml ~/.config/starship.toml

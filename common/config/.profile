@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# My personal directories 
+# My personal directories
 export CONFIG_PATH="$HOME/.dotfiles"
 export SCRIPTS_FOLDER="$HOME/.scripts"
 export DEV_FOLDER="$HOME/dev"
@@ -12,12 +12,14 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DOWNLOAD_DIR="$HOME/downloads"
 
 
+# All things added to path
 export PATH="$SCRIPTS_FOLDER:$PATH"
 export PATH="$SCRIPTS_FOLDER/rofi:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 # I don't want to have to do this but the world is working against me
 export PATH="/var/lib/snapd/snap/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH" # Add rust to path
 
 export EDITOR="vim"
 export VISUAL="vim"

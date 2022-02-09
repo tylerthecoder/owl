@@ -76,3 +76,5 @@ source "$ZDOTDIR/zsh-history-substring-search/zsh-history-substring-search.zsh"
 # Fuzzy search history
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
+
+eval "$(starship init zsh)"

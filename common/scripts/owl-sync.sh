@@ -2,11 +2,10 @@
 
 # First thing to do. Make sure SCRIPTS_PATH and CONFIG_PATH are defined, if not then prompt for them
 
-
 sync_directory() {
   pathVarStr=$1
 
-  # Get the value of the environment variable 
+  # Get the value of the environment variable
   # Using variable indirection https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#index-expansion_002c-parameter
   envPath="${!pathVarStr}"
 
@@ -42,7 +41,7 @@ sync_directory() {
 
 
     printf "You have untracked files:\n$untracked \nWhat do you want to do?"
-    
+
     options=("Resolve is VS code" "Push Them All" "Try Again" "Exit")
     sel=$(printf "%s\n" "${options[@]}" | fzf --height 40% --reverse -0 --no-info)
     [ "$sel" = "Resolve is VS code" ] && code . && exit
@@ -59,11 +58,4 @@ sync_directory() {
   echo "$envPath synced"
 }
 
-sync_directory DOTFILES_PATH
-sync_directory SCRIPTS_PATH
-
-
-
-
-
-
+sync_directory OWL_PATH
