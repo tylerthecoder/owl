@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # My personal directories
-export CONFIG_PATH="$HOME/.dotfiles"
-export SCRIPTS_FOLDER="$HOME/.scripts"
 export DEV_FOLDER="$HOME/dev"
 
 # Set XDG variables
@@ -13,12 +11,9 @@ export XDG_DOWNLOAD_DIR="$HOME/downloads"
 
 
 # All things added to path
-export PATH="$SCRIPTS_FOLDER:$PATH"
-export PATH="$SCRIPTS_FOLDER/rofi:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
-# I don't want to have to do this but the world is working against me
-export PATH="/var/lib/snapd/snap/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH" # Personal bin
+export PATH="$XDG_DATA_HOME/npm/bin:$PATH" # Add npm to path
+export PATH="/var/lib/snapd/snap/bin:$PATH" # I don't want to have to do this but the world is working against me
 export PATH="$HOME/.cargo/bin:$PATH" # Add rust to path
 
 export EDITOR="vim"
@@ -43,6 +38,7 @@ export NUGET_PACKAGES="$XDG_CACHE_HOME/nuget"
 
 # Moving things out of the home directory
 export PLATFORMIO_HOME_DIR="$XDG_DATA_HOME/platformio"
+
 # This messed up a bunch of my keysigning
 # export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 
