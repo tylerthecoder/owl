@@ -4,18 +4,17 @@ Xft.hintstyle: hintfull
 Xft.hinting: 1
 Xft.antialias: 1
 
-URxvt.font: xft:FiraMono-Regular:size=10
 URxvt.letterSpace: -3
 URxvt.cursorColor: red
 URxvt.scrollBar: false
 
 ! Extensions
-URxvt.perl-ext-common: default,matcher,clipboard,selection-to-clipboard,url-select,keyboard-select
+/* URxvt.perl-ext-common: default,matcher,clipboard,selection-to-clipboard,url-select,keyboard-select */
 URxvt.colorUL: #4682B
 
 ! Clipboard
-URxvt.keysym.Shift-Control-C: perl:clipboard:copy
-URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+/* URxvt.keysym.Shift-Control-C: perl:clipboard:copy */
+/* URxvt.keysym.Shift-Control-V: perl:clipboard:paste */
 
 ! url-select
 URxvt.keysym.M-u: perl:url-select:select_next
@@ -33,4 +32,27 @@ URxvt.iso14755_52: false
 ! Transparency
 urxvt*depth: 32
 urxvt*background: rgba:0000/0000/0200/c800
+
+! Dracula palette
+*.foreground: #F8F8F2
+*.background: #282A36
+*.color0:     #000000
+*.color8:     #4D4D4D
+*.color1:     #FF5555
+*.color9:     #FF6E67
+*.color2:     #50FA7B
+*.color10:    #5AF78E
+*.color3:     #F1FA8C
+*.color11:    #F4F99D
+*.color4:     #BD93F9
+*.color12:    #CAA9FA
+*.color5:     #FF79C6
+*.color13:    #FF92D0
+*.color6:     #8BE9FD
+*.color14:    #9AEDFE
+*.color7:     #BFBFBF
+*.color15:    #E6E6E6
+*.alpha:      0.9
+*.font:       FiraCode Nerd Font Mono:pixelsize=20
+/* *.font:       Liberation Mono:pixelsize=16:antialias=true:autohint=true */
 

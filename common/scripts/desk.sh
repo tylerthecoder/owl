@@ -1,9 +1,7 @@
 #! /bin/bash
 
+target=$(ls ~/.desks | \
+        fzf --height=30 --layout=reverse --prompt="Select Desk: ")
 
-# Get all the desk configuration files
-desk=$(ls ~/.desk)
+bash "$target"
 
-for f in ~/.desk; do
-		bash $f
-done

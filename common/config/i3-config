@@ -17,7 +17,7 @@ bindsym $mod+q kill
 # Launch Applications
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Shift+Return exec --no-startup-id urxvt -geometry 80x26 -name "floating_urxvt"
+bindsym $mod+Shift+Return exec st -t "Floating ST"
 bindsym $mod+b exec "$BROWSER"
 bindsym $mod+z exec gnome-control-center
 bindsym $mod+a exec pavucontrol
@@ -36,6 +36,7 @@ bindsym $mod+p exec rofi -show combi
 
 # Put things where I want them
 for_window [window_role=floating] floating enable
+for_window [title="Floating ST"] floating enable
 for_window [class="URxvt" instance="floating_urxvt$"] floating enable
 for_window [class="Blueman-manager"] floating enable
 for_window [class="Spotify"] move to workspace 10

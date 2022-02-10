@@ -24,7 +24,7 @@ case $1 in
 		;;
 
 	"code")
-		code "$OWL_PATH"
+		vim "$OWL_PATH"
 		;;
 esac
 

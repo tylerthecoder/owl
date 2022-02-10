@@ -18,6 +18,7 @@ export PATH="$HOME/.cargo/bin:$PATH" # Add rust to path
 
 export EDITOR="vim"
 export VISUAL="vim"
+export TERMINAL="st"
 export ANDROID_HOME="/usr/lib/Android/Sdk"
 export BROWSER="/usr/bin/brave --force-device-scale-factor=2"
 export COMPOSITOR="/usr/bin/picom --experimental-backends"

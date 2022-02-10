@@ -7,10 +7,6 @@ xrandr --output eDP-1 --left-of HDMI-2
 
 # Keyboard go brrrr
 xset r rate 300 35
-
-# Set the "theme"
-[[ -f ~/.config/X/.Xresources ]] && xrdb -merge -I$HOME ~/.config/X/.Xresources
-
 xinput --map-to-output 'Wacom Pen and multitouch sensor Finger' "eDP-1-1"
 
 setxkbmap -option caps:super
