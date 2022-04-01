@@ -1,27 +1,25 @@
-let vim_markdown_preview_github=1
 let NERDTreeShowHidden=1 " NerdTreeDefault
-let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py" " You Complete Me config file
-let &t_ti.="\<Esc>[1 q"
-let &t_SI.="\<Esc>[5 q"
-let &t_EI.="\<Esc>[1 q"
-let &t_te.="\<Esc>[0 q"
 
 "easier window navigation
 nmap <C-h> <C-w>h
 nmap <C-j> <C-w>j
 nmap <C-k> <C-w>k
 nmap <C-l> <C-w>l
-nmap <C-z> u
-:map <C-n> :NERDTree <Enter>
-:map <C-space> :TsuQuickFix <Enter>
+map <C-n> :NERDTree <Enter>
 imap jj <ESC>
 " Easy system copy paste
-noremap <C-y> "+y 
-noremap <C-p> "+p
+noremap <A-c> "+y 
+noremap <A-v> "+p
+imenu disable Help 
+
+" Nice Cursor
+let &t_ti.="\<Esc>[1 q"
+let &t_SI.="\<Esc>[5 q"
+let &t_EI.="\<Esc>[1 q"
+let &t_te.="\<Esc>[0 q"
 
 syntax on
 filetype plugin indent on
-filetype indent on
 colorscheme default
 
 set nocompatible              " be iMproved, required
@@ -43,17 +41,19 @@ set mouse=v " To allow copying from vim to clipboard
 
 " Auto commands
 autocmd BufWritePost *.Xresources  !command xrdb <afile>
+" autocmd InsertLeave *.rs              :YcmForceCompileAndDiagnostics
+
 
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'scrooloose/nerdtree' " For directory listing on side
 Plugin 'tpope/vim-fugitive' " Nice Git commands
-Plugin 'psliwka/vim-smoothie' " Smooth scrolling with <C-D> and <C-U>
 Plugin 'tpope/vim-surround' " Change symbols that surrond text
 Plugin 'tpope/vim-commentary' " Comment out a line
-Plugin 'git://git.wincent.com/command-t.git'
-Plugin 'scrooloose/nerdtree' " For directory listing on side
-Plugin 'Quramy/tsuquyomi' " A typescript server for auto complete and definiton search
 call vundle#end()
+
+" You Complete Me Config
+let g:ycm_min_num_of_chars_for_completion = 1
