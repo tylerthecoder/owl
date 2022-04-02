@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if command -v fzf; then
-  target=$(find "$OWL_PATH" -maxdepth 2 -type f -name "*.targets" | \
+  target=$(ls "$OWL_PATH/links" | \
     fzf --height=30 --layout=reverse --prompt="Select target: ")
 else
   echo "Enter the target: ";
@@ -13,57 +13,57 @@ if [[ -z "$target" ]]; then
   exit 1
 fi
 
-# Link Config
-while IFS= read -r line
-do
-  filePath=$(echo $line | cut -d " " -f1)
-  targetPath=$(echo $line | cut -d " " -f2)
+function go_home() {
+	cd $OWL_PATH || exit
+}
 
-  absFilePath="$OWL_PATH/${filePath/#~/$HOME}"
-  absTargetPath="${targetPath/#~/$HOME}"
-
-  echo "Linking $absFilePath to $absTargetPath"
-
+function link_file() {
+	local source="$1"
+	local target="$2"
   # make the target path if not exist
   mkdir -p $(dirname "$absTargetPath")
+	wd=$(pwd)
+	echo "Linking $wd/$source to $target"
+	sudo ln -f -T $source $target
+}
 
-  # link my config file
-  ln -f -T "$absFilePath" "$absTargetPath"
-done < "$target"
+function link_dir() {
+	local context="$1"
+	local target="$2"
 
-# Link Scripts
-echo "Linking scripts"
+	echo "Linking directory $context to directory $target"
 
-for f in ./common/scripts/*;  do
- targetFileName=$(basename "$f" | cut -d "." -f1)
- targetFilePath="/usr/local/bin/$targetFileName"
- echo "Linking $f to $targetFilePath";
- sudo ln -f -T ${f} ${targetFilePath}
-done;
+	mkdir -p "$target"
 
-for f in ./common/rofi-scripts/*;  do
- targetFileName=$(basename "$f" | cut -d "." -f1)
- targetFilePath="/usr/local/bin/$targetFileName"
- echo "Linking $f to $targetFilePath";
- sudo ln -f -T ${f} ${targetFilePath}
-done;
+	cd $context || exit
 
-# Link Desks
-echo "Linking desks"
+	# find all files in directory
+	for f in $(find * -type f); do
+		link_file $f "$target/$f"
+	done
 
-mkdir -p ~/.desks
+  go_home
+}
 
-for f in ./ubuntu/desks/*; do
-	echo "Linking $f"
-	ln -f -T ${f} ~/.desks/$(basename ${f})
-done
+function link_dir_no_ext() {
+	local context="$1"
+	local target="$2"
+
+	echo "Linking directory $context to directory $target"
+
+	mkdir -p "$target"
+
+	cd $context || exit
+
+	# find all files in directory
+	for f in $(find * -type f); do
+    targetFileName=$(basename "$f" | cut -d "." -f1)
+		link_file $f "$target/$targetFileName"
+	done
+
+  go_home
+}
 
 
-# Link Services
-echo "Linking services"
 
-for f in ./common/services/*; do
-  echo "Linking $f"
-  sudo ln -f -T ${f} /usr/lib/systemd/user/$(basename ${f})
-done
-
+. "$OWL_PATH/links/$target"

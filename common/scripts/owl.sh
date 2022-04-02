@@ -7,7 +7,6 @@
 if [ -z "$OWL_PATH" ]; then
 	echo "Enter the path to your owl installation: "
 	read OWL_PATH
-	export OWL_PATH="$OWL_PATH"
 fi
 
 function removeOwl() {
@@ -19,7 +18,7 @@ export -f removeOwl
 
 case $1 in
   "link")
-		bash "$OWL_PATH/common/scripts/owl-link.sh"
+		. "$OWL_PATH/common/scripts/owl-link.sh"
     ;;
 
 	"sync")
@@ -40,7 +39,7 @@ case $1 in
 
   "e")
     fname=$(
-      find "$OWL_PATH" -path "$OWL_PATH/.git" -prune -o -exec bash -c "removeOwl \"{}\"" \; | 
+      find "$OWL_PATH" -path "$OWL_PATH/.git" -prune -o -exec bash -c "removeOwl \"{}\"" \; |
         fzf --height=30 --layout=reverse --prompt="Select File: ")
     [[ -f "$OWL_PATH/$fname" ]] && vim "$OWL_PATH/$fname"
     ;;

@@ -180,5 +180,5 @@ bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpri
 bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
 
 #Hide title bar and remove borders
-for_window [class="^.*"] border pixel 0
+# for_window [class="^.*"] border pixel 0
 new_window 1pixel
