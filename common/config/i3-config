@@ -55,6 +55,7 @@ exec --no-startup-id blueman-applet # Bluetooth control in the status bar
 exec --no-startup-id "$COMPOSITOR" # To fix screen tearing
 exec --no-startup-id set-bg-to-nasa-iotd # Load the nasa image of the day as the background image
 exec --no-startup-id dunst
+exec --no-startup-id greenclip daemon>/dev/null # Clipboard management system
 
 # Set Gaps
 gaps inner 10

@@ -30,7 +30,7 @@ cd ubuntu/config || exit
 link_file .profile ~/.profile
 link_file .xprofile ~/.xprofile
 link_file .Xresources ~/.Xresources
-link_file udev.rules /etc/udev/rules.d/99-owl.rules
+link_file udev.rules /etc/udev/rules.d/10-owl.rules
 
 go_home || exit
 
