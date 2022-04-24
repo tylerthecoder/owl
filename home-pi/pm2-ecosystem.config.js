@@ -14,6 +14,17 @@ module.exports = {
         "HUE_URL": "http://192.168.1.183/api/aHJTvyHPP-Y6oANR3nVfZxRjX92lG0R-HcJso2KJ",
         "PORT": 3000
       }
+    },
+    {
+      name: "web",
+      cwd: "/home/pi/dev/website",
+      script: "yarn",
+      args: "start:prod",
+      interpreter: "/bin/bash",
+      env: {
+        "NEXT_PUBLIC_API_URL": "https://api.tylertracy.com",
+        "PORT": 5000
+      }
     }
   ]
 }
