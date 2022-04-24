@@ -2,10 +2,9 @@
 #
 # The top properties below are applied to every block, but can be overridden.
 # Each block command defaults to the script name to avoid boilerplate.
-command=$SCRIPTS_FOLDER/status/$BLOCK_NAME
+command=/home/tyler/owl/common/i3-status-scripts/$BLOCK_NAME
 separator_block_width=15
 markup=none
-
 
 # Get the weather hourly
 [weather]
@@ -15,24 +14,24 @@ color=#A4C2F4
 # Get the battery every minute
 [battery]
 interval=60
-color=#FF0000
+color=#00FF00
 
 # Query my default IP address only on startup
 [network]
 label=📶 
 interval=60
-color=#91E78B
-
-# Update time every 5 seconds
-[time]
-label=📅 
-command=date +"%a %b %d, %I:%M:%S %p"
-interval=5
+color=#00FFFF
 
 [volume]
 label=🎵 
 instance=Master
 interval=60
 signal=10
+
+# Update time every 5 seconds
+[time]
+label=🕰️
+command=date +"%a %b %d, %I:%M:%S %p"
+interval=5
 
 

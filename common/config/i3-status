@@ -4,19 +4,20 @@ general {
   interval = 5
 }
 
+# order += "wireless wlp4s0"
+# order += "volume master"
+# order += "battery 0"
+order += "tztime local"
 
-order += "wireless wlp4s0"
+
 # order += "disk /"
-order += "volume master"
 # order += "run_watch DHCP"
 # order += "run_watch VPNC"
 # order += "path_exists VPN"
 # order += "wireless wlan0"
 # order += "ethernet eth0"
-order += "battery 0"
 # order += "memory"
 # order += "load"
-order += "tztime local"
 # order += "tztime berlin"
 
 wireless wlp4s0 {

@@ -56,6 +56,7 @@ exec --no-startup-id "$COMPOSITOR" # To fix screen tearing
 exec --no-startup-id set-bg-to-nasa-iotd # Load the nasa image of the day as the background image
 exec --no-startup-id dunst
 exec --no-startup-id greenclip daemon>/dev/null # Clipboard management system
+exec --no-startup-id 1password --silent
 
 # Set Gaps
 gaps inner 10
@@ -168,7 +169,7 @@ bindsym $mod+r mode "resize"
 # Start i3bar (using i3blocks)
 bar {
         status_command i3blocks
-        font pango: DejaVu Sans Mono 10
+        font pango: DejaVu Sans Mono 12
 }
 
 # Screen brightness controls
