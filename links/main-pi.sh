@@ -18,3 +18,9 @@ cd home-pi
 
 link_file .profile ~/.profile
 link_file .bashrc ~/.bashrc
+link_file nginx.conf /etc/nginx/nginx.conf
+link_file vimrc ~/.vimrc
+
+go_home || exit
+link_file ./common/scripts/owl.sh /usr/local/bin/owl
+

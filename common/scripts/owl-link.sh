@@ -21,9 +21,9 @@ function link_file() {
 	local source="$1"
 	local target="$2"
   # make the target path if not exist
-  mkdir -p $(dirname "$absTargetPath")
+  sudo mkdir -p $(dirname "$target")
 	wd=$(pwd)
-	echo "Linking $wd/$source to $target"
+	echo -e "\e[31Linking $wd/$source to $target\e[31"
 	sudo ln -f -T $source $target
 }
 
