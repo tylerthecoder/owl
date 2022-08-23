@@ -9,12 +9,16 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DOWNLOAD_DIR="$HOME/downloads"
 
+#Java
+export JAVA_HOME=/opt/jdk-18
+
 
 # All things added to path
 export PATH="$HOME/.local/bin:$PATH" # Personal bin
 export PATH="$XDG_DATA_HOME/npm/bin:$PATH" # Add npm to path
 export PATH="/var/lib/snapd/snap/bin:$PATH" # I don't want to have to do this but the world is working against me
 export PATH="$HOME/.cargo/bin:$PATH" # Add rust to path
+export PATH="$JAVA_HOME/bin:$PATH" # Add java to path
 
 export EDITOR="vim"
 export VISUAL="vim"

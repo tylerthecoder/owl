@@ -22,6 +22,7 @@ link_file .alias-git ~/.config/alias/git
 link_file npmrc ~/.config/npm/npmrc
 link_file rofi.config ~/.config/rofi/config.rasi
 link_file starship.toml ~/.config/starship.toml
+link_file picom.config ~/.config/picom.conf
 
 go_home || exit
 
