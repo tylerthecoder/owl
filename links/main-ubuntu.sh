@@ -8,6 +8,7 @@ go_home || exit
 cd common/config || exit
 
 link_file .vimrc ~/.vim/vimrc
+link_file .vimrc ~/.config/nvim/init.vim
 link_file i3-config ~/.config/i3/config
 link_file .bashrc ~/.bashrc
 link_file rc.conf ~/.config/ranger/rc.conf
