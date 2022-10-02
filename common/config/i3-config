@@ -29,6 +29,8 @@ bindsym $mod+Shift+s exec --no-startup-id spellHelper.sh
 bindsym Print exec maim -s | tee ~/img/$(date +%s).png | xclip -selection clipboard -t image/png
 bindsym Control+Print exec gnome-screenshot -i
 bindsym $mod+Ctrl+s exec screen-lock.sh # Put computer to sleep
+bindsym $mod+F1 exec evince ~/personal/documents/help.pdf
+
 
 # Launch Scripts
 bindsym $mod+Shift+d exec choose-hardware-conf.sh

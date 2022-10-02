@@ -15,6 +15,9 @@ call plug#begin()
   Plug 'pangloss/vim-javascript'  " Javascript support
   Plug 'leafgarland/typescript-vim' " Typescript syntax highlighting
   Plug 'sonph/onehalf', { 'rtp': 'vim' } " Nice theme
+  Plug 'peitalin/vim-jsx-typescript' " JSX support
+  Plug 'lervag/vimtex' " Latex support
+  Plug 'mhinz/vim-startify' " Start screen
 call plug#end()
 
 let NERDTreeShowHidden=1 " NerdTreeDefault
@@ -77,10 +80,11 @@ let g:airline#extensions#tabline#enabled = 1
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
 
-" Auto commands
+" =========== Auto commands ===============
 autocmd BufWritePost *.Xresources  !command xrdb <afile>
+autocmd BufWritePost ~/help.md  !command pandoc -s <afile> -o ~/personal/documents/help.pdf
 
-"easier window navigation
+" ============ Navigation ===============
 nmap <C-h> <C-w>h
 nmap <C-j> <C-w>j
 nmap <C-k> <C-w>k
@@ -88,12 +92,6 @@ nmap <C-l> <C-w>l
 
 " Easy Escape
 imap jj <ESC>
-
-" Javascript folding
-set foldmethod=syntax "syntax highlighting items specify folds  
-set foldcolumn=1 "defines 1 col at window left, to indicate folding  
-let javaScript_fold=1 "activate folding by JS syntax  
-set foldlevelstart=99 "start file with all folds opened
 
 " Buffers
 nmap <leader>T :enew<cr> " To open a new empty buffer
@@ -107,6 +105,13 @@ nmap <leader>bq :bp <BAR> bd #<CR> " Close the current buffer and move to the pr
 noremap <A-c> "+y 
 noremap <A-v> "+p
 imenu disable Help 
+
+" Javascript folding
+set foldmethod=syntax "syntax highlighting items specify folds  
+" set foldcolumn=1 "defines 1 col at window left, to indicate folding  
+let javaScript_fold=1 "activate folding by JS syntax  
+set foldlevelstart=99 "start file with all folds opened
+
 " Nerd tree 
 nnoremap <C-n> :NERDTree<CR>
 " Find current file in nerdtree
@@ -119,13 +124,24 @@ nnoremap <C-f> :Rg<CR>
 " fzf search all open buffers
 nnoremap <C-b> :Buffers <CR>
 
+" Start screen
+let g:startify_bookmarks = [ {'c': '~/.vim/vimrc'}, { 'n': '~/notes'}, {'o': '~/owl'}, '~/p/shirtgen/shirtgen-web' ]
 
 " ========= Language Server ===============
 
 let g:coc_global_extensions = [
   \ 'coc-tsserver',
-  \ 'coc-eslint'
+  \ 'coc-eslint',
+  \ 'coc-tailwindcss',
+  \ 'coc-prettier'
   \ ]
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
 
 " Enter to accept coc option
 inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
@@ -152,6 +168,9 @@ nmap <leader>a  <Plug>(coc-codeaction-selected)
 " Run the Code Lens action on the current line.
 nmap <leader>cl  <Plug>(coc-codelens-action)
 
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
 function! ShowDocIfNoDiagnostic(timer_id)
   if (coc#float#has_float() == 0 && CocHasProvider('hover') == 1)
     silent call CocActionAsync('doHover')
@@ -170,4 +189,17 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Latex config
+let g:vimtex_compiler_latexmk = { 'build_dir' : 'out' }
+
+
 
