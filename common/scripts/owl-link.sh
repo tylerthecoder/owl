@@ -37,7 +37,7 @@ function link_file() {
 
 	echo "Linking $source to $target"
 
-	sudo ln -f -T "$source" "$target"
+	sudo ln -f "$source" "$target"
 }
 
 function link_dir() {

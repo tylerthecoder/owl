@@ -17,10 +17,11 @@ fi
 if ! command -v fzf; then
 	echo "Fzf isn't installed. Would you like to install? (y)"
 	read answer
-	echo "$answer"
 	if [ "$answer" = "y" ]; then
-		if command -v pacman; then 
+		if command -v pacman; then
 			sudo pacman -S fzf
+		elif command -v brew; then
+			brew install fzf
 		fi
 	fi
 fi
@@ -29,10 +30,12 @@ fi
 if ! command -v jq; then
 	echo "jq isn't installed. Would you like to install? (y)"
 	read answer
-	echo "$answer"
 	if [ "$answer" = "y" ]; then
-		if command -v pacman; then 
+		echo "Installing..."
+		if command -v pacman; then
 			sudo pacman -S jq
+		elif command -v brew; then
+			brew install jq
 		fi
 	fi
 fi

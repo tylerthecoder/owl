@@ -1,0 +1,10 @@
+[
+	{
+		"source": "common/config/.vimrc",
+		"target": "~/.vimrc"
+	},
+	{
+		"source": "common/scripts/owl.sh",
+		"target": "/usr/local/bin/owl"
+	}
+]
