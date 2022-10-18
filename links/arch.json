@@ -1,0 +1,10 @@
+[
+  {
+    "source": "common/config/i3-config",
+    "target": "~/.config/i3/config"
+  },
+  {
+    "source": "common/config/.vimrc",
+    "target": ".vimrc"
+  }
+]

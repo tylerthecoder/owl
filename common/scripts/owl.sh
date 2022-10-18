@@ -3,16 +3,43 @@
 # This is the first script that is run,
 # Assume nothing is availible yet
 
+echo "$OWL_PATH"
+
 # Get owl path if not set
 if [ -z "$OWL_PATH" ]; then
 	echo "Enter the path to your owl installation: "
 	read OWL_PATH
 fi
 
+# Install dependencies
+
+# Install fzf
+if ! command -v fzf; then
+	echo "Fzf isn't installed. Would you like to install? (y)"
+	read answer
+	echo "$answer"
+	if [ "$answer" = "y" ]; then
+		if command -v pacman; then 
+			sudo pacman -S fzf
+		fi
+	fi
+fi
+
+# Install jq
+if ! command -v jq; then
+	echo "jq isn't installed. Would you like to install? (y)"
+	read answer
+	echo "$answer"
+	if [ "$answer" = "y" ]; then
+		if command -v pacman; then 
+			sudo pacman -S jq
+		fi
+	fi
+fi
+
 function removeOwl() {
   echo "$1" | sed 's|'$OWL_PATH'||'
 }
-
 
 export -f removeOwl
 
