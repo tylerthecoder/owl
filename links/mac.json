@@ -10,5 +10,13 @@
 	{
 		"source": "common/config/gitconfig",
 		"target": "~/.gitconfig"
-	}
+	},
+  {
+    "source": "mac/config/.zprofile",
+    "target": "~/.zprofile"
+  },
+  {
+    "source": "mac/config/.zshrc",
+    "target": "~/.zshrc"
+  }
 ]
