@@ -1,3 +1,6 @@
+# Import aliases
+source ~/.config/.aliases
+
 export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="robbyrussell"

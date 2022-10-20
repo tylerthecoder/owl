@@ -18,5 +18,9 @@
   {
     "source": "mac/config/.zshrc",
     "target": "~/.zshrc"
+  },
+  {
+    "source": "mac/config/aliases",
+    "target": "~/.config/.aliases"
   }
 ]
