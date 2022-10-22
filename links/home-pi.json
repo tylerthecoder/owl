@@ -1,0 +1,10 @@
+[
+	{
+		"source": "common/config/.vimrc",
+		"target": "~/.vimrc"
+	},
+	{
+		"source": "common/config/.bashrc",
+		"target": "~/.bashrc"
+	}
+]

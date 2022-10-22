@@ -1,3 +1,7 @@
+export ZDOTDIR="$HOME/.config/zsh"
+
+# Source environment variables
+source ~/.shenv
 
 # Enable colors and change prompt
 autoload -U colors && colors
@@ -9,7 +13,7 @@ HISTSIZE=100000
 SAVEHIST=100000
 setopt autocd
 
-# Set the cursor as a verticla line
+# Set the cursor as a vertical line
 echo -ne '\e[5 q'
 
 # Callback for vim mode change

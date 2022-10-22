@@ -8,6 +8,7 @@ go_home || exit
 cd common/config || exit
 
 link_file .vimrc ~/.vim/vimrc
+link_file .vimrc ~/.config/nvim/init.vim
 link_file i3-config ~/.config/i3/config
 link_file .bashrc ~/.bashrc
 link_file rc.conf ~/.config/ranger/rc.conf
@@ -22,6 +23,7 @@ link_file .alias-git ~/.config/alias/git
 link_file npmrc ~/.config/npm/npmrc
 link_file rofi.config ~/.config/rofi/config.rasi
 link_file starship.toml ~/.config/starship.toml
+link_file picom.config ~/.config/picom.conf
 
 go_home || exit
 

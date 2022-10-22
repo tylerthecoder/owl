@@ -1,0 +1,50 @@
+[
+  {
+    "source": "common/config/i3-config",
+    "target": "~/.config/i3/config"
+  },
+  {
+    "source": "common/config/.vimrc",
+    "target": "~/.vimrc"
+  },
+  {
+    "source": "common/config/starship.toml",
+    "target": "~/.config/starship.toml"
+  },
+  {
+    "source": "common/config/.bashrc",
+    "target": "~/.bashrc"
+  },
+  {
+    "source": "common/config/.bash_profile",
+    "target": "~/.bash_profile"
+  },
+  {
+    "source": "common/config/.xprofile",
+    "target": "~/.xkrofile"
+  },
+  {
+    "source": "arch/.shenv",
+    "target": "~/.shenv"
+  },
+  {
+    "source": "common/config/.zshrc",
+    "target": "~/.config/zsh/.zshrc"
+  },
+  {
+    "source": "common/config/.zshenv",
+    "target": "~/.zshenv"
+  },
+  {
+    "source": "common/config/.alias",
+    "target": "~/.config/.alias/main"
+  },
+  {
+    "source": "common/config/.alias-git",
+    "target": "~/.config/.alias/git"
+  },
+  {
+    "source": "common/config/ssh-config",
+    "target": ".ssh/config"
+  }
+]
