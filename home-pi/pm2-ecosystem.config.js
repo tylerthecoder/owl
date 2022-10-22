@@ -25,6 +25,16 @@ module.exports = {
         "NEXT_PUBLIC_API_URL": "https://api.tylertracy.com",
         "PORT": 5000
       }
+    },
+    {
+      name: "craft",
+      cwd: "/home/pi/dev/craft",
+      script: "./scripts/web-start.sh",
+      interpreter: "/bin/bash",
+      env: {
+        "DB_URL": "mongodb+srv://admin:admin@cluster0.aligf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+        "PORT": 4000
+      }
     }
   ]
 }
