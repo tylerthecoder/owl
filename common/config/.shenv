@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo "Welcome Tylord: "
+
+# This file is shared across all OSs, put OS specific stuff in .profile
+
 # My personal directories
 export DEV_FOLDER="$HOME/dev"
 
@@ -8,10 +12,6 @@ export XDG_CONFIG_HOME="$HOME/.config/"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DOWNLOAD_DIR="$HOME/downloads"
-
-#Java
-export JAVA_HOME=/opt/jdk-18
-
 
 # All things added to path
 export PATH="$HOME/.local/bin:$PATH" # Personal bin
@@ -27,15 +27,17 @@ export ANDROID_HOME="/usr/lib/Android/Sdk"
 export BROWSER="/usr/bin/brave --force-device-scale-factor=2"
 export COMPOSITOR="/usr/bin/picom --experimental-backends"
 
-# Configure ZSH
-export ZDOTDIR="$HOME/.config/zsh"
-
 #History file variables
 export LESSHISTFILE=/dev/null # disable the less history file
+
+#===== Language Variables =====
 
 # Configure Node, NPM, Yarn
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 export NODE_REPL_HISTORY=$XDG_CONFIG_HOME/node/repl_hist
+
+#Java
+export JAVA_HOME=/opt/jdk-18
 
 # Configure dotnet
 # They don't let us move the ".dotnet" folder, what a shame
@@ -48,8 +50,8 @@ export PLATFORMIO_HOME_DIR="$XDG_DATA_HOME/platformio"
 # export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 
 # To scale applications up
-export GDK_SCALE=2
-export GDK_DPI_SCALE=0.5
+# export GDK_SCALE=2
+# export GDK_DPI_SCALE=0.5
 
 # To make unity intellisence to work in vscode
 export FrameworkPathOverride="/lib/mono/4.7.1-a"

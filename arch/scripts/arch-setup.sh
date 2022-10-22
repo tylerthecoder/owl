@@ -22,3 +22,7 @@ touch ~/.vim/viminfo
 echo "blacklist pcspkr" | tee /etc/modprobe.d/nobeep.conf
 
 
+
+# Install owl
+
+

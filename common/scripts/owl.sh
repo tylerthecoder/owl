@@ -55,6 +55,10 @@ case $1 in
 		bash "$OWL_PATH/common/scripts/owl-sync.sh"
     ;;
 
+	"add")
+		bash "$OWL_PATH/common/scripts/owl-add.sh"
+		;;
+
 	"go")
 		ranger "$OWL_PATH"
 		;;

@@ -11,8 +11,12 @@ if [ -z "$target" ]; then
   fi
 fi
 
-# Used to add a file to the owl tracking system 
-file_to_add="$1"
+# Used to add a file to the owl tracking system
+file_to_add=$(readlink -f "$1")
+
+# Replace $HOME with ~/
+# [[ "$file_to_add" =~ ^"$HOME"(/|$) ]] && name="~${file_to_add#$HOME}"
+
 
 # ask user where to add the file in owl
 echo "Enter the path to add the file to: "

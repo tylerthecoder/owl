@@ -9,15 +9,9 @@ case $- in
 esac
 
 # Load Alias
-[ -f "$HOME/.config/alias/main" ] && source ~/.config/alias/main
-[ -f "$HOME/.config/alias/git" ] && source ~/.config/alias/git
+[ -f "~/.config/alias/main" ] && source ~/.config/alias/main
+[ -f "~/.config/alias/git" ] && source ~/.config/alias/git
 
-
-# History Config
-HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
-HISTFILE="$HOME/.cache/bash/history"
-HISTSIZE=1000
-HISTFILESIZE=2000
 
 shopt -s histappend # append to the history file, don't overwrite it
 shopt -s autocd # Allows you to cd into directory merely by typing the directory name

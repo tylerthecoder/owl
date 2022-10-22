@@ -6,13 +6,6 @@ xset r rate 300 35
 
 setxkbmap -option caps:super
 
-xrandr --setprovideroutputsource modesetting NVIDIA-0
-xrandr --auto
-
-# Start GNOME keyring
-eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
-export SSH_AUTH_SOCK
-
 # Start greenclip
 greenclip daemon &
 
