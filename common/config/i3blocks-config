@@ -2,7 +2,7 @@
 #
 # The top properties below are applied to every block, but can be overridden.
 # Each block command defaults to the script name to avoid boilerplate.
-command=/home/tyler/owl/common/i3-status-scripts/$BLOCK_NAME
+command=/home/tylord/owl/common/i3-status-scripts/$BLOCK_NAME
 separator_block_width=15
 markup=none
 
@@ -18,12 +18,12 @@ color=#00FF00
 
 # Query my default IP address only on startup
 [network]
-label=📶 
+label=📶
 interval=60
 color=#00FFFF
 
 [volume]
-label=🎵 
+label=🎶
 instance=Master
 interval=60
 signal=10

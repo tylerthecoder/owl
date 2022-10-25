@@ -1,5 +1,9 @@
 [
   {
+    "source": "common/scripts/owl.sh",
+    "target": "/usr/local/bin/owl"
+  },
+  {
     "source": "common/config/i3-config",
     "target": "~/.config/i3/config"
   },
