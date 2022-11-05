@@ -27,3 +27,5 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 export OWL_PATH=/home/pi/owl
+export OWL_DEFAULT_LINK=/home/pi/owl/links/home-pi.json
+
