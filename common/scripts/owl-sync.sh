@@ -27,7 +27,7 @@ sync_directory() {
       printf 'Git merge did not succed \n How should we proceed?\n'
 
       options=("Resolve in VS code" "Try Again" "Exit")
-      sel=$(printf "%s\n" "${options[@]}" | fzf --height 40% --reverse -0 --no-info)
+      sel=$(printf "%s\n" "${options[@]}" | fzf --height 40% --reverse -0)
 
       [ "$sel" = "Resolve in VS code" ] && code . && exit
       [ "$sel" = "Exit" ] && exit
@@ -40,10 +40,10 @@ sync_directory() {
     [ -z untracked ] && echo "All files pushed" && break
 
 
-    printf "You have untracked files:\n$untracked \nWhat do you want to do?"
+    printf "You have untracked files:\n What do you want to do?"
 
     options=("Resolve is VS code" "Push Them All" "Try Again" "Exit")
-    sel=$(printf "%s\n" "${options[@]}" | fzf --height 40% --reverse -0 --no-info)
+    sel=$(printf "%s\n" "${options[@]}" | fzf --height 40% --reverse -0)
     [ "$sel" = "Resolve is VS code" ] && code . && exit
     [ "$sel" = "Exit" ] && exit
 
