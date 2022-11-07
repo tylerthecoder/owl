@@ -25,7 +25,8 @@ call plug#begin()
   Plug 'tpope/vim-fugitive' " Git support
   Plug 'pangloss/vim-javascript'  " Javascript support
   Plug 'leafgarland/typescript-vim' " Typescript syntax highlighting
-  Plug 'sonph/onehalf', { 'rtp': 'vim' } " Nice theme
+  " Plug 'sonph/onehalf', { 'rtp': 'vim' } " Nice theme
+  Plug 'joshdick/onedark.vim'
   Plug 'peitalin/vim-jsx-typescript' " JSX support
   Plug 'lervag/vimtex' " Latex support
   Plug 'mhinz/vim-startify' " Start screen
@@ -48,12 +49,12 @@ set viminfo+=n~/.vim/viminfo " Move the vim info file to a more sensable locatio
 set spelllang=en
 set nospell
 set linebreak
-set tabstop=2
+set tabstop=4
 set number relativenumber
 set expandtab
 set shiftround
-set softtabstop=2
-set shiftwidth=2
+set softtabstop=4
+set shiftwidth=4
 set autoindent
 set smarttab
 set tags=tags
@@ -69,8 +70,9 @@ set hidden " Allow buffers to be hidden
 " Theme
 set t_Co=256
 set cursorline
-colorscheme onehalfdark
-let g:airline_theme='onehalfdark'
+
+colorscheme onedark
+let g:airline_theme='onedark'
 
 " 'True' colors
 if exists('+termguicolors')
