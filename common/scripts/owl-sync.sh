@@ -47,6 +47,8 @@ sync_directory() {
     [ "$sel" = "Resolve is VS code" ] && code . && exit
     [ "$sel" = "Exit" ] && exit
 
+    echo "$sel"
+
     if [ "$sel" = "Push Them All" ]; then
       git add .
       git commit

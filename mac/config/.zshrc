@@ -15,6 +15,8 @@ source $ZSH/oh-my-zsh.sh
 
 export EDITOR='vim'
 
+export PATH="$PATH:$(npm config get prefix)/bin"
+
 # Enable command auto-correction.
 ENABLE_CORRECTION="true"
 
@@ -40,6 +42,6 @@ COMPLETION_WAITING_DOTS="true"
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
-#
+
 
 source <(kubectl completion zsh)
