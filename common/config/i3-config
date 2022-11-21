@@ -28,7 +28,6 @@ bindsym Control+Print exec gnome-screenshot -i
 bindsym $mod+Ctrl+s exec screen-lock.sh # Put computer to sleep
 bindsym $mod+F1 exec evince ~/personal/documents/help.pdf
 
-
 # Launch Scripts
 bindsym $mod+Shift+d exec choose-hardware-conf.sh
 bindsym $mod+p exec rofi -show combi
@@ -47,6 +46,19 @@ bindsym XF86AudioLowerVolume exec amixer -D pulse sset Master 5%- && pkill -RTMI
 bindsym XF86AudioMute exec amixer -D pulse set Master Playback Switch toggle && pkill -RTMIN+10 i3blocks
 bindsym $mod+m exec amixer -D pulse set Master Playback Switch toggle && pkill -RTMIN+10 i3blocks # Mute Sound
 bindsym $mod+Shift+m exec amixer set Capture toggle && pkill -RTMIN+10 i3blocks # Mute Mic
+
+# Screen brightness controls
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10 # decrease screen brightness
+
+# Spotify Commands
+bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
+
+#Hide title bar and remove borders
+# for_window [class="^.*"] border pixel 0
+new_window 1pixel
 
 # Auto Start Applications
 exec --no-startup-id nm-applet # Wifi control in the status bar
@@ -78,7 +90,7 @@ bindsym $mod+Shift+j move down 40px
 bindsym $mod+Shift+k move up 40px
 bindsym $mod+Shift+l move right 40px
 
-# Moving workspaces
+# moving workspaces between monitors
 bindsym $mod+Ctrl+h move workspace to output left
 bindsym $mod+Ctrl+j move workspace to output down
 bindsym $mod+Ctrl+k move workspace to output up
@@ -90,7 +102,6 @@ bindsym $mod+Shift+Tab workspace prev
 # Just use mod+e to toggle layout
 
 # split in horizontal orientation
-# I am using n because h is taken already and n is oposite on the keyboard
 bindsym $mod+Shift+v split h
 # split in vertical orientation
 bindsym $mod+v split v
@@ -108,6 +119,7 @@ bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
+
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -183,16 +195,3 @@ bar {
     urgent_workspace #222222 #eb709b #eb709b
   }
 }
-
-# Screen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10 # increase screen brightness
-bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10 # decrease screen brightness
-
-# Spotify Commands
-bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
-bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
-bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
-
-#Hide title bar and remove borders
-# for_window [class="^.*"] border pixel 0
-new_window 1pixel

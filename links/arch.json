@@ -58,5 +58,14 @@
   {
     "source": "common/config/dunstrc",
     "target": "~/.config/dunst/dunstrc"
+  },
+  {
+    "source": "common/config/rofi.config",
+    "target": "~/.config/rofi/config.rasi"
+  },
+  {
+    "source": "common/rofi-scripts",
+    "target": "/usr/local/bin/",
+    "type": "dir"
   }
 ]

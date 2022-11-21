@@ -1,10 +1,15 @@
+#! /bin/sh
+
 # This file contains envrionment variable sthat depend on the Operating System
 # This includes things like the path, the editor, and the terminal emulator
-
 
 # OWL
 export OWL_PATH="/home/tylord/owl"
 export OWL_DEFAULT_LINK="/home/tylord/owl/links/arch.json"
+
+# DEV
+export DEV_PATH="/home/tylord/dev"
+
 
 source "$OWL_PATH/common/config/.shenv"
 
