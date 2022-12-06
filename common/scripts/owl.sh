@@ -14,7 +14,7 @@ fi
 # Install dependencies
 
 # Install fzf
-if ! command -v fzf &> /dev/null; then
+if ! command -v fzf 2>&1 /dev/null; then
 	echo "Fzf isn't installed. Would you like to install? (y)"
 	read answer
 	if [ "$answer" = "y" ]; then
@@ -27,7 +27,7 @@ if ! command -v fzf &> /dev/null; then
 fi
 
 # Install jq
-if ! command -v jq &> /dev/null; then
+if ! command -v jq 2>&1 /dev/null; then
 	echo "jq isn't installed. Would you like to install? (y)"
 	read answer
 	if [ "$answer" = "y" ]; then

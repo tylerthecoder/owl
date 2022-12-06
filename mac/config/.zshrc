@@ -45,3 +45,5 @@ COMPLETION_WAITING_DOTS="true"
 
 
 source <(kubectl completion zsh)
+
+eval "$(atuin init zsh)"
