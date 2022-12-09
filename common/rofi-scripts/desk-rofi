@@ -1,9 +1,12 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-	ls ~/.desks/
+# Set desk dir
+DIR=~/.config/desks
+
+if [ -z $1 ]; then
+	ls $DIR
 else
-	[ -x ~/.desks/$1 ] && bash ~/.desks/$1
+	[ -x $DIR/$1 ] && bash $DIR/$1
 fi
 
 exit 0

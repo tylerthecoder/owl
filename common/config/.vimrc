@@ -95,7 +95,7 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 
 " =========== Auto commands ===============
 autocmd BufWritePost *.Xresources  !command xrdb <afile>
-autocmd BufWritePost ~/help.md  !command pandoc -s <afile> -o ~/personal/documents/help.pdf
+autocmd BufWritePost ~/help.md  !command pandoc -s <afile> -o ~/docs/help.pdf
 
 " ============ Navigation ===============
 nmap <C-h> <C-w>h

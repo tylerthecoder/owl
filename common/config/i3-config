@@ -18,19 +18,27 @@ bindsym $mod+Shift+Return exec st -t "Floating ST"
 bindsym $mod+b exec "$BROWSER"
 bindsym $mod+z exec gnome-control-center
 bindsym $mod+a exec pavucontrol
+
+# Launch Rofi
+bindsym $mod+p exec rofi -show combi
+
+# Rofi desk select
+bindsym $mod+Shift+d exec rofi -show Desk
+
 # Rofi clipboard manager
 bindsym $mod+c exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
+
+# Rofi emoji select
+bindsym $mod+i exec rofi -modi emoji -show emoji
 
 bindsym $mod+Shift+s exec --no-startup-id spellHelper.sh
 # Screen shot commands
 bindsym Print exec maim -s | tee ~/img/$(date +%s).png | xclip -selection clipboard -t image/png
-bindsym Control+Print exec gnome-screenshot -i
+# bindsym Control+Print exec gnome-screenshot -i
 bindsym $mod+Ctrl+s exec screen-lock.sh # Put computer to sleep
-bindsym $mod+F1 exec evince ~/personal/documents/help.pdf
+bindsym $mod+F1 exec evince ~/docs/help.pdf
+bindsym Control+space exec dunstctl close
 
-# Launch Scripts
-bindsym $mod+Shift+d exec choose-hardware-conf.sh
-bindsym $mod+p exec rofi -show combi
 
 # Put things where I want them
 for_window [window_role=floating] floating enable
@@ -183,6 +191,7 @@ bar {
   position top
   status_command i3blocks
   font pango: SourceCodePro Bold 16px
+  tray_output DP-1
 
   # Colors (border, background, text)
   colors {

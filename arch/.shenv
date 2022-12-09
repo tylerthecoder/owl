@@ -16,3 +16,7 @@ source "$OWL_PATH/common/config/.shenv"
 # Load Alias
 [ -f "~/.config/alias/main" ] && source ~/.config/alias/main
 [ -f "~/.config/alias/git" ] && source ~/.config/alias/git
+
+# Use nvm
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

@@ -67,5 +67,10 @@
     "source": "common/rofi-scripts",
     "target": "/usr/local/bin/",
     "type": "dir"
+  },
+  {
+    "source": "common/desks",
+    "target": "~/.config/desks",
+    "type": "dir"
   }
 ]
