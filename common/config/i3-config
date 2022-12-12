@@ -18,6 +18,7 @@ bindsym $mod+Shift+Return exec st -t "Floating ST"
 bindsym $mod+b exec "$BROWSER"
 bindsym $mod+z exec gnome-control-center
 bindsym $mod+a exec pavucontrol
+bindsym $mod+g exec pcmanfm
 
 # Launch Rofi
 bindsym $mod+p exec rofi -show combi
@@ -191,7 +192,6 @@ bar {
   position top
   status_command i3blocks
   font pango: SourceCodePro Bold 16px
-  tray_output DP-1
 
   # Colors (border, background, text)
   colors {
