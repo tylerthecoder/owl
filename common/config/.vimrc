@@ -42,7 +42,6 @@ let &t_te.="\<Esc>[0 q"
 
 syntax on
 filetype plugin indent on
-" colorscheme dracula
 
 set nocompatible              " be iMproved, required
 set viminfo+=n~/.vim/viminfo " Move the vim info file to a more sensable location
@@ -71,8 +70,8 @@ set hidden " Allow buffers to be hidden
 set t_Co=256
 set cursorline
 
-colorscheme onedark
-let g:airline_theme='onedark'
+let g:airline_theme='dracula'
+colorscheme dracula
 
 " 'True' colors
 if exists('+termguicolors')

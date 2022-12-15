@@ -72,5 +72,9 @@
     "source": "common/desks",
     "target": "~/.config/desks",
     "type": "dir"
+  },
+  {
+    "source": "common/config/zathurarc",
+    "target": "~/.config/zathura/zathurarc"
   }
 ]
