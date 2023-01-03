@@ -17,7 +17,7 @@
   },
   {
     "source": "home-pi/nginx.conf",
-    "target": "/etc/ngnix/nginx.conf"
+    "target": "/etc/nginx/nginx.conf"
   },
   {
     "source": "common/scripts/owl.sh",
