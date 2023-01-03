@@ -12,6 +12,10 @@
     "target": "~/.vimrc"
   },
   {
+    "source": "common/config/.Xresources",
+    "target": "~/.config/X/.Xresources"
+  },
+  {
     "source": "common/config/starship.toml",
     "target": "~/.config/starship.toml"
   },
@@ -50,5 +54,27 @@
   {
     "source": "common/config/ssh-config",
     "target": ".ssh/config"
+  },
+  {
+    "source": "common/config/dunstrc",
+    "target": "~/.config/dunst/dunstrc"
+  },
+  {
+    "source": "common/config/rofi.config",
+    "target": "~/.config/rofi/config.rasi"
+  },
+  {
+    "source": "common/rofi-scripts",
+    "target": "/usr/local/bin/",
+    "type": "dir"
+  },
+  {
+    "source": "common/desks",
+    "target": "~/.config/desks",
+    "type": "dir"
+  },
+  {
+    "source": "common/config/zathurarc",
+    "target": "~/.config/zathura/zathurarc"
   }
 ]

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-target=$(ls ~/.desks | \
+target=$(ls ~/.config/desks | \
         fzf --height=30 --layout=reverse --prompt="Select Desk: ")
 
 echo "$target"

@@ -21,7 +21,7 @@ ADDR=$(ip route get 1 | awk '{print $7; exit}')
 
 #------------------------------------------------------------------------
 
-echo "$SSID: $ADDR" # full text
-echo "$SSID: $ADDR" # short text
+echo " $ADDR" # full text
+echo " $ADDR" # short text
 echo "#00FF00" # color
 

@@ -11,16 +11,16 @@
 		"source": "common/config/gitconfig",
 		"target": "~/.gitconfig"
 	},
-  {
-    "source": "mac/config/.zprofile",
-    "target": "~/.zprofile"
-  },
-  {
-    "source": "mac/config/.zshrc",
-    "target": "~/.zshrc"
-  },
-  {
-    "source": "mac/config/aliases",
-    "target": "~/.config/.aliases"
-  }
+	{
+		"source": "mac/config/.zprofile",
+		"target": "~/.zprofile"
+	},
+	{
+		"source": "mac/config/.zshrc",
+		"target": "~/.zshrc"
+	},
+	{
+		"source": "mac/config/aliases",
+		"target": "~/.config/.aliases"
+	}
 ]

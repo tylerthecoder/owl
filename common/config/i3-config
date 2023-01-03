@@ -12,26 +12,34 @@ bindsym $mod+Shift+q kill
 bindsym $mod+q kill
 
 # Launch Applications
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+d exec "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'monospace-10' -p 'dmenu%'"
 bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+Return exec st -t "Floating ST"
 bindsym $mod+b exec "$BROWSER"
 bindsym $mod+z exec gnome-control-center
 bindsym $mod+a exec pavucontrol
+bindsym $mod+g exec pcmanfm
+
+# Launch Rofi
+bindsym $mod+p exec rofi -show combi
+
+# Rofi desk select
+bindsym $mod+Shift+d exec rofi -show Desk
+
 # Rofi clipboard manager
 bindsym $mod+c exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
+
+# Rofi emoji select
+bindsym $mod+i exec rofi -modi emoji -show emoji
 
 bindsym $mod+Shift+s exec --no-startup-id spellHelper.sh
 # Screen shot commands
 bindsym Print exec maim -s | tee ~/img/$(date +%s).png | xclip -selection clipboard -t image/png
-bindsym Control+Print exec gnome-screenshot -i
+# bindsym Control+Print exec gnome-screenshot -i
 bindsym $mod+Ctrl+s exec screen-lock.sh # Put computer to sleep
-bindsym $mod+F1 exec evince ~/personal/documents/help.pdf
+bindsym $mod+F1 exec zathura ~/docs/help.pdf
+bindsym Control+space exec dunstctl close
 
-
-# Launch Scripts
-bindsym $mod+Shift+d exec choose-hardware-conf.sh
-bindsym $mod+p exec rofi -show combi
 
 # Put things where I want them
 for_window [window_role=floating] floating enable
@@ -47,6 +55,19 @@ bindsym XF86AudioLowerVolume exec amixer -D pulse sset Master 5%- && pkill -RTMI
 bindsym XF86AudioMute exec amixer -D pulse set Master Playback Switch toggle && pkill -RTMIN+10 i3blocks
 bindsym $mod+m exec amixer -D pulse set Master Playback Switch toggle && pkill -RTMIN+10 i3blocks # Mute Sound
 bindsym $mod+Shift+m exec amixer set Capture toggle && pkill -RTMIN+10 i3blocks # Mute Mic
+
+# Screen brightness controls
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10 # decrease screen brightness
+
+# Spotify Commands
+bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
+
+#Hide title bar and remove borders
+# for_window [class="^.*"] border pixel 0
+new_window 1pixel
 
 # Auto Start Applications
 exec --no-startup-id nm-applet # Wifi control in the status bar
@@ -78,7 +99,7 @@ bindsym $mod+Shift+j move down 40px
 bindsym $mod+Shift+k move up 40px
 bindsym $mod+Shift+l move right 40px
 
-# Moving workspaces
+# moving workspaces between monitors
 bindsym $mod+Ctrl+h move workspace to output left
 bindsym $mod+Ctrl+j move workspace to output down
 bindsym $mod+Ctrl+k move workspace to output up
@@ -87,10 +108,10 @@ bindsym $mod+Ctrl+l move workspace to output right
 bindsym $mod+Tab workspace next
 bindsym $mod+Shift+Tab workspace prev
 
-# split in horizontal orientation
-# I am using n because h is taken already and n is oposite on the keyboard
-bindsym $mod+n split h
+# Just use mod+e to toggle layout
 
+# split in horizontal orientation
+bindsym $mod+Shift+v split h
 # split in vertical orientation
 bindsym $mod+v split v
 
@@ -98,7 +119,7 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-# bindsym $mod+s layout stacking
+bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
@@ -107,6 +128,7 @@ bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
+
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -132,13 +154,23 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+
+# Colors
+# class                 border  bground text    indicator child_border
+client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+
+client.background       #F8F8F2
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -168,19 +200,21 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar (using i3blocks)
 bar {
-        status_command i3blocks
-        font pango: DejaVu Sans Mono 12
+  position top
+  status_command i3blocks
+  font pango: SourceCodePro Bold 16px
+
+  # Colors (border, background, text)
+  # Dracula theme
+  colors {
+    background #282A36
+    statusline #F8F8F2
+    separator  #44475A
+
+    focused_workspace  #44475A #44475A #F8F8F2
+    active_workspace   #282A36 #44475A #F8F8F2
+    inactive_workspace #282A36 #282A36 #BFBFBF
+    urgent_workspace   #FF5555 #FF5555 #F8F8F2
+    binding_mode       #FF5555 #FF5555 #F8F8F2
+  }
 }
-
-# Screen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10 # increase screen brightness
-bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10 # decrease screen brightness
-
-# Spotify Commands
-bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
-bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
-bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
-
-#Hide title bar and remove borders
-# for_window [class="^.*"] border pixel 0
-new_window 1pixel

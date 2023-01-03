@@ -29,7 +29,26 @@ function link_file() {
   target="${target/#\~/$HOME}"
 
   # Append owl path to end of target
+
   source="$OWL_PATH/$source"
+
+  # make the target path if not exist
+  sudo mkdir -p $(dirname "$target")
+	wd=$(pwd)
+
+	echo "Linking $source to $target"
+
+	sudo ln -f "$source" "$target"
+}
+
+function link_file_no_owl() {
+	local source="$1"
+	local target="$2"
+
+  # Expand tildes
+  source="${source/#\~/$HOME}"
+  target="${target/#\~/$HOME}"
+
 
   # make the target path if not exist
   sudo mkdir -p $(dirname "$target")
@@ -44,6 +63,10 @@ function link_dir() {
 	local context="$1"
 	local target="$2"
 
+  # Expand tildes
+  context="${context/#\~/$HOME}"
+  target="${target/#\~/$HOME}"
+
   # Append owl path to end of target
   context="$OWL_PATH/$context"
 
@@ -51,11 +74,14 @@ function link_dir() {
 
 	mkdir -p "$target"
 
-	cd $context || exit
+	cd "$context" || exit
 
 	# find all files in directory
 	for f in $(find * -type f); do
-		link_file "$f" "$target/$f"
+    s="$context/$f"
+    t="$target/$f"
+    echo "Linking $s to $t"
+    sudo ln -f "$s" "$t"
 	done
 
   go_home
