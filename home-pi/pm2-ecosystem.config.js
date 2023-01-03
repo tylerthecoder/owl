@@ -12,7 +12,8 @@ module.exports = {
         "SPOTIFY_REDIRECT_URL": "http://localhost:6006/me/spotify-callback",
         "DB_URI": "mongodb+srv://admin:admin@cluster0-aligf.mongodb.net/devices?retryWrites=true",
         "HUE_URL": "http://192.168.1.183/api/aHJTvyHPP-Y6oANR3nVfZxRjX92lG0R-HcJso2KJ",
-        "PORT": 3000
+        "PORT": 3000,
+        "BLOG_DIRECTORY": "/home/pi/Mind"
       }
     },
     {

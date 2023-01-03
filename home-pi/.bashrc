@@ -94,6 +94,8 @@ fi
 
 export PATH="$(yarn global bin):$PATH"
 
+alias s='sudo systemctl'
+
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
