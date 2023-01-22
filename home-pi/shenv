@@ -1,0 +1,3 @@
+export OWL_PATH=/home/pi/owl
+export OWL_DEFAULT_LINK=/home/pi/owl/links/home-pi.json
+export PATH="$(yarn global bin):$PATH" 

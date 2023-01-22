@@ -7,6 +7,10 @@
 		"source": "home-pi/.profile",
 		"target": "~/.profile"
 	},
+  {
+		"source": "home-pi/shenv",
+		"target": "~/.shenv"
+	},
 	{
 		"source": "common/config/.bashrc",
 		"target": "~/.bashrc"
@@ -22,5 +26,9 @@
   {
     "source": "common/scripts/owl.sh",
     "target": "/usr/local/bin/owl"
+  },
+  {
+    "source": "common/config/.zshrc",
+    "target": "~/.config/zsh/.zshrc"
   }
 ]

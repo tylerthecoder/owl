@@ -1,4 +1,3 @@
-
 # Add yarn global to path
 PATH="$HOME/.yarn/bin:$PATH"
 
