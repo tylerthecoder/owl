@@ -7,6 +7,10 @@ font pango:Terminus 12px
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
+# Hide title bar and remove borders
+# for_window [class="^.*"] border pixel 0
+new_window 1pixel
+
 # kill focused window
 bindsym $mod+Shift+q kill
 bindsym $mod+q kill
@@ -38,7 +42,10 @@ bindsym Print exec maim -s | tee ~/img/$(date +%s).png | xclip -selection clipbo
 # bindsym Control+Print exec gnome-screenshot -i
 bindsym $mod+Ctrl+s exec screen-lock.sh # Put computer to sleep
 bindsym $mod+F1 exec zathura ~/docs/help.pdf
-bindsym Control+space exec dunstctl close
+
+# Disabling for not since it conflicts with vscode key binding 
+# TODO: Figure out how to have this only work when a dunst message is visible
+# bindsym Control+space exec dunstctl close
 
 
 # Put things where I want them
@@ -65,9 +72,6 @@ bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpri
 bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
 bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
 
-#Hide title bar and remove borders
-# for_window [class="^.*"] border pixel 0
-new_window 1pixel
 
 # Auto Start Applications
 exec --no-startup-id nm-applet # Wifi control in the status bar

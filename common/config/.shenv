@@ -14,6 +14,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DOWNLOAD_DIR="$HOME/downloads"
 
 # All things added to path
+export PATH="$(yarn global bin):$PATH"
 export PATH="$HOME/.local/bin:$PATH" # Personal bin
 export PATH="$XDG_DATA_HOME/npm/bin:$PATH" # Add npm to path
 export PATH="/var/lib/snapd/snap/bin:$PATH" # I don't want to have to do this but the world is working against me
