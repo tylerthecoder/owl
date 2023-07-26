@@ -34,5 +34,9 @@
   {
     "source": "common/config/.zshrc",
     "target": "~/.zshrc"
+  },
+  {
+    "source": "setups/zathura/zathurarc",
+    "target": "~/.config/zathura/zathurarc"
   }
 ]
