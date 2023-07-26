@@ -12,8 +12,6 @@ sudo pacman -Sy ranger highlight
 
 
 sudo pacman -Sy zsh zsh-completions zsh-syntax-highlighting
-mkdir ~/.cache/zsh
-
 
 #Install dev packages
 sudo pacman -Sy nodejs npm

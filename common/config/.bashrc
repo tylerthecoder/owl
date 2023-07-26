@@ -2,20 +2,14 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-# Set path for yarn global
-export PATH="$(yarn global bin):$PATH" 
 
-
+source ~/.shenv
 
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
-
-# Load Alias
-[ -f "~/.config/alias/main" ] && source ~/.config/alias/main
-[ -f "~/.config/alias/git" ] && source ~/.config/alias/git
 
 
 shopt -s histappend # append to the history file, don't overwrite it

@@ -3,8 +3,6 @@
 # This is the first script that is run,
 # Assume nothing is availible yet
 
-echo "$OWL_PATH"
-
 # Get owl path if not set
 if [ -z "$OWL_PATH" ]; then
 	echo "Enter the path to your owl installation: "
@@ -56,7 +54,8 @@ case $1 in
     ;;
 
 	"add")
-		bash "$OWL_PATH/common/scripts/owl-add.sh"
+		shift
+		. $OWL_PATH/common/scripts/owl-add.sh "$@"
 		;;
 
 	"go")

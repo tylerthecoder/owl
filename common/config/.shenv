@@ -4,15 +4,6 @@ echo "Welcome Tylord: "
 
 # This file is shared across all OSs, put OS specific stuff in .profile
 
-# My personal directories
-export DEV_FOLDER="$HOME/dev"
-
-# Set XDG variables
-export XDG_CONFIG_HOME="$HOME/.config/"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DOWNLOAD_DIR="$HOME/downloads"
-
 # All things added to path
 export PATH="$(yarn global bin):$PATH"
 export PATH="$HOME/.local/bin:$PATH" # Personal bin

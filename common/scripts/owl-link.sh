@@ -2,7 +2,7 @@
 target="$OWL_DEFAULT_LINK"
 if [ -z "$target" ]; then
   if command -v fzf; then
-    target=$(ls "$OWL_PATH/links" | fzf --height=30 --layout=reverse --prompt="Select target: ")
+    target=$(ls "$OWL_PATH/**/link.json" | fzf --height=30 --layout=reverse --prompt="Select target: ")
     target="$OWL_PATH/links/$target"
   else
     echo "Enter the target: "

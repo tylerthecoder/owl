@@ -11,22 +11,18 @@ if [ -z "$target" ]; then
   fi
 fi
 
+echo "$1 to $2"
+
 # Used to add a file to the owl tracking system
-file_to_add=$(readlink -f "$1")
+source=$(readlink -f "$1")
+dest="$2"
 
-# Replace $HOME with ~/
-# [[ "$file_to_add" =~ ^"$HOME"(/|$) ]] && name="~${file_to_add#$HOME}"
+# Remove owl path from source
+source=${source#$OWL_PATH/}
 
+echo "Adding owl link: $source --> $dest"
 
-# ask user where to add the file in owl
-echo "Enter the path to add the file to: "
-echo "$OWL_PATH/"
-read path
-
-# add the file to the owl tracking system
-mv "$file_to_add" "$OWL_PATH/$path"
-
-NEW_JSON=$(cat "$target" | jq ". += [{ \"source\": \"$path\", \"target\": \"$file_to_add\" }]")
+NEW_JSON=$(cat "$target" | jq ". += [{ \"source\": \"$source\", \"target\": \"$dest\" }]")
 
 echo "$target $NEW_JSON"
 

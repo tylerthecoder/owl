@@ -19,7 +19,7 @@ call plug#begin()
   Plug 'junegunn/fzf' " Fuzzy find files
   Plug 'junegunn/fzf.vim' " Fuzzy find files
   Plug 'github/copilot.vim' " AI coder
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  " Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'vim-airline/vim-airline' " Status bar
   Plug 'tpope/vim-fugitive' " Git support
@@ -114,17 +114,17 @@ nmap gl :bnext<CR> " Move to the next buffer
 nmap <leader>bq :bp <BAR> bd #<CR> " Close the current buffer and move to the previous one
 
 " Easy system copy paste
-noremap <A-c> "+y 
+noremap <A-c> "+y
 noremap <A-v> "+p
-imenu disable Help 
+imenu disable Help
 
 " Javascript folding
-set foldmethod=syntax "syntax highlighting items specify folds  
-" set foldcolumn=1 "defines 1 col at window left, to indicate folding  
-let javaScript_fold=1 "activate folding by JS syntax  
+set foldmethod=syntax "syntax highlighting items specify folds
+" set foldcolumn=1 "defines 1 col at window left, to indicate folding
+let javaScript_fold=1 "activate folding by JS syntax
 set foldlevelstart=99 "start file with all folds opened
 
-" Nerd tree 
+" Nerd tree
 nnoremap <C-n> :NERDTree<CR>
 " Find current file in nerdtree
 nmap ,n :NERDTreeFind<CR>
@@ -141,77 +141,77 @@ let g:startify_bookmarks = [ {'c': '~/.vim/vimrc'}, { 'n': '~/notes'}, {'o': '~/
 
 " ========= Language Server ===============
 
-let g:coc_global_extensions = [
-  \ 'coc-tsserver',
-  \ 'coc-eslint',
-  \ 'coc-tailwindcss',
-  \ 'coc-prettier'
-  \ ]
+" let g:coc_global_extensions = [
+"   \ 'coc-tsserver',
+"   \ 'coc-eslint',
+"   \ 'coc-tailwindcss',
+"   \ 'coc-prettier'
+"   \ ]
 
 " Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+" if has('nvim')
+"   inoremap <silent><expr> <c-space> coc#refresh()
+" else
+"   inoremap <silent><expr> <c-@> coc#refresh()
+" endif
 
-" Enter to accept coc option
-inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+" " Enter to accept coc option
+" inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 " coc goto code navigation
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gD :call CocAction('jumpDefinition', 'vsplit')<CR>
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gD :call CocAction('jumpDefinition', 'vsplit')<CR>
+" nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> gr <Plug>(coc-references)
 
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+" " Use `[g` and `]g` to navigate diagnostics
+" " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+" nmap <silent> [g <Plug>(coc-diagnostic-prev)
+" nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" Rename symbol under cursor.
-nmap <leader>rn <Plug>(coc-rename)
+" " Rename symbol under cursor.
+" nmap <leader>rn <Plug>(coc-rename)
 
-" Applying codeAction to the selected region.
-" Example: `<leader>aw` for current word
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-" Run the Code Lens action on the current line.
-nmap <leader>cl  <Plug>(coc-codelens-action)
+" " Applying codeAction to the selected region.
+" " Example: `<leader>aw` for current word
+" xmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
+" " Run the Code Lens action on the current line.
+" nmap <leader>cl  <Plug>(coc-codelens-action)
 
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+" " Apply AutoFix to problem on the current line.
+" nmap <leader>qf  <Plug>(coc-fix-current)
 
-function! ShowDocIfNoDiagnostic(timer_id)
-  if (coc#float#has_float() == 0 && CocHasProvider('hover') == 1)
-    silent call CocActionAsync('doHover')
-  endif
-endfunction
+" function! ShowDocIfNoDiagnostic(timer_id)
+"   if (coc#float#has_float() == 0 && CocHasProvider('hover') == 1)
+"     silent call CocActionAsync('doHover')
+"   endif
+" endfunction
 
-function! s:show_hover_doc()
-  call timer_start(500, 'ShowDocIfNoDiagnostic')
-endfunction
+" function! s:show_hover_doc()
+"   call timer_start(500, 'ShowDocIfNoDiagnostic')
+" endfunction
 
-autocmd CursorHoldI * :call <SID>show_hover_doc()
-autocmd CursorHold * :call <SID>show_hover_doc()
+" autocmd CursorHoldI * :call <SID>show_hover_doc()
+" autocmd CursorHold * :call <SID>show_hover_doc()
 
 " Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Use K to show documentation in preview window.
-nnoremap <silent> K :call ShowDocumentation()<CR>
+" nnoremap <silent> K :call ShowDocumentation()<CR>
 
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
+" function! ShowDocumentation()
+"   if CocAction('hasProvider', 'hover')
+"     call CocActionAsync('doHover')
+"   else
+"     call feedkeys('K', 'in')
+"   endif
+" endfunction
 
 " Latex config
-let g:vimtex_compiler_latexmk = { 'build_dir' : 'out' }
-
-
+let g:vimtex_compiler_latexmk = { 'out_dir' : 'out' }
+let g:vimtex_view_method = 'zathura'
+autocmd FileType tex execute 'silent !mkdir -p out'
 

@@ -5,12 +5,11 @@
 
 # OWL
 export OWL_PATH="/home/tylord/owl"
-export OWL_DEFAULT_LINK="/home/tylord/owl/links/arch.json"
+export OWL_DEFAULT_LINK="/home/tylord/owl/comps/framework-arch/link.json"
+export OWL_SHENV_PATH="/home/tylord/owl/comps/framework-arch/.shenv"
 
 # DEV
 export DEV_PATH="/home/tylord/dev"
-
-source "$OWL_PATH/common/config/.shenv"
 
 # Load Alias
 [ -f "~/.config/alias/main" ] && source ~/.config/alias/main
@@ -18,4 +17,10 @@ source "$OWL_PATH/common/config/.shenv"
 
 # Use nvm
 export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Set XDG variables
+export XDG_CONFIG_HOME="$HOME/.config/"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DOWNLOAD_DIR="$HOME/downloads"
