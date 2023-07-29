@@ -38,5 +38,9 @@
   {
     "source": "setups/zathura/zathurarc",
     "target": "~/.config/zathura/zathurarc"
+  },
+  {
+    "source": "common/config/terminator.config",
+    "target": ".config/terminator/config"
   }
 ]

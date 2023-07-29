@@ -23,9 +23,11 @@ export NVM_DIR="$HOME/.config/nvm"
 export XDG_CONFIG_HOME="$HOME/.config/"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DOWNLOAD_DIR="$HOME/downloads"
 
 # Lean
 export PATH="$HOME/.elan/bin:$PATH"
+
+# Node
+source /usr/share/nvm/init-nvm.sh
 
 
