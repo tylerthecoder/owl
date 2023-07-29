@@ -44,6 +44,10 @@
     "target": ".config/terminator/config"
   },
   {
+    "source": "common/config/rc.conf",
+    "target": ".config/ranger/rc.conf"
+  },
+  {
     "source": "secrets.sh",
     "target": ".secrets"
   }

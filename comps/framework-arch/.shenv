@@ -11,17 +11,15 @@ export OWL_SHENV_PATH="/home/tylord/owl/comps/framework-arch/.shenv"
 # DEV
 export DEV_PATH="/home/tylord/dev"
 
+# Programs
+export EDITOR="vim"
+
 # Load Alias
 [ -f "~/.config/alias/main" ] && source ~/.config/alias/main
 [ -f "~/.config/alias/git" ] && source ~/.config/alias/git
 
 # Secrets
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
-
-# Set XDG variables
-export XDG_CONFIG_HOME="$HOME/.config/"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
 
 # Lean
 export PATH="$HOME/.elan/bin:$PATH"
@@ -30,5 +28,4 @@ export PATH="$HOME/.elan/bin:$PATH"
 source /usr/share/nvm/init-nvm.sh
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
 
