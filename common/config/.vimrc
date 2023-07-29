@@ -116,7 +116,7 @@ nmap <leader>bq :bp <BAR> bd #<CR> " Close the current buffer and move to the pr
 " Easy system copy paste
 noremap <A-c> "+y
 noremap <A-v> "+p
-imenu disable Help
+" imenu disable Help
 
 " Javascript folding
 set foldmethod=syntax "syntax highlighting items specify folds

@@ -25,11 +25,11 @@
   },
   {
     "source": "common/config/.alias",
-    "target": "~/.config/.alias/main"
+    "target": "~/.config/alias/main"
   },
   {
     "source": "common/config/.alias-git",
-    "target": "~/.config/.alias/git"
+    "target": "~/.config/alias/git"
   },
   {
     "source": "common/config/.zshrc",
