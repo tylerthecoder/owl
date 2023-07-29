@@ -1,3 +1,2 @@
 
-sudo pacman -Sy ranger highlight bat
-
+sudo pacman -Sy ranger highlight bat xclip

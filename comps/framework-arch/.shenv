@@ -15,9 +15,8 @@ export DEV_PATH="/home/tylord/dev"
 [ -f "~/.config/alias/main" ] && source ~/.config/alias/main
 [ -f "~/.config/alias/git" ] && source ~/.config/alias/git
 
-# Use nvm
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# Secrets
+[ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
 
 # Set XDG variables
 export XDG_CONFIG_HOME="$HOME/.config/"
@@ -29,5 +28,7 @@ export PATH="$HOME/.elan/bin:$PATH"
 
 # Node
 source /usr/share/nvm/init-nvm.sh
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 

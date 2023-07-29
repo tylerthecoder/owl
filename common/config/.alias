@@ -17,8 +17,5 @@ alias plz="sudo"
 alias c="xclip -selection clipboard"
 alias v="xclip -o"
 alias wget="wget --hsts-file /dev/null"
-alias ec="edit-config"
 alias cg="cd ~/.config"
 alias srv="sudo systemctl"
-
-alias homepi="ssh pi@192.168.1.203"

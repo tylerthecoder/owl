@@ -1,5 +1,6 @@
 #! /bin/bash
 target="$OWL_DEFAULT_LINK"
+
 if [ -z "$target" ]; then
   if command -v fzf; then
     target=$(ls "$OWL_PATH/**/link.json" | fzf --height=30 --layout=reverse --prompt="Select target: ")
@@ -29,16 +30,15 @@ function link_file() {
   target="${target/#\~/$HOME}"
 
   # Append owl path to end of target
-
   source="$OWL_PATH/$source"
 
   # make the target path if not exist
-  sudo mkdir -p $(dirname "$target")
-	wd=$(pwd)
+  mkdir -p $(dirname "$target")
+  wd=$(pwd)
 
-	echo "Linking $source to $target"
+  echo "Linking $source to $target"
 
-	sudo ln -f "$source" "$target"
+  ln -f "$source" "$target"
 }
 
 function link_file_no_owl() {

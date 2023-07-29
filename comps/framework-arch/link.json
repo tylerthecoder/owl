@@ -42,5 +42,9 @@
   {
     "source": "common/config/terminator.config",
     "target": ".config/terminator/config"
+  },
+  {
+    "source": "secrets.sh",
+    "target": ".secrets"
   }
 ]
