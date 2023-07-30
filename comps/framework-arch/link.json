@@ -1,15 +1,11 @@
 [
   {
     "source": "common/scripts/owl.sh",
-    "target": "/usr/local/bin/owl"
+    "target": ".local/bin/owl"
   },
   {
     "source": "common/config/.vimrc",
     "target": "~/.vimrc"
-  },
-  {
-    "source": "common/config/starship.toml",
-    "target": "~/.config/starship.toml"
   },
   {
     "source": "common/config/.bashrc",

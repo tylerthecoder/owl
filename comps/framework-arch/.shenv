@@ -3,6 +3,7 @@
 # This file contains envrionment variable sthat depend on the Operating System
 # This includes things like the path, the editor, and the terminal emulator
 
+
 # OWL
 export OWL_PATH="/home/tylord/owl"
 export OWL_DEFAULT_LINK="/home/tylord/owl/comps/framework-arch/link.json"
@@ -13,6 +14,10 @@ export DEV_PATH="/home/tylord/dev"
 
 # Programs
 export EDITOR="vim"
+export TERMINAL_EXEC="terminator -e"
+
+# Local bin
+export PATH="$HOME/.local/bin:$PATH"
 
 # Load Alias
 [ -f "~/.config/alias/main" ] && source ~/.config/alias/main
