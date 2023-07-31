@@ -1,7 +1,7 @@
 [
   {
     "source": "common/scripts/owl.sh",
-    "target": ".local/bin/owl"
+    "target": "~/.local/bin/owl"
   },
   {
     "source": "common/config/.vimrc",
@@ -37,14 +37,18 @@
   },
   {
     "source": "common/config/terminator.config",
-    "target": ".config/terminator/config"
+    "target": "~/.config/terminator/config"
   },
   {
     "source": "common/config/rc.conf",
-    "target": ".config/ranger/rc.conf"
+    "target": "~/.config/ranger/rc.conf"
   },
   {
     "source": "secrets.sh",
-    "target": ".secrets"
+    "target": "~/.secrets"
+  },
+  {
+    "source": "common/config/gitconfig",
+    "target": "~/.config/git/config"
   }
 ]

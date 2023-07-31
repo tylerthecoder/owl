@@ -5,6 +5,9 @@
 
 source ~/.shenv
 
+# Move history file
+export HISTFILE="${XDG_STATE_HOME}"/bash/history
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;

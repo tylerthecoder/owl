@@ -1,0 +1,17 @@
+
+# Owl
+export OWL_PATH=/home/pi/owl
+export OWL_DEFAULT_LINK=$OWL_PATH/comps/.json
+
+# Local bin
+export PATH="$HOME/.local/bin:$PATH"
+
+# Programs
+export EDITOR="vim"
+
+# Yarn
+export PATH="$(yarn global bin):$PATH"
+
+# Load Alias
+[ -f "~/.config/alias/main" ] && source ~/.config/alias/main
+[ -f "~/.config/alias/git" ] && source ~/.config/alias/git

@@ -92,7 +92,6 @@ fi
 #alias la='ls -A'
 #alias l='ls -CF'
 
-export PATH="$(yarn global bin):$PATH"
 
 alias s='sudo systemctl'
 

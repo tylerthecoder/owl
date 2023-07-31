@@ -17,4 +17,4 @@ xdg-user-dirs-update --set TEMPLATES $HOME/documents/templates
 xdg-user-dirs-update --set MUSIC $HOME/media/music
 xdg-user-dirs-update --set VIDEOS $HOME/media/videos
 xdg-user-dirs-update --set PICTURES $HOME/media/imgs
-
+xdg-user-dirs-update --set STATE $HOME/.local/state

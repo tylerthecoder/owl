@@ -1,0 +1,18 @@
+[
+  {
+    "source": "common/scripts/owl.sh",
+    "target": "~/.local/bin/owl"
+  },
+  {
+    "source": "common/config/.vimrc",
+    "target": "~/.vimrc"
+  },
+  {
+    "source": "common/config/.alias",
+    "target": "~/.config/alias/main"
+  },
+  {
+    "source": "common/config/.alias-git",
+    "target": "~/.config/alias/git"
+  }
+ ]
