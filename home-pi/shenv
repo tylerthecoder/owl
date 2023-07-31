@@ -1,4 +1,0 @@
-export OWL_PATH=/root/owl
-export OWL_DEFAULT_LINK=$OWL_PATH/comps/ubuntu-server/home-pi.json
-export PATH="$(yarn global bin):$PATH"
-
