@@ -1,7 +1,6 @@
-
 # Owl
-export OWL_PATH=/home/pi/owl
-export OWL_DEFAULT_LINK=$OWL_PATH/comps/.json
+export OWL_PATH=/root/owl
+export OWL_DEFAULT_LINK=$OWL_PATH/comps/ubuntu-server/link.json
 
 # Local bin
 export PATH="$HOME/.local/bin:$PATH"
@@ -9,8 +8,12 @@ export PATH="$HOME/.local/bin:$PATH"
 # Programs
 export EDITOR="vim"
 
-# Yarn
-export PATH="$(yarn global bin):$PATH"
+# Node
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# Rust
+. "$HOME/.cargo/env"
 
 # Load Alias
 [ -f "~/.config/alias/main" ] && source ~/.config/alias/main
