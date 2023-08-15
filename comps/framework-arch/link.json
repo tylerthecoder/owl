@@ -50,5 +50,17 @@
   {
     "source": "common/config/gitconfig",
     "target": "~/.config/git/config"
+  },
+  {
+    "source": "setups/i3/i3-config",
+    "target": "~/.config/i3/config"
+  },
+  {
+    "source": "setups/i3/i3blocks-config",
+    "target": "~/.config/i3blocks/config"
+  },
+  {
+    "source": "setups/rofi/config.rasi",
+    "target": "~/.config/rofi/config.rasi"
   }
 ]

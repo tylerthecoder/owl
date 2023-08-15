@@ -1,6 +1,5 @@
 configuration {
-    modi: "Proj:code-project,Script:run-script,Clipboard:rofi-clipboard,Desk:desk-rofi";
-    combi-modi: "window,Proj:code-project,drun,Script:run-script,Desk:desk-rofi";
+    combi-modi: "window";
     show-icons: true;
     width: 400;
 }
