@@ -44,10 +44,6 @@
     "target": "~/.config/ranger/rc.conf"
   },
   {
-    "source": "secrets.sh",
-    "target": "~/.secrets"
-  },
-  {
     "source": "common/config/gitconfig",
     "target": "~/.config/git/config"
   },

@@ -1,0 +1,3 @@
+links:
+  - from: setups/nu/setup.yml
+    to: $XDG_CONFIG/setups/nu/setup.yml
