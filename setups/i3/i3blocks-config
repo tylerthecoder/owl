@@ -31,13 +31,14 @@ label=📶
 interval=60
 color=#00FFFF
 
-[volume]
-label=🎶
-command=~/.config/i3blocks/volume-pipewire/volume-pipewire
-interval=persist
-SUBSCRIBE=1
-USE_ALSA_NAME=1
 
-
+[i3volume]
+label=🔊
+command=~/.config/i3blocks/i3-volume/volume output i3blocks
+interval=once
+signal=10
+color=#b8bb26
+separator_block_width=10
+markup=pango
 
 
