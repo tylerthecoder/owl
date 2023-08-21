@@ -47,6 +47,7 @@ struct Cli {
 enum Commands {
     Link,
     Sync,
+    Edit,
     Add {
         #[arg(short, long)]
         source: PathBuf,
@@ -58,10 +59,13 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
 
+
+
     match cli.command {
         Some(Commands::Link) => link(),
         Some(Commands::Sync) => println!("Syncing"),
-        Some(Commands::Add { source, target }) => println!("Adding {} to {}", source, target),
+        Some(Commands::Edit) => println!("Editing"),
+        Some(Commands::Add { source, target }) => println!("Adding {} to {}", source.display(), target.display()),
         None => println!("No command"),
     }
 
@@ -102,12 +106,6 @@ fn main() {
 fn add_link() {
 
     // ask for the source path
-
-
-
-
-
-
 
 }
 

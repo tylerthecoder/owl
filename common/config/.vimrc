@@ -215,3 +215,10 @@ let g:vimtex_compiler_latexmk = { 'out_dir' : 'out' }
 let g:vimtex_view_method = 'zathura'
 autocmd FileType tex execute 'silent !mkdir -p out'
 
+" Copilot Conifg
+let g:copilot_filetypes = {
+    \ 'gitcommit': v:true,
+    \ 'markdown': v:true,
+    \ 'yaml': v:true
+    \ }
+
