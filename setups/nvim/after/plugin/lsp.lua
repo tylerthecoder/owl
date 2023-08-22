@@ -1,22 +1,18 @@
 local lsp = require('lsp-zero').preset({})
 
-
 lsp.on_attach(function(client, bufnr)
-    -- see :help lsp-zero-keybindings
-    -- to learn the available actions
     lsp.default_keymaps({ buffer = bufnr })
 
-    vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
-
+    vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<cr>')
+    vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>')
 end)
-
 
 lsp.ensure_installed({
     'tsserver',
     'eslint',
     'rust_analyzer',
+    'lua_ls',
 })
-
 
 lsp.format_on_save({
     format_opts = {
@@ -26,12 +22,22 @@ lsp.format_on_save({
     servers = {
         ['lua_ls'] = { 'lua' },
         ['rust_analyzer'] = { 'rust' },
-        ['eslint'] = { 'javascript', 'typescript' },
     }
 })
 
--- (Optional) Configure lua language server for neovim
+-- Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+
+-- Run eslint format on save
+require('lspconfig').eslint.setup({
+    on_attach = function(client, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = "EslintFixAll",
+        })
+    end,
+})
+
 
 lsp.setup()
 
