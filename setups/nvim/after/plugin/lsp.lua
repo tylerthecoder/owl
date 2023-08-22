@@ -5,6 +5,9 @@ lsp.on_attach(function(client, bufnr)
     -- see :help lsp-zero-keybindings
     -- to learn the available actions
     lsp.default_keymaps({ buffer = bufnr })
+
+    vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+
 end)
 
 
@@ -24,12 +27,6 @@ lsp.format_on_save({
         ['lua_ls'] = { 'lua' },
         ['rust_analyzer'] = { 'rust' },
         ['eslint'] = { 'javascript', 'typescript' },
-        -- if you have a working setup with null-ls
-        -- if you have a working setup with null-ls
-        -- you can specify filetypes it can format.
-        -- ['null-ls'] = {'javascript', 'typescript'},
-        -- you can specify filetypes it can format.
-        -- ['null-ls'] = {'javascript', 'typescript'},
     }
 })
 
