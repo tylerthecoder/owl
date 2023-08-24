@@ -20,7 +20,7 @@
     "target": "~/.shenv"
   },
   {
-    "source": "common/config/.alias",
+    "source": "comps/framework-arch/.alias",
     "target": "~/.config/alias/main"
   },
   {

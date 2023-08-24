@@ -1,0 +1,29 @@
+alias ls='ls --color=auto'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias doco="docker-compose"
+alias go="xdg-open"
+alias weather="curl wttr.in"
+alias python="python3"
+alias cls="clear"
+alias r="ranger"
+alias plz="sudo"
+alias c="xclip -selection clipboard"
+alias v="xclip -o"
+alias wget="wget --hsts-file /dev/null"
+
+alias srv="sudo systemctl"
+alias vim="nvim"
+
+alias cdc="cd ~/.config"
+alias cdd="cd ~/docs"
+alias cdp="cd ~/dev"
+alias cdo="cd ~/owl"
