@@ -25,11 +25,13 @@ lsp.format_on_save({
     }
 })
 
+local lspconfig = require('lspconfig')
+
 -- Configure lua language server for neovim
-require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 
 -- Run eslint format on save
-require('lspconfig').eslint.setup({
+lspconfig.eslint.setup({
     on_attach = function(client, bufnr)
         vim.api.nvim_create_autocmd("BufWritePre", {
             buffer = bufnr,
@@ -38,6 +40,30 @@ require('lspconfig').eslint.setup({
     end,
 })
 
+
+-- Typescript language server commands
+
+
+local function rename_file()
+    local source = vim.uri_from_bufnr(0)
+    vim.ui.input({
+        prompt = "Move to file: ",
+        completion = "file",
+        default = vim.uri_to_fname(source),
+    }, function(path)
+        print("You entered: " .. path)
+        local params = {
+            command = "_typescript.applyRenameFile",
+            arguments = { {
+                sourceUri = source,
+                targetUri = vim.uri_from_fname(path),
+            } },
+        }
+        vim.lsp.buf.execute_command(params)
+    end)
+end
+
+vim.keymap.set('n', '<leader>oi', rename_file)
 
 lsp.setup()
 
