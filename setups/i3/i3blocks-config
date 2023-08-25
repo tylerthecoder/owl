@@ -32,13 +32,3 @@ interval=60
 color=#00FFFF
 
 
-[i3volume]
-label=🔊
-command=~/.config/i3blocks/i3-volume/volume output i3blocks
-interval=once
-signal=10
-color=#b8bb26
-separator_block_width=10
-markup=pango
-
-

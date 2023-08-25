@@ -23,7 +23,5 @@ Desks are organizations of hardware.
 
 
 ## Ideas
+- Setups should have a file that defines their links. Then each user has an "owl config" file that points to setups and has its own links. Then owl link loops through all the setups and links their files
 
-I'd like to have setup files that setup each piece of software that I use.
-
-Setups can append to the links, run commands, and append to the shellenv file. That way they can be isolated functions that run on computer.

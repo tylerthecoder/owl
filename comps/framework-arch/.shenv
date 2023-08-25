@@ -3,9 +3,9 @@
 # This file contains envrionment variables that depend on the Operating System
 # This includes things like the path, the editor, and the terminal emulator
 
-
 # OWL
 export OWL_PATH="/home/tylord/owl"
+export OWL_CONFIG_PATH="/home/tylord/owl/comps/framework-arch/owl-config.json"
 export OWL_DEFAULT_LINK="/home/tylord/owl/comps/framework-arch/link.json"
 export OWL_SHENV_PATH="/home/tylord/owl/comps/framework-arch/.shenv"
 
@@ -44,9 +44,7 @@ export NVM_DIR="$XDG_DATA_HOME"/nvm
 # Rust / Cargo
 export PATH="$HOME/.cargo/bin:$PATH"
 
-
 # Get things out of home dir
 export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
-
 

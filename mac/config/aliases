@@ -1,4 +1,0 @@
-#/bin/sh
-
-alias dc="docker-compose" 
-alias r="ranger"

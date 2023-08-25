@@ -58,5 +58,13 @@
   {
     "source": "setups/rofi/config.rasi",
     "target": "~/.config/rofi/config.rasi"
+  },
+  {
+    "source": "setups/tmux/tmux.conf",
+    "target": "~/.config/tmux/tmux.conf"
+  },
+  {
+    "source": "common/config/picom.conf",
+    "target": "~/.config/picom/picom.conf"
   }
 ]

@@ -1,0 +1,17 @@
+{
+    "name": "i3",
+    "links": [
+        {
+            "source": "setups/i3/i3-config",
+            "target": "~/.config/i3/config"
+        },
+        {
+            "source": "common/config/dunstrc",
+            "target": "~/.config/dunst/dunstrc"
+        },
+        {
+            "source": "setups/i3/i3blocks-config",
+            "target": "~/.config/i3blocks/config"
+        }
+    ]
+}

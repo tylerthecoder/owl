@@ -1,0 +1,9 @@
+{
+    "name": "tmux",
+    "links": [
+        {
+            "source": "setups/tmux/tmux.conf",
+            "target": "~/.config/tmux/tmux.conf"
+        }
+    ]
+}

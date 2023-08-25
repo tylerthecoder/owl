@@ -1,8 +1,4 @@
 *.swp
-
 secrets.sh
-
-
 Cargo.lock
-
 target
