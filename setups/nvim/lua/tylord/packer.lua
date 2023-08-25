@@ -59,4 +59,8 @@ return require('packer').startup(function(use)
     })
 
     use { "mhinz/vim-startify" }
+
+    use { "tpope/vim-surround" }
+
+    use { "tpope/vim-fugitive" }
 end)
