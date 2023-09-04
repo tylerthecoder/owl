@@ -19,7 +19,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export DEV_PATH="/home/tylord/dev"
 
 # Programs
-export EDITOR="vim"
+export EDITOR="nvim"
 export TERMINAL_EXEC="terminator -e"
 
 # Local bin

@@ -6,5 +6,8 @@ sudo pacman -Syu network-manager-applet blueman-applet greenclip
 # Audio
 sudo pacman -Syu pipewire pipewire-pulse pipewire-jack pavucontrol volumeicon
 
+# Brightness
+sudo pacman -Syu brightnessctl
+
 git clone https://github.com/vivien/i3blocks-contrib ~/.config/i3blocks
 

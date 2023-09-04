@@ -63,4 +63,6 @@ return require('packer').startup(function(use)
     use { "tpope/vim-surround" }
 
     use { "tpope/vim-fugitive" }
+
+    use { "lervag/vimtex" }
 end)

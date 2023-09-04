@@ -50,8 +50,10 @@ bindsym $mod+m exec amixer -D pulse set Master Playback Switch toggle && pkill -
 bindsym $mod+Shift+m exec amixer set Capture toggle && pkill -RTMIN+10 i3blocks # Mute Mic
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10 # increase screen brightness
-bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+ # increase screen brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%- # decrease screen brightness
+bindsym F8 exec --no-startup-id brightnessctl set 5%+ # increase screen brightness
+bindsym F7 exec --no-startup-id brightnessctl set 5%- # decrease screen brightness
 
 # Spotify Commands
 bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
