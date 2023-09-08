@@ -40,10 +40,22 @@ lspconfig.eslint.setup({
     end,
 })
 
+-- Latex setup
+lspconfig.texlab.setup({
+    settings = {
+        texlab = {
+            build = {
+                onSave = true,
+            },
+            chktex = {
+                onOpenAndSave = true,
+            },
+        }
+    }
+})
+
 
 -- Typescript language server commands
-
-
 local function rename_file()
     local source = vim.uri_from_bufnr(0)
     vim.ui.input({

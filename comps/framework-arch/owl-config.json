@@ -51,6 +51,10 @@
         {
             "source": "common/config/picom.conf",
             "target": "~/.config/picom/picom.conf"
+        }, 
+        {
+            "source": "common/scripts/daily-note.sh",
+            "target": "~/.local/bin/daily-note"
         }
     ],
     "setups": [

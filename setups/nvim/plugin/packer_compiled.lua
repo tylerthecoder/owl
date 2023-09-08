@@ -100,6 +100,11 @@ _G.packer_plugins = {
     path = "/home/tylord/.local/share/nvim/site/pack/packer/start/copilot.vim",
     url = "https://github.com/github/copilot.vim"
   },
+  ["lean.nvim"] = {
+    loaded = true,
+    path = "/home/tylord/.local/share/nvim/site/pack/packer/start/lean.nvim",
+    url = "https://github.com/Julian/lean.nvim"
+  },
   ["lsp-zero.nvim"] = {
     loaded = true,
     path = "/home/tylord/.local/share/nvim/site/pack/packer/start/lsp-zero.nvim",

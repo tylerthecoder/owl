@@ -64,5 +64,11 @@ return require('packer').startup(function(use)
 
     use { "tpope/vim-fugitive" }
 
+    -- Latex
     use { "lervag/vimtex" }
+
+    -- Lean
+    use { "Julian/lean.nvim" }
+
+    use { "nvim-lua/plenary.nvim" }
 end)
