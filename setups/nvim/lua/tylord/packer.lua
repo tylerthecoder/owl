@@ -71,4 +71,6 @@ return require('packer').startup(function(use)
     use { "Julian/lean.nvim" }
 
     use { "nvim-lua/plenary.nvim" }
+    -- Smooth Scrolling
+    use { 'karb94/neoscroll.nvim' }
 end)
