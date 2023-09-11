@@ -3,3 +3,5 @@
 	name = Tyler Tracy
 [core]
 	editor = vim
+[init]
+	defaultBranch = main
