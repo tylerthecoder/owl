@@ -75,4 +75,7 @@ return require('packer').startup(function(use)
     use { 'karb94/neoscroll.nvim' }
 
     use { 'vim-airline/vim-airline' }
+
+    -- Editor Config
+    use { 'editorconfig/editorconfig-vim' }
 end)
