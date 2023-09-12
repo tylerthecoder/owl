@@ -11,32 +11,31 @@ return require('packer').startup(function(use)
         'nvim-telescope/telescope.nvim', tag = '0.1.2',
         requires = { { 'nvim-lua/plenary.nvim' } }
     }
+    use "nvim-lua/plenary.nvim"
 
     use { "catppuccin/nvim", as = "catppuccin" }
 
+    -- Treesitter
     use({ 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' })
-
     use 'nvim-treesitter/playground'
 
     use 'mbbill/undotree'
 
     use 'github/copilot.vim'
 
-    use {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
-        requires = {
-            -- LSP Support
-            { 'neovim/nvim-lspconfig' },             -- Required
-            { 'williamboman/mason.nvim' },           -- Optional
-            { 'williamboman/mason-lspconfig.nvim' }, -- Optional
+    -- LSP
+    use 'neovim/nvim-lspconfig'
+    use 'williamboman/mason.nvim'
+    use 'williamboman/mason-lspconfig.nvim'
 
-            -- Autocompletion
-            { 'hrsh7th/nvim-cmp' },     -- Required
-            { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-            { 'L3MON4D3/LuaSnip' },     -- Required
-        }
-    }
+    -- Completions
+    use 'hrsh7th/nvim-cmp'
+    use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-cmdline'
+    use 'hrsh7th/cmp-vsnip' -- snippits
+    use 'hrsh7th/vim-vsnip'
 
     use {
         'numToStr/Comment.nvim',
@@ -58,24 +57,23 @@ return require('packer').startup(function(use)
         run = function() vim.fn["mkdp#util#install"]() end,
     })
 
-    use { "mhinz/vim-startify" }
+    use "mhinz/vim-startify"
 
-    use { "tpope/vim-surround" }
+    use "tpope/vim-surround"
 
-    use { "tpope/vim-fugitive" }
+    use "tpope/vim-fugitive"
 
     -- Latex
-    use { "lervag/vimtex" }
+    use "lervag/vimtex"
 
     -- Lean
-    use { "Julian/lean.nvim" }
+    use "Julian/lean.nvim"
 
-    use { "nvim-lua/plenary.nvim" }
     -- Smooth Scrolling
-    use { 'karb94/neoscroll.nvim' }
+    use 'karb94/neoscroll.nvim'
 
-    use { 'vim-airline/vim-airline' }
+    use 'vim-airline/vim-airline'
 
     -- Editor Config
-    use { 'editorconfig/editorconfig-vim' }
+    use 'editorconfig/editorconfig-vim'
 end)
