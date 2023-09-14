@@ -1,12 +1,3 @@
--- local lsp = require('lsp-zero').preset({})
-
--- lsp.on_attach(function(client, bufnr)
---     lsp.default_keymaps({ buffer = bufnr })
---
---     vim.keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<cr>')
---     vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>')
--- end)
-
 vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP actions',
     callback = function(event)
@@ -35,21 +26,6 @@ require('mason-lspconfig').setup({
     }
 })
 
--- lsp.format_on_save({
---     format_opts = {
---         async = false,
---         timeout_ms = 10000,
---     },
---     servers = {
---         ['lua_ls'] = { 'lua' },
---         ['rust_analyzer'] = { 'rust' },
---     }
--- })
-
-
--- Completions setup
-vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
-
 local cmp = require('cmp')
 local select_opts = {behavior = cmp.SelectBehavior.Select}
 
@@ -60,7 +36,7 @@ cmp.setup({
       end,
     },
     completion = {
-        completeopt = 'menu,menuone,noinsert'
+        completeopt = 'menu,menuone,noinsert,noselect'
     },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
