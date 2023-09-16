@@ -1,2 +1,1 @@
-
-sudo pacman -Sy ranger highlight bat xclip
+sudo pacman -Sy ranger highlight bat xclip ueberzug
