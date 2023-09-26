@@ -28,6 +28,9 @@ return require('packer').startup(function(use)
     use 'williamboman/mason.nvim'
     use 'williamboman/mason-lspconfig.nvim'
 
+    -- Lint
+    use 'jose-elias-alvarez/null-ls.nvim'
+
     -- Completions
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'

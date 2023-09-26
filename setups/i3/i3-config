@@ -1,14 +1,20 @@
 set $mod Mod4
 
-# Auto Start Applications
-exec --no-startup-id nm-applet # Wifi control in the status bar
-exec --no-startup-id blueman-applet # Bluetooth control in the status bar
+#############################
+#  Auto Start Applications
+###########################
+
+# Status bar apps
+exec --no-startup-id nm-applet # Wifi control
+exec_always --no-startup-id blueman-applet # Bluetooth control
+exec_always --no-startup-id flameshot # Screenshot tool
+exec --no-startup-id volumeicon # Volume control
+
 exec --no-startup-id picom # To fix screen tearing
 exec --no-startup-id set-bg-to-nasa-iotd # Load the nasa image of the day as the background image
-exec --no-startup-id dunst
+exec --no-startup-id dunst # Notification daemon
 exec --no-startup-id greenclip daemon>/dev/null # Clipboard management system
 exec --no-startup-id 1password --silent
-exec --no-startup-id volumeicon
 
 ######################
 # Keyboard Shortcuts
@@ -53,7 +59,7 @@ bindsym $mod+Shift+m exec amixer set Capture toggle && pkill -RTMIN+10 i3blocks 
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+ # increase screen brightness
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%- # decrease screen brightness
 bindsym F8 exec --no-startup-id brightnessctl set 5%+ # increase screen brightness
-bindsym F7 exec --no-startup-id brightnessctl set 5%- # decrease screen brightness
+bindsym F7 exec --no-startup-id brightnessctl set 5%-
 
 # Spotify Commands
 bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause

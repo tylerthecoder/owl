@@ -36,7 +36,7 @@ cmp.setup({
       end,
     },
     completion = {
-        completeopt = 'menu,menuone,noinsert,noselect'
+        completeopt = 'menu,menuone,noinsert'
     },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
@@ -69,6 +69,13 @@ cmp.setup.cmdline(':', {
         { name = 'cmdline' }
     })
 })
+
+require("null-ls").setup({
+    sources = {
+        require("null-ls").builtins.diagnostics.vale,
+    },
+})
+
 
 --=======================
 -- Configure LSPS
@@ -132,4 +139,13 @@ lspconfig.texlab.setup({
 })
 
 
+-- C setup
+lspconfig.clangd.setup({
+    capabilities = lsp_capabilities,
+})
+
+-- Python 
+lspconfig.pyright.setup({
+    capabilities = lsp_capabilities,
+})
 
