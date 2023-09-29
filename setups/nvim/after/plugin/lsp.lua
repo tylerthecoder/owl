@@ -30,6 +30,7 @@ require('mason-lspconfig').setup({
 
 local cmp = require('cmp')
 local select_opts = { behavior = cmp.SelectBehavior.Select }
+local lspkind = require('lspkind')
 
 cmp.setup({
     snippet = {
@@ -37,12 +38,18 @@ cmp.setup({
             vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
         end,
     },
+    formatting = {
+        format = lspkind.cmp_format({
+            maxwidth = 50,
+        }),
+    },
     completion = {
         completeopt = 'menu,menuone,noinsert'
     },
     sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        { name = 'vsnip' }, -- For vsnip users.
+        { name = 'nvim_lsp', group_index = 1 },
+        { name = "copilot",  group_index = 2 },
+        { name = 'vsnip',    group_index = 2 },
     }, {
         { name = 'buffer' },
     }),

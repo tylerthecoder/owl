@@ -21,7 +21,17 @@ return require('packer').startup(function(use)
 
     use 'mbbill/undotree'
 
-    use 'github/copilot.vim'
+    -- Copilot
+    -- use 'github/copilot.vim'
+    use { "zbirenbaum/copilot.lua" }
+    use {
+        "zbirenbaum/copilot-cmp",
+        after = { "copilot.lua" },
+        config = function()
+            require("copilot_cmp").setup()
+        end
+    }
+
 
     -- LSP
     use 'neovim/nvim-lspconfig'
@@ -39,6 +49,8 @@ return require('packer').startup(function(use)
     use 'hrsh7th/cmp-cmdline'
     use 'hrsh7th/cmp-vsnip' -- snippits
     use 'hrsh7th/vim-vsnip'
+
+    use 'onsails/lspkind-nvim'
 
     use {
         'numToStr/Comment.nvim',
