@@ -15,7 +15,7 @@ require('copilot').setup({
         },
     },
     suggestion = {
-        enabled = false,
+        enabled = true,
         auto_trigger = false,
         debounce = 75,
         keymap = {
@@ -41,3 +41,14 @@ require('copilot').setup({
     copilot_node_command = 'node', -- Node.js version must be > 16.x
     server_opts_overrides = {},
 })
+
+function ToggleCopilot()
+    require("copilot.suggestion").toggle_auto_trigger()
+    local status = vim.b.copilot_suggestion_auto_trigger and "on" or "off"
+    vim.notify('Copilot has been turned ' .. status)
+end
+
+vim.keymap.set('n', '<leader>ai',
+    '<cmd> lua ToggleCopilot()<cr>', {
+        noremap = true,
+    })
