@@ -29,7 +29,7 @@ return require('packer').startup(function(use)
     use 'williamboman/mason-lspconfig.nvim'
 
     -- Lint
-    use 'jose-elias-alvarez/null-ls.nvim'
+    use 'mfussenegger/nvim-lint'
 
     -- Completions
     use 'hrsh7th/nvim-cmp'
@@ -65,9 +65,6 @@ return require('packer').startup(function(use)
     use "tpope/vim-surround"
 
     use "tpope/vim-fugitive"
-
-    -- Latex
-    use "lervag/vimtex"
 
     -- Lean
     use "Julian/lean.nvim"

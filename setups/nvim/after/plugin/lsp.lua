@@ -1,3 +1,5 @@
+vim.wo.signcolumn = 'yes'
+
 vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP actions',
     callback = function(event)
@@ -27,13 +29,13 @@ require('mason-lspconfig').setup({
 })
 
 local cmp = require('cmp')
-local select_opts = {behavior = cmp.SelectBehavior.Select}
+local select_opts = { behavior = cmp.SelectBehavior.Select }
 
 cmp.setup({
     snippet = {
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-      end,
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        end,
     },
     completion = {
         completeopt = 'menu,menuone,noinsert'
@@ -47,17 +49,22 @@ cmp.setup({
     mapping = {
         ['<Up>'] = cmp.mapping.select_prev_item(select_opts),
         ['<Down>'] = cmp.mapping.select_next_item(select_opts),
+        ['<Tab>'] = cmp.mapping.select_next_item(select_opts),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item(select_opts),
         ['<CR>'] = cmp.mapping.confirm({ select = false }),
         ['<C-Space>'] = cmp.mapping.complete(),
     }
 })
 
 -- `/` cmdline setup.
-cmp.setup.cmdline('/', {
+cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
         { name = 'buffer' }
-    }
+    },
+    completion = {
+        completeopt = 'menu,noinsert'
+    },
 })
 
 -- `:` cmdline setup.
@@ -67,15 +74,11 @@ cmp.setup.cmdline(':', {
         { name = 'path' }
     }, {
         { name = 'cmdline' }
-    })
-})
-
-require("null-ls").setup({
-    sources = {
-        require("null-ls").builtins.diagnostics.vale,
+    }),
+    completion = {
+        completeopt = 'menu,noinsert'
     },
 })
-
 
 --=======================
 -- Configure LSPS
@@ -83,6 +86,7 @@ require("null-ls").setup({
 
 local lspconfig = require('lspconfig')
 local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+local format_sync_grp = vim.api.nvim_create_augroup("Format", {})
 
 -- Typescript setup
 lspconfig.tsserver.setup {
@@ -119,10 +123,44 @@ lspconfig.eslint.setup({
     end,
 })
 
+-- Lua setup
+lspconfig.lua_ls.setup({
+    settings = {
+        Lua = {
+            runtime = {
+                version = 'LuaJIT'
+            },
+            diagnostics = {
+                globals = { 'vim' },
+            },
+            workspace = {
+                library = {
+                    vim.env.VIMRUNTIME,
+                }
+            }
+        }
+    }
+})
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.lua",
+    callback = function()
+        vim.lsp.buf.format({ timeout_ms = 200 })
+    end,
+    group = format_sync_grp,
+})
+
 -- Rust setup
 lspconfig.rust_analyzer.setup({
     capabilities = lsp_capabilities,
 })
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.rs",
+    callback = function()
+        vim.lsp.buf.format({ timeout_ms = 200 })
+    end,
+    group = format_sync_grp,
+})
+
 
 -- Latex setup
 lspconfig.texlab.setup({
@@ -145,6 +183,13 @@ lspconfig.texlab.setup({
         }
     }
 })
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.tex",
+    callback = function()
+        vim.lsp.buf.format({ timeout_ms = 200 })
+    end,
+    group = format_sync_grp,
+})
 
 
 -- C setup
@@ -152,8 +197,16 @@ lspconfig.clangd.setup({
     capabilities = lsp_capabilities,
 })
 
--- Python 
+-- Python
 lspconfig.pyright.setup({
     capabilities = lsp_capabilities,
 })
 
+require('lint').linters_by_ft = {
+    markdown = { 'vale', }
+}
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+    callback = function()
+        require("lint").try_lint()
+    end,
+})
