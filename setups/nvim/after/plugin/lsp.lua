@@ -130,6 +130,14 @@ lspconfig.texlab.setup({
         texlab = {
             build = {
                 onSave = true,
+                args = { "-outdir=out", "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
+                auxDirectory = "./out",
+                logDirectory = "./out",
+                pdfDirectory = "./out",
+            },
+            forwardSearch = {
+                executable = "zathura",
+                args = { "--synctex-forward", "%l:1:%f", "%p" },
             },
             chktex = {
                 onOpenAndSave = true,

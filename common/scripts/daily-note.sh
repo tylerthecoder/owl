@@ -3,7 +3,7 @@
 # Get the current date
 DATE=$(date +%Y-%m-%d)
 
-base_dir="$HOME/docs/notes/daily"
+base_dir="$HOME/docs/mind/Journal 📔"
 
 mkdir -p "$base_dir"
 
