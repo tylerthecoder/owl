@@ -13,7 +13,10 @@ return require('packer').startup(function(use)
     }
     use "nvim-lua/plenary.nvim"
 
+    -- Pretty UI
     use { "catppuccin/nvim", as = "catppuccin" }
+    use { 'stevearc/dressing.nvim' }
+    use { 'nvim-tree/nvim-web-devicons' }
 
     -- Treesitter
     use({ 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' })

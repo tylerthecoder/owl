@@ -3,11 +3,11 @@ vim.wo.signcolumn = 'yes'
 vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP actions',
     callback = function(event)
-        vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
+        vim.keymap.set('n', 'gd', '<cmd>Telescope lsp_definition<cr>')
         vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
-        vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.impementations()<cr>')
-        vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
-        vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>')
+        vim.keymap.set('n', 'gi', '<cmd>Telescope lsp_impementations<cr>')
+        vim.keymap.set('n', 'go', '<cmd>Telescope lsp_type_definition<cr>')
+        vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>')
         vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
         vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>')
         vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
