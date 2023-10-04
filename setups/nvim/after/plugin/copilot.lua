@@ -1,32 +1,6 @@
 require('copilot').setup({
-    panel = {
-        enabled = false,
-        auto_refresh = false,
-        keymap = {
-            jump_prev = "[[",
-            jump_next = "]]",
-            accept = "<CR>",
-            refresh = "gr",
-            open = "<M-CR>"
-        },
-        layout = {
-            position = "bottom", -- | top | left | right
-            ratio = 0.4
-        },
-    },
-    suggestion = {
-        enabled = true,
-        auto_trigger = false,
-        debounce = 75,
-        keymap = {
-            accept = "<M-l>",
-            accept_word = false,
-            accept_line = false,
-            next = "<M-]>",
-            prev = "<M-[>",
-            dismiss = "<C-]>",
-        },
-    },
+    suggestion = { enabled = false },
+    panel = { enabled = false },
     filetypes = {
         yaml = true,
         markdown = true,
@@ -43,9 +17,17 @@ require('copilot').setup({
 })
 
 function ToggleCopilot()
-    require("copilot.suggestion").toggle_auto_trigger()
-    local status = vim.b.copilot_suggestion_auto_trigger and "on" or "off"
-    vim.notify('Copilot has been turned ' .. status)
+    local client = require("copilot.client")
+    local command = require("copilot.command")
+
+    if client.buf_is_attached(0) then
+        command.detach()
+        vim.notify('Copilot Disabled')
+        return
+    end
+
+    vim.notify('Copilot Enabled')
+    command.attach()
 end
 
 vim.keymap.set('n', '<leader>ai',

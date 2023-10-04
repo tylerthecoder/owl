@@ -3,7 +3,7 @@ vim.wo.signcolumn = 'yes'
 vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP actions',
     callback = function(event)
-        vim.keymap.set('n', 'gd', '<cmd>Telescope lsp_definition<cr>')
+        vim.keymap.set('n', 'gd', '<cmd>Telescope lsp_definitions<cr>')
         vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
         vim.keymap.set('n', 'gi', '<cmd>Telescope lsp_impementations<cr>')
         vim.keymap.set('n', 'go', '<cmd>Telescope lsp_type_definition<cr>')
@@ -28,64 +28,6 @@ require('mason-lspconfig').setup({
     }
 })
 
-local cmp = require('cmp')
-local select_opts = { behavior = cmp.SelectBehavior.Select }
-local lspkind = require('lspkind')
-
-cmp.setup({
-    snippet = {
-        expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        end,
-    },
-    formatting = {
-        format = lspkind.cmp_format({
-            maxwidth = 50,
-        }),
-    },
-    completion = {
-        completeopt = 'menu,menuone,noinsert'
-    },
-    sources = cmp.config.sources({
-        { name = 'nvim_lsp', group_index = 1 },
-        { name = "copilot",  group_index = 2 },
-        { name = 'vsnip',    group_index = 2 },
-    }, {
-        { name = 'buffer' },
-    }),
-    mapping = {
-        ['<Up>'] = cmp.mapping.select_prev_item(select_opts),
-        ['<Down>'] = cmp.mapping.select_next_item(select_opts),
-        ['<Tab>'] = cmp.mapping.select_next_item(select_opts),
-        ['<S-Tab>'] = cmp.mapping.select_prev_item(select_opts),
-        ['<CR>'] = cmp.mapping.confirm({ select = false }),
-        ['<C-Space>'] = cmp.mapping.complete(),
-    }
-})
-
--- `/` cmdline setup.
-cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-        { name = 'buffer' }
-    },
-    completion = {
-        completeopt = 'menu,noinsert'
-    },
-})
-
--- `:` cmdline setup.
-cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-        { name = 'path' }
-    }, {
-        { name = 'cmdline' }
-    }),
-    completion = {
-        completeopt = 'menu,noinsert'
-    },
-})
 
 --=======================
 -- Configure LSPS
@@ -196,6 +138,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         vim.lsp.buf.format({ timeout_ms = 200 })
     end,
     group = format_sync_grp,
+})
+
+-- Markdown grammar
+lspconfig.ltex.setup({
+    capabilities = lsp_capabilities,
 })
 
 
