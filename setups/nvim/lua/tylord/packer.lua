@@ -61,12 +61,18 @@ return require('packer').startup(function(use)
         end
     }
 
+    -- Tree Sitter
     use {
         'nvim-tree/nvim-tree.lua',
         requires = {
             'nvim-tree/nvim-web-devicons', -- optional
         },
     }
+    use({
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        after = "nvim-treesitter",
+        requires = "nvim-treesitter/nvim-treesitter",
+    })
 
     -- install without yarn or npm
     use({
