@@ -43,6 +43,12 @@ return require('packer').startup(function(use)
     -- Lint
     use 'mfussenegger/nvim-lint'
 
+    -- Formatting
+    use {
+        'stevearc/conform.nvim',
+        config = function() require('conform').setup() end
+    }
+
     -- Completions
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
