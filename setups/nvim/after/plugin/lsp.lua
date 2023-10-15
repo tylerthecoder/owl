@@ -66,6 +66,7 @@ lspconfig.rust_analyzer.setup({
 
 -- Latex setup
 lspconfig.texlab.setup({
+    capabilities = lsp_capabilities,
     settings = {
         texlab = {
             build = {
