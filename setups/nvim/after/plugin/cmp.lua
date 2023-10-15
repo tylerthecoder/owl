@@ -8,11 +8,6 @@ cmp.setup({
             vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
         end,
     },
-    formatting = {
-        format = lspkind.cmp_format({
-            maxwidth = 50,
-        }),
-    },
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
