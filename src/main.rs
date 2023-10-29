@@ -41,22 +41,22 @@ fn main() {
         Some(Commands::Link) => link_with_setups(),
         Some(Commands::Sync) => {
             println!("Syncing");
-            // let owl_path = get_owl_path();
-            //
-            // let owl_sync_script_path = Path::join(
-            //     Path::new(&owl_path),
-            //     Path::new("common/scripts/owl-sync.sh"),
-            // );
-            //
-            // println!(
-            //     "Running owl-sync.sh script at {}",
-            //     owl_sync_script_path.display()
-            // );
-            //
-            // // Run the owl-sync command
-            // let mut cmd = std::process::Command::new(owl_sync_script_path);
-            //
-            // cmd.spawn().expect("Unable to run owl-sync.sh");
+            let owl_path = get_owl_path();
+
+            let owl_sync_script_path = Path::join(
+                Path::new(&owl_path),
+                Path::new("common/scripts/owl-sync.sh"),
+            );
+
+            println!(
+                "Running owl-sync.sh script at {}",
+                owl_sync_script_path.display()
+            );
+
+            // Run the owl-sync command
+            let mut cmd = std::process::Command::new(owl_sync_script_path);
+
+            cmd.spawn().expect("Unable to run owl-sync.sh");
         }
         Some(Commands::Edit) => println!("Editing"),
         None => println!("No command"),

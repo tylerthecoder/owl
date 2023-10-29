@@ -90,6 +90,7 @@ return require('packer').startup(function(use)
 
     use "tpope/vim-surround"
 
+    -- Git client
     use "tpope/vim-fugitive"
 
     -- Lean

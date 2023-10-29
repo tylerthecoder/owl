@@ -1,25 +1,30 @@
-This is my setup for all of my computers
-Have configs and scripts for every different OS I use
-Any file in a script's directory will be added to path
+# OWL
+
+This repository contains all of my dotfiles, scripts, and configs I use across different computers and operating systems. 
 
 
 ## Getting Started
 
-Multiple environment variables are used to control the setup.
-`OWL_PATH` is the location of this directory.
-`OWL_DEFAULT_LINK` is the location of the default link file.
+Build the app
+```
+cargo build
+```
 
+Perform first link
+```
+cargo run -- link
+```
 
-Run the owl script `./common/scripts/owl.sh`
+### Important environment variable
 
+**OWL_PATH**: The location of on your machine of this repository. 
 
+**OWL_CONFIG_PATH**: The location of an owl config. Contains a list of files or link and programs to set up.
 
 ## Terms
 **Link files** are json config files that map files in this repo to their location on the system.
 
-
 Desks are organizations of hardware.
-
 
 
 ## Ideas
