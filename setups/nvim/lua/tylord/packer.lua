@@ -80,6 +80,9 @@ return require('packer').startup(function(use)
         requires = "nvim-treesitter/nvim-treesitter",
     })
 
+    -- Folding
+    use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
+
     -- install without yarn or npm
     use({
         "iamcco/markdown-preview.nvim",
