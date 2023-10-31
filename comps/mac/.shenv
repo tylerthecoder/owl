@@ -1,0 +1,33 @@
+#! /bin/sh
+
+# Owl Conifg
+export OWL_PATH="/Users/tylertracy/owl"
+export OWL_CONFIG_PATH="$OWL_PATH/comps/mac/owl-config.json"
+
+# Programs
+export EDITOR='vim'
+
+# Local bin
+export PATH="$HOME/.local/bin:$PATH"
+
+# Load aliases
+[ -f "~/.config/alias/main" ] && source ~/.config/alias/main
+
+# Brew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Nvm
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
+
+# Npm
+export PATH="$PATH:$(npm config get prefix)/bin"
+
+# Bun
+[ -s "/Users/tylertracy/.bun/_bun" ] && source "/Users/tylertracy/.bun/_bun"
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Modular
+export MODULAR_HOME="$HOME/.modular"
+export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"

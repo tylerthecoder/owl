@@ -1,5 +1,6 @@
-# Import aliases
-source ~/.config/.aliases
+
+# Source environment variables
+source ~/.shenv
 
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -9,13 +10,9 @@ zstyle ':omz:update' mode auto # update automatically without asking
 
 zstyle ':omz:update' frequency 13 # How often to auto-update (in days).
 
-plugins=(git git-trim colored-man-pages colorize pip python brew)
+plugins=(git git-trim colored-man-pages colorize pip python brew zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
-
-export EDITOR='vim'
-
-export PATH="$PATH:$(npm config get prefix)/bin"
 
 # Enable command auto-correction.
 ENABLE_CORRECTION="true"
@@ -31,19 +28,6 @@ bindkey -M vicmd v edit-command-line
 # Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 COMPLETION_WAITING_DOTS="true"
 
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-
+# Kube completions
 source <(kubectl completion zsh)
 
-eval "$(atuin init zsh)"

@@ -9,15 +9,7 @@
       "target": "~/.vimrc"
     },
     {
-      "source": "common/config/.bashrc",
-      "target": "~/.bashrc"
-    },
-    {
-      "source": "common/config/.bash_profile",
-      "target": "~/.bash_profile"
-    },
-    {
-      "source": "comps/framework-arch/.shenv",
+      "source": "comps/mac/.shenv",
       "target": "~/.shenv"
     },
     {
@@ -44,6 +36,6 @@
   "setups": [
     "nvim",
     "tmux",
-    "zsh"
+    "zsh-ohmy"
   ]
 }

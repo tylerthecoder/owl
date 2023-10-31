@@ -1,0 +1,9 @@
+{
+  "name": "zsh",
+  "links": [
+    {
+      "source": "setups/zsh-ohmy/.zshrc",
+      "target": "~/.zshrc"
+    }
+  ]
+}
