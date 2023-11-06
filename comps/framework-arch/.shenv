@@ -52,3 +52,28 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
 
+# Fuzzy Finders (move to another file soon)
+
+fzfopen() {
+    local dir=${1:-.} # Default to current directory if no argument is given
+    local file
+    file=$(find "$dir" -type f 2> /dev/null \
+        | grep -vE '(/\.git/|/\.git$)' \
+        | grep -vFf <(git -C "$dir" ls-files --exclude-standard -oi --directory) \
+        | sed "s|${dir}/||" \
+        | fzf --color=dark +m) \
+    && vim "$dir/$file"
+}
+
+fo() {
+    fzfopen ~/owl
+}
+
+fd() {
+    fzfopen ~/docs
+}
+
+fm() {
+    fzfopen ~/docs/mind
+}
+
