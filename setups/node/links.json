@@ -1,0 +1,9 @@
+{
+    "name": "node",
+    "links": [
+        {
+            "source": "setups/node/rc.sh",
+            "target": "~/.config/owl-rc/noderc"
+        }
+    ]
+}

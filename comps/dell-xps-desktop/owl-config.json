@@ -41,6 +41,7 @@
     "i3",
     "nvim",
     "tmux",
-    "zsh"
+    "zsh",
+    "node"
   ]
 }
