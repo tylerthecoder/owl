@@ -1,9 +1,11 @@
 use clap::{Parser, Subcommand};
 use serde::Deserialize;
+use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 extern crate skim;
 use colored::Colorize;
+use std::process::Command;
 
 fn get_owl_path() -> String {
     match std::env::var("OWL_PATH") {
@@ -114,6 +116,7 @@ struct LinkedFile {
     source_path: String,
     #[serde(rename = "target")]
     target_path: String,
+    root: Option<bool>,
 }
 
 impl LinkedFile {
@@ -137,9 +140,43 @@ impl LinkedFile {
             }
         }
 
-        match std::os::unix::fs::symlink(absolute_source_path, absolute_target_path) {
-            Ok(_) => println!("✅"),
-            Err(e) => println!("❌ {}", e),
+        let target_path = Path::new(&absolute_target_path);
+        if let Some(parent) = target_path.parent() {
+            if !parent.exists() {
+                match fs::create_dir_all(parent) {
+                    Ok(_) => println!("Created parent directory"),
+                    Err(e) => println!("Failed to create parent directory: {}", e),
+                }
+            }
+        }
+
+        if self.root.unwrap_or(false) {
+            // Running the command with sudo
+            let output = Command::new("sudo")
+                .arg("ln")
+                .arg("-s")
+                .arg(&absolute_source_path)
+                .arg(&absolute_target_path)
+                .output();
+
+            match output {
+                Ok(o) => {
+                    if o.status.success() {
+                        println!("✅ Symlink created with root privileges");
+                    } else {
+                        eprintln!(
+                            "❌ Failed to create symlink: {}",
+                            String::from_utf8_lossy(&o.stderr)
+                        );
+                    }
+                }
+                Err(e) => eprintln!("Failed to execute command: {}", e),
+            }
+        } else {
+            match std::os::unix::fs::symlink(&absolute_source_path, &absolute_target_path) {
+                Ok(_) => println!("✅ Symlink created"),
+                Err(e) => println!("❌ {}", e),
+            }
         }
     }
 }

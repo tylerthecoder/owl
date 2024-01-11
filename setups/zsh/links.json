@@ -3,7 +3,12 @@
   "links": [
     {
       "source": "setups/zsh/.zshrc",
-      "target": "~/.zshrc"
+      "target": "~/.config/zsh/.zshrc"
+    },
+    {
+      "source": "setups/zsh/zshenv",
+      "target": "/etc/zsh/zshenv",
+      "root": true
     }
   ]
 }

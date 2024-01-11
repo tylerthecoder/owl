@@ -5,9 +5,8 @@
 
 # OWL
 export OWL_PATH="/home/tylord/owl"
-export OWL_CONFIG_PATH="/home/tylord/owl/comps/framework-arch/owl-config.json"
-export OWL_DEFAULT_LINK="/home/tylord/owl/comps/framework-arch/link.json"
-export OWL_SHENV_PATH="/home/tylord/owl/comps/framework-arch/.shenv"
+export OWL_CONFIG_PATH="/home/tylord/owl/comps/dell-xps-desktop/owl-config.json"
+export OWL_SHENV_PATH="/home/tylord/owl/comps/dell-xps-desktop/.shenv"
 
 # XDG vars
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -27,6 +26,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Load Alias
 for file in ~/.config/alias/*; do
+    echo "Adding aliases $file" 
     [ -f "$file" ] && source "$file"
 done
 

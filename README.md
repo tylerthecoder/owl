@@ -5,6 +5,11 @@ This repository contains all of my dotfiles, scripts, and configs I use across d
 
 ## Getting Started
 
+Install the app
+```
+./setups/owl.sh
+```
+
 Build the app
 ```
 cargo build

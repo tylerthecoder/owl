@@ -8,7 +8,6 @@ autoload -U colors && colors
 PS1="%B%{$fg[yellow]%}[%{$fg[red]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[yellow]%}]%{$reset_color%}$%b "
 
 # History things
-
 export HISTFILE="$XDG_STATE_HOME"/zsh/history
 HISTSIZE=100000
 SAVEHIST=100000
@@ -65,9 +64,6 @@ bindkey -v '^?' backward-delete-char
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
-# Load Alias
-[ -f "$HOME/.config/alias/main" ] && source ~/.config/alias/main
-[ -f "$HOME/.config/alias/git" ] && source ~/.config/alias/git
 
 # Set color
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff0000,bg=white,bold,underline"

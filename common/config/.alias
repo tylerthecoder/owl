@@ -19,7 +19,4 @@ alias plz="sudo"
 alias c="xclip -selection clipboard"
 alias v="xclip -o"
 alias wget="wget --hsts-file /dev/null"
-
-alias cg="cd ~/.config"
 alias srv="sudo systemctl"
-alias vim="nvim"

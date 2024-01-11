@@ -1,18 +1,3 @@
-# Query/use custom command for `git`.
-#
-# Functions
-#
-
-# The name of the current branch
-# Back-compatibility wrapper for when this function was defined here in
-# the plugin, before being pulled in to core lib/git.zsh as git_current_branch()
-# to fix the core -> git plugin dependency.
-
-#
-# Aliases
-# (sorted alphabetically)
-#
-
 alias g='git'
 
 alias ga='git add'
