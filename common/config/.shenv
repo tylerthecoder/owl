@@ -5,9 +5,7 @@ echo "Welcome Tylord: "
 # This file is shared across all OSs, put OS specific stuff in .profile
 
 # All things added to path
-export PATH="$(yarn global bin):$PATH"
 export PATH="$HOME/.local/bin:$PATH" # Personal bin
-export PATH="$XDG_DATA_HOME/npm/bin:$PATH" # Add npm to path
 export PATH="/var/lib/snapd/snap/bin:$PATH" # I don't want to have to do this but the world is working against me
 export PATH="$HOME/.cargo/bin:$PATH" # Add rust to path
 export PATH="$JAVA_HOME/bin:$PATH" # Add java to path
@@ -23,11 +21,6 @@ export COMPOSITOR="/usr/bin/picom --experimental-backends"
 export LESSHISTFILE=/dev/null # disable the less history file
 
 #===== Language Variables =====
-
-# Configure Node, NPM, Yarn
-export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
-export NODE_REPL_HISTORY=$XDG_CONFIG_HOME/node/repl_hist
-
 #Java
 export JAVA_HOME=/opt/jdk-18
 
