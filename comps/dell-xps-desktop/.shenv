@@ -42,9 +42,6 @@ done
 # Lean
 export PATH="$HOME/.elan/bin:$PATH"
 
-# Rust / Cargo
-export PATH="$HOME/.cargo/bin:$PATH"
-
 # Bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"

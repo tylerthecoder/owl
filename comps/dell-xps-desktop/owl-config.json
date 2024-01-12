@@ -42,6 +42,8 @@
     "nvim",
     "tmux",
     "zsh",
-    "node"
+    "node",
+    "terminator",
+    "rust"
   ]
 }
