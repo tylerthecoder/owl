@@ -45,8 +45,16 @@
       "target": "~/.local/bin/daily-note"
     },
     {
+      "source": "common/scripts/gpt-clip.sh",
+      "target": "~/.local/bin/gpt-clip"
+    },
+    {
       "source": "common/config/rifle.conf",
       "target": "~/.config/ranger/rifle.conf"
+    },
+    {
+      "source": ".secrets",
+      "target": "~/.secrets"
     }
   ],
   "setups": [

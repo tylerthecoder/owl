@@ -20,6 +20,9 @@ export DEV_PATH="/home/tylord/dev"
 
 # Programs
 export EDITOR="nvim"
+export BROWSER="brave"
+export TERMINAL="terminator"
+export TERMIANL_ROLE="terminator --role"
 export TERMINAL_EXEC="terminator -e"
 
 # Local bin
@@ -54,7 +57,6 @@ export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
 
 # Fuzzy Finders (move to another file soon)
-
 fzfopen() {
     local dir=${1:-.} # Default to current directory if no argument is given
     local file
@@ -63,7 +65,7 @@ fzfopen() {
         | grep -vFf <(git -C "$dir" ls-files --exclude-standard -oi --directory) \
         | sed "s|${dir}/||" \
         | fzf --color=dark +m) \
-    && vim "$dir/$file"
+    && nvim "$dir/$file"
 }
 
 fo() {
