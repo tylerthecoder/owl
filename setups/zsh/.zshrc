@@ -11,6 +11,10 @@ PS1="%B%{$fg[yellow]%}[%{$fg[red]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magent
 export HISTFILE="$XDG_STATE_HOME"/zsh/history
 HISTSIZE=100000
 SAVEHIST=100000
+setopt INC_APPEND_HISTORY # History is saved to the file immediately, not just on exit
+setopt EXTENDED_HISTORY # Save timestamps
+setopt HIST_FIND_NO_DUPS 
+setopt HIST_IGNORE_ALL_DUPS
 setopt autocd
 
 # Set the cursor as a vertical line

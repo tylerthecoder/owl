@@ -1,4 +1,4 @@
-sudo pacman -Sy zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
+sudo pacman -Sy zsh
 
 mkdir -p ~/.cache/zsh
 mkdir -p $XDG_STATE_HOME/zsh
