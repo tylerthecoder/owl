@@ -1,5 +1,7 @@
 #! /bin/sh
 
+echo "Welcome Tylord"
+
 # This file contains envrionment variables that depend on the Operating System
 # This includes things like the path, the editor, and the terminal emulator
 
@@ -26,13 +28,11 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Load Alias
 for file in ~/.config/alias/*; do
-    echo "Adding aliases $file" 
     [ -f "$file" ] && source "$file"
 done
 
 # Run owl-rc
 for file in ~/.config/owl-rc/*; do
-    echo "Running file $file" 
     [ -f "$file" ] && source "$file"
 done
 

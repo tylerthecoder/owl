@@ -25,6 +25,10 @@ require('mason-lspconfig').setup({
         'eslint',
         'rust_analyzer',
         'lua_ls',
+        'texlab',
+        'ltex',
+        'pywright',
+        'clangd'
     }
 })
 

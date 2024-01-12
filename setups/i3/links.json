@@ -12,6 +12,10 @@
         {
             "source": "setups/i3/i3blocks-config",
             "target": "~/.config/i3blocks/config"
+        },
+        {
+            "source": "setups/i3/picom.conf",
+            "target": "~/.config/picom/picom.conf"
         }
     ]
 }
