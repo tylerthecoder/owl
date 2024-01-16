@@ -34,6 +34,7 @@
     }
   ],
   "setups": [
+    "node",
     "nvim",
     "tmux",
     "zsh-ohmy"

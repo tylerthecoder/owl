@@ -44,6 +44,11 @@ lspconfig.tsserver.setup {
     capabilities = lsp_capabilities,
 }
 
+-- Tailwind setup
+lspconfig.tailwindcss.setup({
+    capabilities = lsp_capabilities,
+})
+
 -- Lua setup
 lspconfig.lua_ls.setup({
     capabilities = lsp_capabilities,

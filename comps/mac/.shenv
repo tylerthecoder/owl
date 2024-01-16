@@ -1,8 +1,16 @@
 #! /bin/sh
 
+echo "Welcome Tylord"
+
 # Owl Conifg
 export OWL_PATH="/Users/tylertracy/owl"
 export OWL_CONFIG_PATH="$OWL_PATH/comps/mac/owl-config.json"
+
+# XDG vars
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 
 # Programs
 export EDITOR='vim'
@@ -11,17 +19,10 @@ export EDITOR='vim'
 export PATH="$HOME/.local/bin:$PATH"
 
 # Load aliases
-[ -f "~/.config/alias/main" ] && source ~/.config/alias/main
+source ~/.config/alias/main
 
 # Brew
 eval "$(/opt/homebrew/bin/brew shellenv)"
-
-# Nvm
-export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
-
-# Npm
-export PATH="$PATH:$(npm config get prefix)/bin"
 
 # Bun
 [ -s "/Users/tylertracy/.bun/_bun" ] && source "/Users/tylertracy/.bun/_bun"

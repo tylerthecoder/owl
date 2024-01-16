@@ -31,3 +31,9 @@ COMPLETION_WAITING_DOTS="true"
 # Kube completions
 source <(kubectl completion zsh)
 
+
+# bun completions
+[ -s "/Users/tylertracy/.bun/_bun" ] && source "/Users/tylertracy/.bun/_bun"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/tylertracy/.rd/bin:$PATH"
