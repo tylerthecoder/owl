@@ -27,7 +27,7 @@ require('mason-lspconfig').setup({
         'lua_ls',
         'texlab',
         'ltex',
-        'pywright',
+        'pyright',
         'clangd'
     }
 })
@@ -46,6 +46,7 @@ lspconfig.tsserver.setup {
 
 -- Lua setup
 lspconfig.lua_ls.setup({
+    capabilities = lsp_capabilities,
     settings = {
         Lua = {
             runtime = {

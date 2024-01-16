@@ -25,6 +25,10 @@
       "target": "~/.local/bin/daily-note"
     },
     {
+      "source": "common/scripts/toggle-mounttab.sh",
+      "target": "~/.local/bin/toggle-mounttab"
+    },
+    {
       "source": "comps/framework-arch/.alias",
       "target": "~/.config/alias/main"
     },
@@ -35,6 +39,10 @@
     {
       "source": "common/config/.alias-git",
       "target": "~/.config/alias/git"
+    },
+    {
+      "source": "common/config/ssh-config",
+      "target": "~/.ssh/config"
     }
   ],
   "setups": [
