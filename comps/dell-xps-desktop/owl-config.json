@@ -29,6 +29,10 @@
       "target": "~/.local/bin/toggle-mounttab"
     },
     {
+      "source": "common/scripts/favs.sh",
+      "target": "~/.local/bin/f"
+    },
+    {
       "source": "comps/framework-arch/.alias",
       "target": "~/.config/alias/main"
     },
