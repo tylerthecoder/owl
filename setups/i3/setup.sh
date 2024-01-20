@@ -1,4 +1,7 @@
-sudo pacman -Syu i3-gaps i3blocks i3lock numlockx dunst picom dmenu
+sudo pacman -Syu i3-gaps i3blocks i3lock numlockx dunst picom dmenu ranger
+
+# Font
+sudo pacman -Syu otf-firamono-nerd ttf-firacode-nerd
 
 # Applets
 sudo pacman -Syu network-manager-applet blueman-applet greenclip flameshot
