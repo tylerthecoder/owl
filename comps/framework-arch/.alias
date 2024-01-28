@@ -1,5 +1,6 @@
 alias srv="sudo systemctl"
 alias vim="nvim"
+alias cat="bat"
 
 alias cdc="cd ~/.config"
 alias cdd="cd ~/docs"

@@ -45,6 +45,10 @@
       "target": "~/.config/alias/git"
     },
     {
+      "source": "common/config/.xprofile",
+      "target": "~/.xprofile"
+    },
+    {
       "source": "common/config/ssh-config",
       "target": "~/.ssh/config"
     }
@@ -55,7 +59,9 @@
     "tmux",
     "zsh",
     "node",
+    "rofi",
     "terminator",
-    "rust"
+    "rust",
+    "zathura"
   ]
 }

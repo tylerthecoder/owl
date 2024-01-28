@@ -1,0 +1,9 @@
+{
+  "name": "zathura",
+  "links": [
+    {
+      "source": "setups/zathura/zathurarc",
+      "target": "~/.config/zathura/zathurarc"
+    }
+  ]
+}
