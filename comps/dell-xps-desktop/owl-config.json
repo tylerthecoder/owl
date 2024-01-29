@@ -62,6 +62,7 @@
     "rofi",
     "terminator",
     "rust",
-    "zathura"
+    "zathura",
+    "workspace-switcher"
   ]
 }

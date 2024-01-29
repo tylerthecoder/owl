@@ -29,10 +29,11 @@ bindsym $mod+Shift+Return exec terminator --role floating
 bindsym $mod+b exec "$BROWSER"
 bindsym $mod+z exec gnome-control-center
 bindsym $mod+a exec pavucontrol
-bindsym $mod+g exec pcmanfm
+bindsym $mod+g exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh go"
+bindsym $mod+p exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh"
 
 # Launch Rofi
-bindsym $mod+p exec rofi -show combi
+# bindsym $mod+p exec rofi -show combi
 
 # Rofi clipboard manager
 bindsym $mod+c exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'

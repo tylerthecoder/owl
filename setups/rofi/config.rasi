@@ -2,7 +2,13 @@ configuration {
     combi-modi: "window";
     show-icons: true;
     width: 400;
+    kb-mode-next: "Shift+Right,Control+Tab,Control+l";
+    kb-mode-previous: "Shift+Left,Control+ISO_Left_Tab,Control+h";
+    kb-mode-complete: "";
+    kb-remove-char-back: "BackSpace,Shift+BackSpace";
 }
+
+
 
 * {
     /* Dracula theme colour palette */
