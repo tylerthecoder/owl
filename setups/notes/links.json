@@ -1,0 +1,9 @@
+{
+  "name": "notes",
+  "links": [
+    {
+      "source": "setups/notes/daily-note.sh",
+      "target": "~/.local/bin/daily-note"
+    }
+  ]
+}
