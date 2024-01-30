@@ -21,10 +21,6 @@
       "target": "~/.config/git/config"
     },
     {
-      "source": "common/scripts/daily-note.sh",
-      "target": "~/.local/bin/daily-note"
-    },
-    {
       "source": "common/scripts/toggle-mounttab.sh",
       "target": "~/.local/bin/toggle-mounttab"
     },
@@ -63,6 +59,7 @@
     "terminator",
     "rust",
     "zathura",
-    "workspace-switcher"
+    "workspace-switcher",
+    "notes"
   ]
 }

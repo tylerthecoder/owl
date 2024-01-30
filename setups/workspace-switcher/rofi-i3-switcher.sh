@@ -34,16 +34,21 @@ move_window_to_workspace_2() {
 }
 
 
+
+
 menu() {
     GO_MSG="(j) Go to Workspace"
     MOVE_MSG="(k) Move Window"
+    APPS_MSG="(a) Apps"
     QUIT_MSG="(q) Quit"
-    ACITON=$(echo -e "$GO_MSG\n$MOVE_MSG\n$QUIT_MSG" | rofi -dmenu -p "Action:" -kb-select-1 'j' -kb-select-2 'k' -kb-select-3 'q')
+    ACITON=$(echo -e "$GO_MSG\n$MOVE_MSG\n$APPS_MSG\n$QUIT_MSG" | rofi -dmenu -p "Action:" -kb-select-1 'j' -kb-select-2 'k' -kb-select-3 'a' -kb-select-4 'q')
 
     if [[ "$ACITON" = "$GO_MSG" ]]; then
         go_to_workspace_2 $@
     elif [[ "$ACITON" = "$MOVE_MSG" ]]; then
         move_window_to_workspace_2 $@
+    elif [[ "$ACITON" = "$APPS_MSG" ]]; then
+        rofi -show drun
     elif [[ "$ACITON" = "$QUIT_MSG" ]]; then
         exit 0
     fi
