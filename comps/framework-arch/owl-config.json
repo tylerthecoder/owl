@@ -41,10 +41,6 @@
       "target": "~/.config/git/config"
     },
     {
-      "source": "common/scripts/daily-note.sh",
-      "target": "~/.local/bin/daily-note"
-    },
-    {
       "source": "common/scripts/gpt-clip.sh",
       "target": "~/.local/bin/gpt-clip"
     },
@@ -55,11 +51,23 @@
     {
       "source": ".secrets",
       "target": "~/.secrets"
+    },
+    {
+      "source": "common/scripts/favs.sh",
+      "target": "~/.local/bin/f"
     }
   ],
   "setups": [
+    "i3",
     "nvim",
     "tmux",
-    "zsh"
+    "zsh",
+    "node",
+    "rofi",
+    "terminator",
+    "rust",
+    "zathura",
+    "workspace-switcher",
+    "notes"
   ]
 }

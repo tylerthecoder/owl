@@ -1,9 +1,9 @@
 {
-    "name": "tmux",
-    "links": [
-        {
-            "source": "setups/terminator/terminator.config",
-            "target": "~/.config/terminator/config"
-        }
-    ]
+  "name": "Terminator",
+  "links": [
+    {
+      "source": "setups/terminator/terminator.config",
+      "target": "~/.config/terminator/config"
+    }
+  ]
 }

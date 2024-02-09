@@ -6,3 +6,4 @@ mkdir -p "$XDG_CONFIG_HOME/yarn"
 
 export VOLTA_HOME="$XDG_CONFIG_HOME/volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
+
