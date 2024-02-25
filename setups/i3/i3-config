@@ -34,6 +34,8 @@ bindsym $mod+i exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh run"
 bindsym $mod+o exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh window"
 bindsym $mod+p exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh"
 
+bindsym Control+space exec dunstctl close
+
 bindsym $mod+F1 exec zathura ~/docs/help.pdf
 
 # Audio controls
@@ -54,10 +56,7 @@ bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpri
 bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
 bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
 
-
-# Disabling since it conflicts with vscode key binding
 # TODO: Figure out how to have this only work when a dunst message is visible
-# bindsym Control+space exec dunstctl close
 
 # Set Gaps
 gaps inner 10
@@ -108,7 +107,6 @@ bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
-
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -171,7 +169,7 @@ mode "resize" {
 for_window [window_role=floating] floating enable
 for_window [class="Blueman-manager"] floating enable
 for_window [title="ClipGPT"] floating enable
-for_window [class="Spotify"] move to workspace 10
+# for_window [class="Spotify"] move to workspace 10
 
 
 #####################

@@ -24,6 +24,13 @@ return require('packer').startup(function(use)
 
     use 'mbbill/undotree'
 
+    -- Harpoon
+    use {
+        "ThePrimeagen/harpoon",
+        branch = "harpoon2",
+        requires = { { "nvim-lua/plenary.nvim" } }
+    }
+
     -- Copilot
     -- use 'github/copilot.vim'
     use { "zbirenbaum/copilot.lua" }

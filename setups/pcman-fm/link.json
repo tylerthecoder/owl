@@ -1,0 +1,9 @@
+{
+  "name": "pcman-fm",
+  "links": [
+    {
+      "source": "setups/rofi/config.rasi",
+      "target": "~/.config/rofi/config.rasi"
+    }
+  ]
+}
