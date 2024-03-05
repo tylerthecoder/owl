@@ -1,27 +1,24 @@
 #!/bin/bash
+# source: https://github.com/Anachron/i3blocks/blob/master/blocks/network
 
-#------------------------------------------------------------------------
-if [[ -z "$INTERFACE" ]] ; then
-    INTERFACE="${BLOCK_INSTANCE:-wlan0}"
+device="${BLOCK_INSTANCE:-wlan0}"
+status=$(cat /sys/class/net/${device}/operstate)
+
+URGENT_VALUE=20
+
+if [[ "${status}" == "up" ]]; then
+  if [[ -d "/sys/class/net/${device}/wireless" ]]; then
+    quality=$(grep ${device} /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')
+    echo "${quality}%"
+    echo "${quality}%"
+    echo ""
+
+    if [[ "${quality}" -le "${URGENT_VALUE}" ]]; then
+      exit 33
+    fi
+  else
+    echo "on"
+    echo "on"
+    echo ""
+  fi
 fi
-#------------------------------------------------------------------------
-
-# As per #36 -- It is transparent: e.g. if the machine has no battery or wireless
-# connection (think desktop), the corresponding block should not be displayed.
-# Similarly, if the wifi interface exists but no connection is active, show
-# nothing
-
-#[[ ! -d /sys/class/net/"${INTERFACE}"/wireless || \
-#    "$(cat /sys/class/net/"$INTERFACE"/operstate)" = 'down' ]] && exit
-
-#------------------------------------------------------------------------
-
-SSID=$(iwgetid | awk '{print $2}' | cut -d "\"" -f 2)
-ADDR=$(ip route get 1 | awk '{print $7; exit}')
-
-#------------------------------------------------------------------------
-
-echo " $ADDR" # full text
-echo " $ADDR" # short text
-echo "#00FF00" # color
-

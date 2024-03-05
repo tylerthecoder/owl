@@ -6,29 +6,28 @@ command=/home/tylord/owl/common/i3-status-scripts/$BLOCK_NAME
 separator_block_width=15
 markup=none
 
-# Update time every 5 seconds
 [time]
-label=🕰️
 command=date +"%a %b %d, %I:%M:%S %p"
 interval=5
 
-# Get the weather hourly
 [weather]
 command=~/.config/i3blocks/rofi-wttr/rofi-wttr
 interval=3600
 color=#A4C2F4
 
-# Get the battery every minute
 [battery]
 command=~/.config/i3blocks/battery2/battery2
 markup=pango
 interval=60
 color=#00FF00
 
-# Query my default IP address only on startup
-[network]
-label=📶
+[ip]
+label=IP:
 interval=60
 color=#00FFFF
+
+[cpu]
+label=CPU:
+interval=2
 
 
