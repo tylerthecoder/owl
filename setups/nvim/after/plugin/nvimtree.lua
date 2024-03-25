@@ -9,3 +9,11 @@ vim.keymap.set('n', '<leader>ff', '<cmd>NvimTreeFindFile<CR>', { noremap = true,
 vim.keymap.set('n', '<leader>gf', grep_at_current_tree_node, { noremap = true, silent = true })
 
 require 'nvim-web-devicons'.setup {}
+
+require('nvim-tree').setup({
+    actions = {
+        open_file = {
+            quit_on_open = true,
+        },
+    },
+})
