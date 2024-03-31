@@ -30,9 +30,9 @@ bindsym $mod+z exec gnome-control-center
 bindsym $mod+a exec pavucontrol
 
 # ==== Rofi ====
-bindsym $mod+i exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh run"
-bindsym $mod+o exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh window"
-bindsym $mod+p exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh"
+bindsym $mod+i exec "~/owl/setups/menu/rofi-i3-switcher.sh run"
+bindsym $mod+o exec "~/owl/setups/menu/rofi-i3-switcher.sh window"
+bindsym $mod+p exec "~/owl/setups/menu/rofi-i3-switcher.sh"
 
 # bindsym Control+space exec dunstctl close
 

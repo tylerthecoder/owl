@@ -1,8 +1,8 @@
 {
-  "name": "workspace-switcher",
+  "name": "menu",
   "links": [
     {
-      "source": "setups/workspace-switcher/rofi-i3-switcher.sh",
+      "source": "setups/menu/rofi-i3-switcher.sh",
       "target": "~/.local/bin/rofi-i3-switcher"
     }
   ]
