@@ -34,7 +34,7 @@ bindsym $mod+i exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh run"
 bindsym $mod+o exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh window"
 bindsym $mod+p exec "~/owl/setups/workspace-switcher/rofi-i3-switcher.sh"
 
-bindsym Control+space exec dunstctl close
+# bindsym Control+space exec dunstctl close
 
 bindsym $mod+F1 exec zathura ~/docs/help.pdf
 

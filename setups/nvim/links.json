@@ -1,9 +1,9 @@
 {
-    "name": "nvim",
-    "links": [
-        {
-            "source": "setups/nvim",
-            "target": "~/.config/nvim"
-        }
-    ]
+  "name": "nvim",
+  "links": [
+    {
+      "source": "setups/nvim",
+      "target": "~/.config/nvim"
+    }
+  ]
 }
