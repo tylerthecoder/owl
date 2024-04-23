@@ -21,6 +21,17 @@ return require('packer').startup(function(use)
     -- Treesitter
     use({ 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' })
     use 'nvim-treesitter/playground'
+    use {
+        'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons', -- optional
+        },
+    }
+    use({
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        after = "nvim-treesitter",
+        requires = "nvim-treesitter/nvim-treesitter",
+    })
 
     use 'mbbill/undotree'
 
@@ -74,18 +85,6 @@ return require('packer').startup(function(use)
         end
     }
 
-    -- Tree Sitter
-    use {
-        'nvim-tree/nvim-tree.lua',
-        requires = {
-            'nvim-tree/nvim-web-devicons', -- optional
-        },
-    }
-    use({
-        "nvim-treesitter/nvim-treesitter-textobjects",
-        after = "nvim-treesitter",
-        requires = "nvim-treesitter/nvim-treesitter",
-    })
 
     -- Folding
     use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }

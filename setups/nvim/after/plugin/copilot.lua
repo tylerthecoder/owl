@@ -30,7 +30,7 @@ function ToggleCopilot()
     command.attach()
 end
 
-vim.keymap.set('n', '<leader>ai',
+vim.keymap.set('n', '<leader>cp',
     '<cmd> lua ToggleCopilot()<cr>', {
         noremap = true,
     })

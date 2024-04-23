@@ -6,7 +6,7 @@ end
 
 vim.keymap.set('n', '<leader>ft', '<cmd>NvimTreeToggle<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ff', '<cmd>NvimTreeFindFile<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>gf', grep_at_current_tree_node, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>fg', grep_at_current_tree_node, { noremap = true, silent = true })
 
 require 'nvim-web-devicons'.setup {}
 
