@@ -35,7 +35,6 @@ bindsym $mod+o exec "~/owl/setups/menu/rofi-i3-switcher.sh window"
 bindsym $mod+p exec "~/owl/setups/menu/rofi-i3-switcher.sh"
 
 # bindsym Control+space exec dunstctl close
-
 bindsym $mod+F1 exec zathura ~/docs/help.pdf
 
 # Audio controls
