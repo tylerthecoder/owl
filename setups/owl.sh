@@ -1,3 +1,2 @@
-sudo pacman -Sy rust
-cargo build
-cp target/debug/owl ~/.local/bin/owl
+wget https://github.com/tylerthecoder/owl/releases/download/stable/owl -O owl
+mv owl ~/.local/bin/owl

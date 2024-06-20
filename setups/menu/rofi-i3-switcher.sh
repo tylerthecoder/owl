@@ -43,6 +43,16 @@ mount_tab() {
     ~/.local/bin/mt start $workspace
 }
 
+bench_menu() {
+    workspace=$(bench list-workspaces | rofi -dmenu -i -p "Select workspace")
+    if [ -z "$workspace" ]; then
+        echo "No workspace selected"
+        exit 1
+    fi
+    echo "Selected workspace: $workspace"
+    bench open "$workspace"
+}
+
 
 move_window_to_workspace_2() {
     WSP=$(list_workspaces | rofi -dmenu -p "Move window to workspace")
@@ -76,7 +86,7 @@ menu() {
     elif [[ "$ACITON" = "$EMOJI_MSG" ]]; then
         rofi -modi "emoji" -show emoji
     elif [[ "$ACITON" = "$BROWSER_MSG" ]]; then
-        mount_tab
+        bench_menu
     elif [[ "$ACITON" = "$CLIPBOARD_MSG" ]]; then
         rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
     fi
