@@ -1,0 +1,31 @@
+#! /bin/sh
+
+# This file contains envrionment variables that depend on the Operating System
+# This includes things like the path, the editor, and the terminal emulator
+
+# OWL
+export OWL_PATH="/home/tyler/owl"
+export OWL_CONFIG_PATH="/home/tyler/owl/comps/redwood/owl-config.json"
+
+export TERM=xterm-256color
+
+# XDG vars
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# Programs
+export EDITOR="nvim"
+
+# Local bin
+export PATH="$HOME/.local/bin:$PATH"
+
+# Load Alias
+for file in ~/.config/alias/*; do
+    [ -f "$file" ] && source "$file"
+done
+
+# Secrets
+[ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
+

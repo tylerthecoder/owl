@@ -1,0 +1,57 @@
+{
+  "links": [
+    {
+      "source": "target/debug/owl",
+      "target": "~/.local/bin/owl"
+    },
+    {
+      "source": "common/config/.vimrc",
+      "target": "~/.vimrc"
+    },
+    {
+      "source": "common/config/.bashrc",
+      "target": "~/.bashrc"
+    },
+    {
+      "source": "common/config/.bash_profile",
+      "target": "~/.bash_profile"
+    },
+    {
+      "source": "comps/redwood/.shenv",
+      "target": "~/.shenv"
+    },
+    {
+      "source": "common/config/.alias",
+      "target": "~/.config/alias/base"
+    },
+    {
+      "source": "common/config/.alias-git",
+      "target": "~/.config/alias/git"
+    },
+    {
+      "source": "common/config/rc.conf",
+      "target": "~/.config/ranger/rc.conf"
+    },
+    {
+      "source": "common/config/gitconfig",
+      "target": "~/.config/git/config"
+    },
+    {
+      "source": "common/config/rifle.conf",
+      "target": "~/.config/ranger/rifle.conf"
+    },
+    {
+      "source": ".secrets",
+      "target": "~/.secrets"
+    },
+    {
+      "source": "common/scripts/favs.sh",
+      "target": "~/.local/bin/f"
+    }
+  ],
+  "setups": [
+    "nvim",
+    "tmux",
+    "zsh"
+  ]
+}
