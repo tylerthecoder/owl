@@ -1,10 +1,6 @@
 {
   "links": [
     {
-      "source": "target/debug/owl",
-      "target": "~/.local/bin/owl"
-    },
-    {
       "source": "common/config/.vimrc",
       "target": "~/.vimrc"
     },
