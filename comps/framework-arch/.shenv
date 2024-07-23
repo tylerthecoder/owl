@@ -20,7 +20,7 @@ export DEV_PATH="/home/tylord/dev"
 
 # Programs
 export EDITOR="nvim"
-export BROWSER="brave"
+export BROWSER="chromium"
 export TERMINAL="terminator"
 export TERMIANL_ROLE="terminator --role"
 export TERMINAL_EXEC="terminator -e"

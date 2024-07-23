@@ -42,8 +42,7 @@ return require('packer').startup(function(use)
         requires = { { "nvim-lua/plenary.nvim" } }
     }
 
-    -- Copilot
-    -- use 'github/copilot.vim'
+    -- AI
     use { "zbirenbaum/copilot.lua" }
     use {
         "zbirenbaum/copilot-cmp",
@@ -52,6 +51,12 @@ return require('packer').startup(function(use)
             require("copilot_cmp").setup()
         end
     }
+    use {
+        "melbaldove/llm.nvim",
+        requires = { "nvim-neotest/nvim-nio" },
+    }
+    -- use { 'huggingface/llm.nvim' }
+    -- use 'github/copilot.vim'
 
     -- LSP
     use 'neovim/nvim-lspconfig'
@@ -62,10 +67,7 @@ return require('packer').startup(function(use)
     use 'mfussenegger/nvim-lint'
 
     -- Formatting
-    use {
-        'stevearc/conform.nvim',
-        config = function() require('conform').setup() end
-    }
+    use { 'stevearc/conform.nvim' }
 
     -- Completions
     use 'hrsh7th/nvim-cmp'

@@ -25,6 +25,14 @@
       "target": "~/.config/alias/main"
     },
     {
+      "source": "comps/framework-arch/.xprofile",
+      "target": "~/.xprofile"
+    },
+    {
+      "source": "comps/framework-arch/.Xresources",
+      "target": "~/.config/X/Xresources"
+    },
+    {
       "source": "common/config/.alias",
       "target": "~/.config/alias/base"
     },
