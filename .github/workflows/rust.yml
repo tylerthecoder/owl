@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: cargo build --verbose
+      run: cargo build --release
     - name: Upload files to a GitHub release
       uses: svenstaro/upload-release-action@2.9.0
       with:
