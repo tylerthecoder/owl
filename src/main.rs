@@ -34,6 +34,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    Install,
     Link,
     Sync,
     Edit,
@@ -63,7 +64,63 @@ fn main() {
             cmd.spawn().expect("Unable to run owl-sync.sh");
         }
         Some(Commands::Edit) => println!("Editing"),
+        Some(Commands::Install) => install(),
         None => println!("No command"),
+    }
+}
+
+
+fn install() {
+    // ask for an owl config
+
+    run_setup("zsh".to_string());
+
+    // build a file that contains owl env and save that
+
+    // install and setup zsh
+
+
+    // install .shenv
+}
+
+fn run_setup(name: String) {
+    let owl_path = get_owl_path();
+    let setup = Setup::from_file(name);
+
+    // print actions to user and have them select one
+    println!("Select an action to run: ");
+    for (i, action) in setup.actions.iter().enumerate() {
+        println!("{}) {}", i, action);
+    }
+
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap().to_string();
+    let index: usize = input.trim().parse().unwrap();
+
+    // this is relative to the setup directory
+    let action_path = setup.actions[index].clone();
+
+    let path_parts = [
+        Path::new(&owl_path),
+        Path::new("setups"),
+        Path::new(&setup.name),
+        Path::new(&action_path),
+    ];
+
+    let full_action_path = path_parts.iter().fold(PathBuf::new(), |acc, &part| acc.join(part));
+
+    // normalize the path
+    let full_action_path = full_action_path.canonicalize().expect("Failed to canonicalize path");
+
+    let cmd_str = full_action_path.to_str().expect("Failed to convert path to string");
+
+    println!("Running action: {}", cmd_str);
+
+    let mut cmd = std::process::Command::new("bash");
+    cmd.arg("-c").arg(cmd_str);
+    let output = cmd.output().expect("Failed to execute command");
+    if !output.status.success() {
+        eprintln!("Command failed: {}", String::from_utf8_lossy(&output.stderr));
     }
 }
 
@@ -77,6 +134,9 @@ struct OwlConfig {
 struct Setup {
     name: String,
     links: Vec<LinkedFile>,
+    // vector of script file paths relative to the setup directory
+    #[serde(default)]
+    actions: Vec<String>,
 }
 
 impl Setup {
@@ -94,14 +154,25 @@ impl Setup {
     }
 }
 
+fn prompt_user_for_owl_config() -> String {
+    println!("Enter the path to your owl config file: ");
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap().to_string();
+    input
+}
+
 fn get_owl_config() -> OwlConfig {
     let config_path = match std::env::var("OWL_CONFIG_PATH") {
         Ok(path) => path,
         Err(_) => {
-            println!("Enter the path to your owl config file: ");
-            let mut input = String::new();
-            std::io::stdin().read_line(&mut input).unwrap().to_string();
-            input
+            let mut owl_config_path = prompt_user_for_owl_config();
+
+            while !Path::new(&owl_config_path).exists() {
+                println!("The path {} does not exist", owl_config_path);
+                owl_config_path = prompt_user_for_owl_config();
+            }
+
+            owl_config_path
         }
     };
 

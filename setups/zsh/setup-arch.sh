@@ -1,4 +1,9 @@
-sudo apt install zsh
+if ! command -v zsh &> /dev/null
+then
+    sudo pacman -Sy zsh
+else
+    echo "zsh is already installed"
+fi
 
 mkdir -p ~/.cache/zsh
 mkdir -p $XDG_STATE_HOME/zsh
@@ -30,3 +35,5 @@ if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
 else
     echo "Keeping current default shell."
 fi
+
+
