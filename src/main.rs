@@ -14,8 +14,10 @@ fn get_owl_path() -> String {
             // ask user for owl path
             println!("Enter the path to owl: ");
             let mut input = String::new();
-            let value = std::io::stdin().read_line(&mut input).unwrap().to_string();
-            std::env::set_var("OWL_PATH", input);
+            std::io::stdin().read_line(&mut input).unwrap();
+            let value = input.trim().to_string();
+            std::env::set_var("OWL_PATH", &value);
+
             value
         }
     }
