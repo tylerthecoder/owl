@@ -24,17 +24,13 @@ cargo build
 Perform first link
 ```
 cargo run -- link
+
 ```
 
-### Important environment variable
+## Config
+Config is stored in `~/.config/owl/config.json`
 
-**OWL_PATH**: The location of on your machine of this repository.
-
-**OWL_CONFIG_PATH**: The location of an owl config. Contains a list of files or link and programs to set up.
-
-## Terms
-**Setup** are directories that contain a list of links and programs to install.
-**Link files** are json config files that map files in this repo to their location on the system.
-**Comps**
+**owl_path**: The location of on your machine of this repository.
+**nest_path**: The location of a nest file. Contains a list of files or link and programs to set up.
 
 

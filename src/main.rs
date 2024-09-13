@@ -1,26 +1,115 @@
 use clap::{Parser, Subcommand};
 use serde::Deserialize;
+use serde::Serialize;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 extern crate skim;
 use colored::Colorize;
 use std::process::Command;
+use std::io::{BufRead, BufReader};
 
-fn get_owl_path() -> String {
-    match std::env::var("OWL_PATH") {
-        Ok(path) => path,
-        Err(_) => {
-            // ask user for owl path
-            println!("Enter the path to owl: ");
-            let mut input = String::new();
-            std::io::stdin().read_line(&mut input).unwrap();
-            let value = input.trim().to_string();
-            std::env::set_var("OWL_PATH", &value);
+#[derive(Debug, Deserialize, Serialize)]
+struct Config {
+    #[serde(default = "get_default_owl_path")]
+    owl_path: PathBuf,
+    nest_path: Option<PathBuf>,
+}
 
-            value
-        }
+fn get_default_owl_path() -> PathBuf {
+    Path::new("/home/tyler/owl").to_path_buf()
+}
+
+fn get_config_path() -> String {
+    let config_path = "~/.config/owl/config.json";
+    shellexpand::tilde(&config_path).to_string()
+}
+
+fn get_config() -> Config {
+    let config_path = get_config_path();
+
+    // Make file if it doesn't exist
+    if !Path::new(&config_path).exists() {
+        // create path if it doesn't exist
+        std::fs::create_dir_all(Path::new(&config_path).parent().unwrap()).expect("Unable to create config path");
+        std::fs::File::create(&config_path).expect("Unable to create config file");
+
+        let config = Config {
+            owl_path: get_default_owl_path(),
+            nest_path: None,
+        };
+
+        let config_raw = serde_json::to_string(&config).expect("Unable to serialize config");
+        std::fs::write(&config_path, config_raw).expect("Unable to write config file");
     }
+
+    let config_raw = std::fs::read_to_string(&config_path).expect("Unable to read config file");
+    let config: Config = serde_json::from_str(&config_raw).expect("Unable to parse config file");
+    config
+}
+
+fn save_config(config: Config) {
+    let config_path = get_config_path();
+    let config_raw = serde_json::to_string(&config).expect("Unable to serialize config");
+    std::fs::write(config_path, config_raw).expect("Unable to write config file");
+}
+
+fn verify_config() -> bool {
+    let mut config = get_config();
+    if !config.owl_path.exists() {
+        println!("Owl path {} does not exist", config.owl_path.display());
+        // prompt user to enter a new path
+        let mut new_path = String::new();
+        println!("Enter the absolute path to your owl folder: ");
+        std::io::stdin().read_line(&mut new_path).unwrap();
+        let new_path = PathBuf::from(new_path.trim());
+        config.owl_path = new_path;
+        save_config(config);
+    }
+    return true;
+}
+
+fn prompt_user_for_nest_path() -> PathBuf {
+    println!("Enter the absolute path to your nest folder: ");
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap();
+    PathBuf::from(input.trim())
+}
+
+fn load_nest() {
+    let mut config = get_config();
+    let nest_path = config.nest_path;
+
+    if nest_path.is_none() {
+        println!("Nest path is not set");
+        let nest_path = prompt_user_for_nest_path();
+        config.nest_path = Some(nest_path);
+        save_config(config);
+        return;
+    }
+
+    let nest_path = nest_path.unwrap();
+    if !nest_path.exists() {
+        println!("Nest path {} does not exist", nest_path.display());
+        // prompt user to enter a new path
+        let nest_path = prompt_user_for_nest_path();
+        config.nest_path = Some(nest_path);
+        save_config(config);
+        return;
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct Nest {
+    links: Vec<LinkedFile>,
+    setups: Vec<String>,
+}
+
+fn get_nest() -> Nest {
+    let nest_path = get_config().nest_path.unwrap();
+    let nest_raw = std::fs::read_to_string(nest_path).expect("Unable to read nest file");
+    let nest: Nest = serde_json::from_str(&nest_raw).expect("Unable to parse nest file");
+    nest
 }
 
 #[derive(Parser)]
@@ -36,19 +125,22 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    Install,
     Link,
     Sync,
     Edit,
+    Setup { setup_name: String },
 }
 
 fn main() {
+    verify_config();
+    load_nest();
+
     let cli = Cli::parse();
     match cli.command {
         Some(Commands::Link) => link_with_setups(),
         Some(Commands::Sync) => {
             println!("Syncing");
-            let owl_path = get_owl_path();
+            let owl_path = get_config().owl_path;
 
             let owl_sync_script_path = Path::join(
                 Path::new(&owl_path),
@@ -66,30 +158,44 @@ fn main() {
             cmd.spawn().expect("Unable to run owl-sync.sh");
         }
         Some(Commands::Edit) => println!("Editing"),
-        Some(Commands::Install) => install(),
+        Some(Commands::Setup { setup_name }) => run_setup(&setup_name),
         None => println!("No command"),
     }
 }
 
-
-fn install() {
-    // ask for an owl config
-
-    run_setup("zsh".to_string());
-
-    // build a file that contains owl env and save that
-
-    // install and setup zsh
-
-
-    // install .shenv
+#[derive(Debug, Deserialize)]
+struct Setup {
+    name: String,
+    links: Vec<LinkedFile>,
+    // vector of script file paths relative to the setup directory
+    #[serde(default)]
+    actions: Vec<String>,
 }
 
-fn run_setup(name: String) {
-    let owl_path = get_owl_path();
-    let setup = Setup::from_file(name);
+impl Setup {
+    pub fn from_file(name: String) -> Setup {
+        let setup_path = Path::join(
+            &Path::join(Path::new(&get_config().owl_path), Path::new("setups")),
+            &Path::join(Path::new(&name), Path::new("links.json")),
+        );
+
+        println!("Using setup file: {}", setup_path.display());
+
+        let setup_raw = std::fs::read_to_string(setup_path).expect("Unable to read setup file");
+        let setup: Setup = serde_json::from_str(&setup_raw).expect("Unable to parse setup file");
+        setup
+    }
+}
+
+fn run_setup_script(setup: &Setup) {
+    let owl_path = get_config().owl_path;
 
     // print actions to user and have them select one
+    if setup.actions.is_empty() {
+        println!("No actions to run for {}", setup.name.green());
+        return;
+    }
+
     println!("Select an action to run: ");
     for (i, action) in setup.actions.iter().enumerate() {
         println!("{}) {}", i, action);
@@ -120,69 +226,46 @@ fn run_setup(name: String) {
 
     let mut cmd = std::process::Command::new("bash");
     cmd.arg("-c").arg(cmd_str);
-    let output = cmd.output().expect("Failed to execute command");
-    if !output.status.success() {
-        eprintln!("Command failed: {}", String::from_utf8_lossy(&output.stderr));
-    }
-}
 
-#[derive(Debug, Deserialize)]
-struct OwlConfig {
-    links: Vec<LinkedFile>,
-    setups: Vec<String>,
-}
+    // Use spawn and pipe the output
+    let mut child = cmd.stdout(std::process::Stdio::piped())
+                       .stderr(std::process::Stdio::piped())
+                       .spawn()
+                       .expect("Failed to spawn command");
 
-#[derive(Debug, Deserialize)]
-struct Setup {
-    name: String,
-    links: Vec<LinkedFile>,
-    // vector of script file paths relative to the setup directory
-    #[serde(default)]
-    actions: Vec<String>,
-}
-
-impl Setup {
-    pub fn from_file(name: String) -> Setup {
-        let setup_path = Path::join(
-            &Path::join(Path::new(&get_owl_path()), Path::new("setups")),
-            &Path::join(Path::new(&name), Path::new("links.json")),
-        );
-
-        println!("Using setup file: {}", setup_path.display());
-
-        let setup_raw = std::fs::read_to_string(setup_path).expect("Unable to read setup file");
-        let setup: Setup = serde_json::from_str(&setup_raw).expect("Unable to parse setup file");
-        setup
-    }
-}
-
-fn prompt_user_for_owl_config() -> String {
-    println!("Enter the path to your owl config file: ");
-    let mut input = String::new();
-    std::io::stdin().read_line(&mut input).unwrap().to_string();
-    input
-}
-
-fn get_owl_config() -> OwlConfig {
-    let config_path = match std::env::var("OWL_CONFIG_PATH") {
-        Ok(path) => path,
-        Err(_) => {
-            let mut owl_config_path = prompt_user_for_owl_config();
-
-            while !Path::new(&owl_config_path).exists() {
-                println!("The path {} does not exist", owl_config_path);
-                owl_config_path = prompt_user_for_owl_config();
+    // Read and print stdout
+    if let Some(stdout) = child.stdout.take() {
+        let stdout_reader = BufReader::new(stdout);
+        for line in stdout_reader.lines() {
+            if let Ok(line) = line {
+                println!("{}", line);
             }
-
-            owl_config_path
         }
-    };
+    }
 
-    println!("Using config file: {}", config_path);
+    // Read and print stderr
+    if let Some(stderr) = child.stderr.take() {
+        let stderr_reader = std::io::BufReader::new(stderr);
+        for line in stderr_reader.lines() {
+            if let Ok(line) = line {
+                eprintln!("{}", line);
+            }
+        }
+    }
 
-    let config_raw = std::fs::read_to_string(config_path).expect("Unable to read config file");
-    let config: OwlConfig = serde_json::from_str(&config_raw).expect("Unable to parse config file");
-    return config;
+    // Wait for the command to finish and check the status
+    let status = child.wait().expect("Failed to wait on child process");
+    if !status.success() {
+        eprintln!("Command failed with exit code: {:?}", status.code());
+    }
+}
+
+fn run_setup_link(setup: &Setup) {
+    println!("Setting up {}", setup.name.green());
+    // setup path is owl path + "/setups/" + setup + "links.json"
+    for linked_file in &setup.links {
+        linked_file.create_symlink();
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -197,7 +280,7 @@ struct LinkedFile {
 impl LinkedFile {
     pub fn create_symlink(&self) {
         let absolute_source_path =
-            Path::join(Path::new(&get_owl_path()), Path::new(&self.source_path));
+            Path::join(Path::new(&get_config().owl_path), Path::new(&self.source_path));
 
         let absolute_target_path = shellexpand::tilde(&self.target_path).to_string();
 
@@ -258,22 +341,21 @@ impl LinkedFile {
 
 fn link_with_setups() {
     // get the config
-    let config = get_owl_config();
+    let nests = get_nest();
 
-    // link the configs links
-    for linked_file in config.links {
+    for linked_file in nests.links {
         linked_file.create_symlink();
     }
 
     // read each setup's config file
-    for setup in config.setups {
+    for setup in nests.setups {
         let setup = Setup::from_file(setup);
-
-        println!("Setting up {}", setup.name.green());
-
-        // setup path is owl path + "/setups/" + setup + "links.json"
-        for linked_file in setup.links {
-            linked_file.create_symlink();
-        }
+        run_setup_link(&setup);
     }
+}
+
+fn run_setup(setup_name: &str) {
+    let setup = Setup::from_file(setup_name.to_string());
+    run_setup_script(&setup);
+    run_setup_link(&setup);
 }

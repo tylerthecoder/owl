@@ -12,4 +12,4 @@ else
     echo "~/owl directory already exists. Skipping clone."
 fi
 
-~/.local/bin/owl install
+~/.local/bin/owl

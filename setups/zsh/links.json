@@ -1,8 +1,7 @@
 {
   "name": "zsh",
   "actions": [
-    "./setup.sh",
-    "./setup-ubuntu.sh"
+    "./setup.sh"
   ],
   "links": [
     {
