@@ -6,6 +6,8 @@ if [ ! -f ~/.local/bin/owl ]; then
     mv owl-bin ~/.local/bin/owl
 fi
 
+rm -rf ~/owl
+
 if [ ! -d ~/owl ]; then
     git clone git@github.com:tylerthecoder/owl.git ~/owl
 else

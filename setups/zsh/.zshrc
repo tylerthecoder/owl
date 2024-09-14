@@ -75,15 +75,17 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff0000,bg=white,bold,underline"
 # Load Auto Complete
 source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
+# Load syntax highlighting
+source "$ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
 # Load fuzzy history search
 source "$ZDOTDIR/zsh-history-substring-search/zsh-history-substring-search.zsh"
-
-# Load syntax highlighting (needs to be last)
-source "$ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # Fuzzy search history
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
+bindkey "^[OA" history-substring-search-up
+bindkey "^[OB" history-substring-search-down
 
 # bun completions
 [ -s "/home/tylord/.bun/_bun" ] && source "/home/tylord/.bun/_bun"
