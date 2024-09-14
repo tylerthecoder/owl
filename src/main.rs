@@ -129,6 +129,7 @@ enum Commands {
     Sync,
     Edit,
     Setup { setup_name: String },
+    Update,
 }
 
 fn main() {
@@ -159,6 +160,7 @@ fn main() {
         }
         Some(Commands::Edit) => println!("Editing"),
         Some(Commands::Setup { setup_name }) => run_setup(&setup_name),
+        Some(Commands::Update) => run_update(),
         None => println!("No command"),
     }
 }
@@ -358,4 +360,45 @@ fn run_setup(setup_name: &str) {
     let setup = Setup::from_file(setup_name.to_string());
     run_setup_script(&setup);
     run_setup_link(&setup);
+}
+
+fn run_update() {
+    let update_script_path = shellexpand::tilde("~/owl/setups/owl.sh").into_owned();
+    println!("Running update script: {}", update_script_path);
+
+    let mut cmd = Command::new("bash");
+    cmd.arg("-c").arg(&update_script_path);
+
+    let mut child = cmd.stdout(std::process::Stdio::piped())
+                       .stderr(std::process::Stdio::piped())
+                       .spawn()
+                       .expect("Failed to spawn update command");
+
+    // Read and print stdout
+    if let Some(stdout) = child.stdout.take() {
+        let stdout_reader = BufReader::new(stdout);
+        for line in stdout_reader.lines() {
+            if let Ok(line) = line {
+                println!("{}", line);
+            }
+        }
+    }
+
+    // Read and print stderr
+    if let Some(stderr) = child.stderr.take() {
+        let stderr_reader = BufReader::new(stderr);
+        for line in stderr_reader.lines() {
+            if let Ok(line) = line {
+                eprintln!("{}", line);
+            }
+        }
+    }
+
+    // Wait for the command to finish and check the status
+    let status = child.wait().expect("Failed to wait on update process");
+    if !status.success() {
+        eprintln!("Update command failed with exit code: {:?}", status.code());
+    } else {
+        println!("Update completed successfully");
+    }
 }
