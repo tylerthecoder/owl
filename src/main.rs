@@ -189,6 +189,46 @@ impl Setup {
     }
 }
 
+fn run_script(script_path: &str) {
+    println!("Running script: {}", script_path);
+
+    let mut cmd = Command::new("bash");
+    cmd.arg("-c").arg(script_path);
+
+    let mut child = cmd.stdout(std::process::Stdio::piped())
+                       .stderr(std::process::Stdio::piped())
+                       .spawn()
+                       .expect("Failed to spawn command");
+
+    // Read and print stdout
+    if let Some(stdout) = child.stdout.take() {
+        let stdout_reader = BufReader::new(stdout);
+        for line in stdout_reader.lines() {
+            if let Ok(line) = line {
+                println!("{}", line);
+            }
+        }
+    }
+
+    // Read and print stderr
+    if let Some(stderr) = child.stderr.take() {
+        let stderr_reader = BufReader::new(stderr);
+        for line in stderr_reader.lines() {
+            if let Ok(line) = line {
+                eprintln!("{}", line);
+            }
+        }
+    }
+
+    // Wait for the command to finish and check the status
+    let status = child.wait().expect("Failed to wait on child process");
+    if !status.success() {
+        eprintln!("Command failed with exit code: {:?}", status.code());
+    } else {
+        println!("Script completed successfully");
+    }
+}
+
 fn run_setup_script(setup: &Setup) {
     let owl_path = get_config().owl_path;
 
@@ -224,42 +264,7 @@ fn run_setup_script(setup: &Setup) {
 
     let cmd_str = full_action_path.to_str().expect("Failed to convert path to string");
 
-    println!("Running action: {}", cmd_str);
-
-    let mut cmd = std::process::Command::new("bash");
-    cmd.arg("-c").arg(cmd_str);
-
-    // Use spawn and pipe the output
-    let mut child = cmd.stdout(std::process::Stdio::piped())
-                       .stderr(std::process::Stdio::piped())
-                       .spawn()
-                       .expect("Failed to spawn command");
-
-    // Read and print stdout
-    if let Some(stdout) = child.stdout.take() {
-        let stdout_reader = BufReader::new(stdout);
-        for line in stdout_reader.lines() {
-            if let Ok(line) = line {
-                println!("{}", line);
-            }
-        }
-    }
-
-    // Read and print stderr
-    if let Some(stderr) = child.stderr.take() {
-        let stderr_reader = std::io::BufReader::new(stderr);
-        for line in stderr_reader.lines() {
-            if let Ok(line) = line {
-                eprintln!("{}", line);
-            }
-        }
-    }
-
-    // Wait for the command to finish and check the status
-    let status = child.wait().expect("Failed to wait on child process");
-    if !status.success() {
-        eprintln!("Command failed with exit code: {:?}", status.code());
-    }
+    run_script(cmd_str);
 }
 
 fn run_setup_link(setup: &Setup) {
@@ -364,41 +369,5 @@ fn run_setup(setup_name: &str) {
 
 fn run_update() {
     let update_script_path = shellexpand::tilde("~/owl/setups/owl.sh").into_owned();
-    println!("Running update script: {}", update_script_path);
-
-    let mut cmd = Command::new("bash");
-    cmd.arg("-c").arg(&update_script_path);
-
-    let mut child = cmd.stdout(std::process::Stdio::piped())
-                       .stderr(std::process::Stdio::piped())
-                       .spawn()
-                       .expect("Failed to spawn update command");
-
-    // Read and print stdout
-    if let Some(stdout) = child.stdout.take() {
-        let stdout_reader = BufReader::new(stdout);
-        for line in stdout_reader.lines() {
-            if let Ok(line) = line {
-                println!("{}", line);
-            }
-        }
-    }
-
-    // Read and print stderr
-    if let Some(stderr) = child.stderr.take() {
-        let stderr_reader = BufReader::new(stderr);
-        for line in stderr_reader.lines() {
-            if let Ok(line) = line {
-                eprintln!("{}", line);
-            }
-        }
-    }
-
-    // Wait for the command to finish and check the status
-    let status = child.wait().expect("Failed to wait on update process");
-    if !status.success() {
-        eprintln!("Update command failed with exit code: {:?}", status.code());
-    } else {
-        println!("Update completed successfully");
-    }
+    run_script(&update_script_path);
 }
