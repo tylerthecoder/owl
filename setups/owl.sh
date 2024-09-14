@@ -1,9 +1,9 @@
-curl -L https://github.com/tylerthecoder/owl/releases/download/main/owl -o owl
-chmod +x owl
+curl -L https://github.com/tylerthecoder/owl/releases/download/main/owl -o owl-bin
+chmod +x owl-bin
 mkdir -p ~/.local/bin
 
 if [ ! -f ~/.local/bin/owl ]; then
-    mv owl ~/.local/bin/owl
+    mv owl-bin ~/.local/bin/owl
 fi
 
 if [ ! -d ~/owl ]; then

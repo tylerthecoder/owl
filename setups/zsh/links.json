@@ -10,7 +10,7 @@
     },
     {
       "source": "setups/zsh/zshenv",
-      "target": "/etc/zsh/zshenv",
+      "target": "~/.zshenv",
       "root": true
     }
   ]
