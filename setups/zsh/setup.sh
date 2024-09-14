@@ -43,20 +43,22 @@ fi
 
 
 # Check the current default shell
-current_shell=$(basename "$SHELL")
-if [ "$current_shell" != "zsh" ]; then
-    echo "Would you like to change your default shell to zsh? (y/n)"
-    read answer
+echo "Make sure to set zsh as your default shell"
+echo "You can do this by running 'chsh -s $(which zsh)'"
+# current_shell=$(basename "$SHELL")
+# if [ "$current_shell" != "zsh" ]; then
+#     echo "Would you like to change your default shell to zsh? (y/n)"
+#     read answer
 
-    if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
-        echo "Changing default shell to zsh..."
-        zsh_path=$(which zsh)
-        echo "zsh path: $zsh_path"
-        sudo chsh -s "$zsh_path"
-        echo "Default shell changed to zsh. Please log out and log back in for the changes to take effect."
-    else
-        echo "Keeping current default shell."
-    fi
-fi
+#     if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+#         echo "Changing default shell to zsh..."
+#         zsh_path=$(which zsh)
+#         echo "zsh path: $zsh_path"
+#         sudo chsh -s "$zsh_path"
+#         echo "Default shell changed to zsh. Please log out and log back in for the changes to take effect."
+#     else
+#         echo "Keeping current default shell."
+#     fi
+# fi
 
 
