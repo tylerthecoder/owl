@@ -59,6 +59,13 @@ move_window_to_workspace_2() {
     i3-msg "move container to workspace $WSP"
 }
 
+run_owl_script() {
+    script=$(ls ~/owl/common/scripts | rofi -dmenu -i -p "Select script")
+    if [ -n "$script" ]; then
+        ~/owl/common/scripts/"$script"
+    fi
+}
+
 menu() {
     GO_MSG="(j) Go to Workspace"
     MOVE_MSG="(k) Move Window"
@@ -67,11 +74,12 @@ menu() {
     EMOJI_MSG="(e) Emoji"
     CLIPBOARD_MSG="(c) Clipboard"
     BROWSER_MSG="(b) Browser"
+    OWL_SCRIPT_MSG="(s) Scripts"
     QUIT_MSG="(q) Quit"
 
-    MENU_MSG="$GO_MSG\n$MOVE_MSG\n$APPS_MSG\n$WINDOW_MSG\n$EMOJI_MSG\n$CLIPBOARD_MSG\n$BROWSER_MSG\n$QUIT_MSG"
+    MENU_MSG="$GO_MSG\n$MOVE_MSG\n$APPS_MSG\n$WINDOW_MSG\n$EMOJI_MSG\n$CLIPBOARD_MSG\n$BROWSER_MSG\n$OWL_SCRIPT_MSG\n$QUIT_MSG"
 
-    ACITON=$(echo -e "$MENU_MSG" | rofi -dmenu -p "Action:" -kb-select-1 'j' -kb-select-2 'k' -kb-select-3 'a' -kb-select-4 'w' -kb-select-5 'e' -kb-select-6 'c' -kb-select-7 'b' -kb-select-8 'q')
+    ACITON=$(echo -e "$MENU_MSG" | rofi -dmenu -p "Action:" -kb-select-1 'j' -kb-select-2 'k' -kb-select-3 'a' -kb-select-4 'w' -kb-select-5 'e' -kb-select-6 'c' -kb-select-7 'b' -kb-select-8 's' -kb-select-9 'q')
 
     if [[ "$ACITON" = "$GO_MSG" ]]; then
         go_to_workspace_2 $@
@@ -89,6 +97,8 @@ menu() {
         bench_menu
     elif [[ "$ACITON" = "$CLIPBOARD_MSG" ]]; then
         rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
+    elif [[ "$ACITON" = "$OWL_SCRIPT_MSG" ]]; then
+        run_owl_script
     fi
 }
 
