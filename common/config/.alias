@@ -13,7 +13,6 @@ alias l='ls -CF'
 alias doco="docker-compose"
 alias go="xdg-open"
 alias weather="curl wttr.in"
-alias python="python3"
 alias cls="clear"
 alias r="ranger"
 alias plz="sudo"
