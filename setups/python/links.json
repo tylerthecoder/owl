@@ -1,0 +1,12 @@
+{
+  "name": "python",
+  "actions": [
+    "./setup.sh"
+  ],
+  "links": [
+    {
+      "source": "setups/python/rc",
+      "target": "~/.config/owl-rc/pyenv"
+    }
+  ]
+}

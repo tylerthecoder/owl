@@ -4,10 +4,22 @@ This repository contains all of my dotfiles, scripts, and configs I use across d
 
 ## Quick start
 
+Download and run the setup script.
 ```
-curl https://raw.githubusercontent.com/tylerthecoder/owl/main/setups/owl.sh | sh
+curl https://raw.githubusercontent.com/tylerthecoder/owl/main/setups/owl/setup.sh | sh
 ```
 
+Link files. This will ask to select a nest file.
+```
+owl link
+```
+
+Setup software
+```
+owl setup base-shell
+owl setup zsh
+owl setup python
+```
 
 ## Getting Started
 

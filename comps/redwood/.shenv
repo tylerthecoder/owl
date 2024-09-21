@@ -26,6 +26,11 @@ for file in ~/.config/alias/*; do
     [ -f "$file" ] && source "$file"
 done
 
+# Run owl-rc
+for file in ~/.config/owl-rc/*; do
+    [ -f "$file" ] && source "$file"
+done
+
 # Secrets
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
 

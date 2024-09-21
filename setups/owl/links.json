@@ -1,0 +1,7 @@
+{
+  "name": "owl",
+  "actions": [
+    "./setup.sh"
+  ],
+  "links": [ ]
+}

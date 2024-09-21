@@ -17,7 +17,8 @@ struct Config {
 }
 
 fn get_default_owl_path() -> PathBuf {
-    Path::new("/home/tyler/owl").to_path_buf()
+    let owl_path = "~/owl";
+    PathBuf::from(shellexpand::tilde(&owl_path).to_string())
 }
 
 fn get_config_path() -> String {
@@ -54,7 +55,7 @@ fn save_config(config: Config) {
     std::fs::write(config_path, config_raw).expect("Unable to write config file");
 }
 
-fn verify_config() -> bool {
+fn load_config() -> Config {
     let mut config = get_config();
     if !config.owl_path.exists() {
         println!("Owl path {} does not exist", config.owl_path.display());
@@ -66,7 +67,9 @@ fn verify_config() -> bool {
         config.owl_path = new_path;
         save_config(config);
     }
-    return true;
+
+    let new_config = get_config();
+    new_config
 }
 
 fn prompt_user_for_nest_path() -> PathBuf {
@@ -127,42 +130,33 @@ struct Cli {
 enum Commands {
     Link,
     Sync,
-    Edit,
     Setup { setup_name: String },
     Update,
 }
 
 fn main() {
-    verify_config();
+    let config = load_config();
     load_nest();
 
     let cli = Cli::parse();
     match cli.command {
         Some(Commands::Link) => link_with_setups(),
-        Some(Commands::Sync) => {
-            println!("Syncing");
-            let owl_path = get_config().owl_path;
-
-            let owl_sync_script_path = Path::join(
-                Path::new(&owl_path),
-                Path::new("common/scripts/owl-sync.sh"),
-            );
-
-            println!(
-                "Running owl-sync.sh script at {}",
-                owl_sync_script_path.display()
-            );
-
-            // Run the owl-sync command
-            let mut cmd = std::process::Command::new(owl_sync_script_path);
-
-            cmd.spawn().expect("Unable to run owl-sync.sh");
-        }
-        Some(Commands::Edit) => println!("Editing"),
+        Some(Commands::Sync) => sync(&config),
         Some(Commands::Setup { setup_name }) => run_setup(&setup_name),
         Some(Commands::Update) => run_update(),
         None => println!("No command"),
     }
+}
+
+fn sync(config: &Config) {
+    println!("Syncing");
+
+    let owl_sync_script_path = Path::join(
+        &config.owl_path,
+        Path::new("common/scripts/owl-sync.sh"),
+    );
+
+    run_script(owl_sync_script_path);
 }
 
 #[derive(Debug, Deserialize)]
@@ -189,8 +183,9 @@ impl Setup {
     }
 }
 
-fn run_script(script_path: &str) {
-    println!("Running script: {}", script_path);
+fn run_script(script_path: PathBuf) {
+    let script_path = script_path.canonicalize().expect("Failed to canonicalize path");
+    println!("Running script: {}", script_path.display());
 
     let mut cmd = Command::new("bash");
     cmd.arg("-c").arg(script_path);
@@ -230,41 +225,39 @@ fn run_script(script_path: &str) {
 }
 
 fn run_setup_script(setup: &Setup) {
-    let owl_path = get_config().owl_path;
-
+    let config = get_config();
     // print actions to user and have them select one
     if setup.actions.is_empty() {
         println!("No actions to run for {}", setup.name.green());
         return;
     }
 
-    println!("Select an action to run: ");
-    for (i, action) in setup.actions.iter().enumerate() {
-        println!("{}) {}", i, action);
-    }
+    let script_path = match setup.actions.len() {
+        1 => setup.actions[0].clone(),
+        _ => {
+            println!("Select an action to run: ");
+            for (i, action) in setup.actions.iter().enumerate() {
+                println!("{}) {}", i, action);
+            }
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input).unwrap().to_string();
+            let index: usize = input.trim().parse().unwrap();
 
-    let mut input = String::new();
-    std::io::stdin().read_line(&mut input).unwrap().to_string();
-    let index: usize = input.trim().parse().unwrap();
-
-    // this is relative to the setup directory
-    let action_path = setup.actions[index].clone();
+            // this is relative to the setup directory
+            setup.actions[index].clone()
+        }
+    };
 
     let path_parts = [
-        Path::new(&owl_path),
+        Path::new(&config.owl_path),
         Path::new("setups"),
         Path::new(&setup.name),
-        Path::new(&action_path),
+        Path::new(&script_path),
     ];
 
     let full_action_path = path_parts.iter().fold(PathBuf::new(), |acc, &part| acc.join(part));
 
-    // normalize the path
-    let full_action_path = full_action_path.canonicalize().expect("Failed to canonicalize path");
-
-    let cmd_str = full_action_path.to_str().expect("Failed to convert path to string");
-
-    run_script(cmd_str);
+    run_script(full_action_path);
 }
 
 fn run_setup_link(setup: &Setup) {
@@ -368,6 +361,5 @@ fn run_setup(setup_name: &str) {
 }
 
 fn run_update() {
-    let update_script_path = shellexpand::tilde("~/owl/setups/owl.sh").into_owned();
-    run_script(&update_script_path);
+    run_setup("owl");
 }
