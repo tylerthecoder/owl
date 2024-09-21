@@ -11,6 +11,6 @@ if ! command -v owl &> /dev/null; then
     echo "owl not in path, installing..."
     curl -L https://github.com/tylerthecoder/owl/releases/download/main/owl -o owl-bin
     chmod +x owl-bin
-    mv owl-bin /usr/local/bin/owl
+    sudo mv owl-bin /usr/local/bin/owl
 fi
 
