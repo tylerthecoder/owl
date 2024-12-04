@@ -87,5 +87,11 @@ bindkey "^[[B" history-substring-search-down
 bindkey "^[OA" history-substring-search-up
 bindkey "^[OB" history-substring-search-down
 
+# Ctrl-Backspace to delete word
+bindkey '^H' backward-kill-word
+
+# Ctrl-Delete to delete word
+bindkey '5~' kill-word
+
 # bun completions
 [ -s "/home/tylord/.bun/_bun" ] && source "/home/tylord/.bun/_bun"

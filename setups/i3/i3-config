@@ -1,21 +1,5 @@
 set $mod Mod4
 
-#############################
-#  Auto Start Applications
-###########################
-
-# Status bar apps
-exec_always --no-startup-id nm-applet # Wifi control
-exec_always --no-startup-id blueman-applet # Bluetooth control
-exec_always --no-startup-id flameshot # Screenshot tool
-exec --no-startup-id volumeicon # Volume control
-
-exec --no-startup-id picom # To fix screen tearing
-exec --no-startup-id set-bg-to-nasa-iotd # Load the nasa image of the day as the background image
-exec --no-startup-id dunst # Notification daemon
-exec --no-startup-id greenclip daemon>/dev/null # Clipboard management system
-exec --no-startup-id 1password --silent
-
 ######################
 # Keyboard Shortcuts
 ######################
@@ -25,11 +9,9 @@ bindsym $mod+Shift+q kill
 # Launch Applications
 bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+Return exec terminator --role floating
-bindsym $mod+b exec "$BROWSER"
-bindsym $mod+z exec gnome-control-center
 bindsym $mod+a exec pavucontrol
 
-# ==== Rofi ====
+# Rofi
 bindsym $mod+i exec "~/owl/setups/menu/rofi-i3-switcher.sh run"
 bindsym $mod+o exec "~/owl/setups/menu/rofi-i3-switcher.sh window"
 bindsym $mod+p exec "~/owl/setups/menu/rofi-i3-switcher.sh"
@@ -54,8 +36,6 @@ bindsym F7 exec --no-startup-id brightnessctl set 5%-
 bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
 bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
 bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
-
-# TODO: Figure out how to have this only work when a dunst message is visible
 
 # Set Gaps
 gaps inner 10

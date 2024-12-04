@@ -30,7 +30,7 @@
     },
     {
       "source": "comps/framework-arch/.Xresources",
-      "target": "~/.config/X/Xresources"
+      "target": "~/.config/X/.Xresources"
     },
     {
       "source": "common/config/.alias",

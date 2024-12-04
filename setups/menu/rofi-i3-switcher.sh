@@ -73,11 +73,11 @@ menu() {
     WINDOW_MSG="(w) Window"
     EMOJI_MSG="(e) Emoji"
     CLIPBOARD_MSG="(c) Clipboard"
-    BROWSER_MSG="(b) Browser"
+    BENCH_MSG="(b) Bench"
     OWL_SCRIPT_MSG="(s) Scripts"
     QUIT_MSG="(q) Quit"
 
-    MENU_MSG="$GO_MSG\n$MOVE_MSG\n$APPS_MSG\n$WINDOW_MSG\n$EMOJI_MSG\n$CLIPBOARD_MSG\n$BROWSER_MSG\n$OWL_SCRIPT_MSG\n$QUIT_MSG"
+    MENU_MSG="$GO_MSG\n$MOVE_MSG\n$APPS_MSG\n$WINDOW_MSG\n$EMOJI_MSG\n$CLIPBOARD_MSG\n$BENCH_MSG\n$OWL_SCRIPT_MSG\n$QUIT_MSG"
 
     ACITON=$(echo -e "$MENU_MSG" | rofi -dmenu -p "Action:" -kb-select-1 'j' -kb-select-2 'k' -kb-select-3 'a' -kb-select-4 'w' -kb-select-5 'e' -kb-select-6 'c' -kb-select-7 'b' -kb-select-8 's' -kb-select-9 'q')
 
@@ -93,7 +93,7 @@ menu() {
         rofi -show window
     elif [[ "$ACITON" = "$EMOJI_MSG" ]]; then
         rofi -modi "emoji" -show emoji
-    elif [[ "$ACITON" = "$BROWSER_MSG" ]]; then
+    elif [[ "$ACITON" = "$BENCH_MSG" ]]; then
         bench_menu
     elif [[ "$ACITON" = "$CLIPBOARD_MSG" ]]; then
         rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'

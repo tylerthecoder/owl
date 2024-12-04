@@ -38,12 +38,12 @@ Xcursor.size: 16
 *.color7:       #d0d0d0
 *.color15:      #ffffff
 
-/* Xft.dpi: 220 */
-/* Xft.autohint: 0 */
-/* Xft.lcdfilter: lcddefault */
-/* Xft.hintstyle: hintfull */
-/* Xft.hinting: 1 */
-/* Xft.antialias: 1 */
+Xft.dpi: 220
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
 
 ! Rofi Config
 rofi.dpi: 220
