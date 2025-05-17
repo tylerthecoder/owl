@@ -95,3 +95,18 @@ bindkey '5~' kill-word
 
 # bun completions
 [ -s "/home/tylord/.bun/_bun" ] && source "/home/tylord/.bun/_bun"
+
+# uv completions
+eval "$(uv generate-shell-completion zsh)" # you should already have these two lines
+eval "$(uvx --generate-shell-completion zsh)"
+
+# you will need to add the lines below
+# https://github.com/astral-sh/uv/issues/8432#issuecomment-2453494736
+_uv_run_mod() {
+    if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
+        _arguments '*:filename:_files'
+    else
+        _uv "$@"
+    fi
+}
+compdef _uv_run_mod uv

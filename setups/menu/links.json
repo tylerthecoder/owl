@@ -1,9 +1,6 @@
 {
-  "name": "menu",
-  "links": [
-    {
-      "source": "setups/menu/rofi-i3-switcher.sh",
-      "target": "~/.local/bin/rofi-i3-switcher"
-    }
-  ]
+  "actions": [
+    "./setup.sh"
+  ],
+  "name": "menu"
 }

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# This file contains envrionment variables that depend on the Operating System
+# This file contains environment variables that depend on the Operating System
 # This includes things like the path, the editor, and the terminal emulator
 
 # OWL
