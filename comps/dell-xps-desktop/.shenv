@@ -8,6 +8,7 @@ echo "Welcome Tylord"
 # OWL
 export OWL_PATH="/home/tylord/owl"
 export OWL_CONFIG_PATH="/home/tylord/owl/comps/dell-xps-desktop/owl-config.json"
+export OWL_DEFAULT_LINK="/home/tylord/owl/comps/dell-xps-desktop/link.json"
 export OWL_SHENV_PATH="/home/tylord/owl/comps/dell-xps-desktop/.shenv"
 
 # XDG vars

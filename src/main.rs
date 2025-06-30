@@ -6,8 +6,8 @@ use std::path::Path;
 use std::path::PathBuf;
 extern crate skim;
 use colored::Colorize;
-use std::process::Command;
 use std::io::{BufRead, BufReader};
+use std::process::Command;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Config {
@@ -32,7 +32,8 @@ fn get_config() -> Config {
     // Make file if it doesn't exist
     if !Path::new(&config_path).exists() {
         // create path if it doesn't exist
-        std::fs::create_dir_all(Path::new(&config_path).parent().unwrap()).expect("Unable to create config path");
+        std::fs::create_dir_all(Path::new(&config_path).parent().unwrap())
+            .expect("Unable to create config path");
         std::fs::File::create(&config_path).expect("Unable to create config file");
 
         let config = Config {
@@ -110,9 +111,15 @@ struct Nest {
 
 fn get_nest() -> Nest {
     let nest_path = get_config().nest_path.unwrap();
+    println!("Reading nest from path: {}", nest_path.display());
     let nest_raw = std::fs::read_to_string(nest_path).expect("Unable to read nest file");
     let nest: Nest = serde_json::from_str(&nest_raw).expect("Unable to parse nest file");
     nest
+}
+
+fn print_config() {
+    let config = get_config();
+    println!("{:?}", config);
 }
 
 #[derive(Parser)]
@@ -128,6 +135,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    Config,
     Link,
     Sync,
     Setup { setup_name: String },
@@ -140,6 +148,7 @@ fn main() {
 
     let cli = Cli::parse();
     match cli.command {
+        Some(Commands::Config) => print_config(),
         Some(Commands::Link) => link_with_setups(),
         Some(Commands::Sync) => sync(&config),
         Some(Commands::Setup { setup_name }) => run_setup(&setup_name),
@@ -151,10 +160,8 @@ fn main() {
 fn sync(config: &Config) {
     println!("Syncing");
 
-    let owl_sync_script_path = Path::join(
-        &config.owl_path,
-        Path::new("common/scripts/owl-sync.sh"),
-    );
+    let owl_sync_script_path =
+        Path::join(&config.owl_path, Path::new("common/scripts/owl-sync.sh"));
 
     run_script(owl_sync_script_path);
 }
@@ -184,16 +191,19 @@ impl Setup {
 }
 
 fn run_script(script_path: PathBuf) {
-    let script_path = script_path.canonicalize().expect("Failed to canonicalize path");
+    let script_path = script_path
+        .canonicalize()
+        .expect("Failed to canonicalize path");
     println!("Running script: {}", script_path.display());
 
     let mut cmd = Command::new("bash");
     cmd.arg("-c").arg(script_path);
 
-    let mut child = cmd.stdout(std::process::Stdio::piped())
-                       .stderr(std::process::Stdio::piped())
-                       .spawn()
-                       .expect("Failed to spawn command");
+    let mut child = cmd
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .expect("Failed to spawn command");
 
     // Read and print stdout
     if let Some(stdout) = child.stdout.take() {
@@ -255,7 +265,9 @@ fn run_setup_script(setup: &Setup) {
         Path::new(&script_path),
     ];
 
-    let full_action_path = path_parts.iter().fold(PathBuf::new(), |acc, &part| acc.join(part));
+    let full_action_path = path_parts
+        .iter()
+        .fold(PathBuf::new(), |acc, &part| acc.join(part));
 
     run_script(full_action_path);
 }
@@ -279,8 +291,10 @@ struct LinkedFile {
 
 impl LinkedFile {
     pub fn create_symlink(&self) {
-        let absolute_source_path =
-            Path::join(Path::new(&get_config().owl_path), Path::new(&self.source_path));
+        let absolute_source_path = Path::join(
+            Path::new(&get_config().owl_path),
+            Path::new(&self.source_path),
+        );
 
         let absolute_target_path = shellexpand::tilde(&self.target_path).to_string();
 
