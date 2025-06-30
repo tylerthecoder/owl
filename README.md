@@ -21,22 +21,21 @@ owl setup zsh
 owl setup python
 ```
 
-## Getting Started
-
-Install the app
-```
-./setups/owl.sh
-```
+## Local setup
 
 Build the app
 ```
 cargo build
 ```
 
+Install the app
+```
+cargo run -- setup owl
+```
+
 Perform first link
 ```
 cargo run -- link
-
 ```
 
 ## Config

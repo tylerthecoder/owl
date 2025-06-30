@@ -3,5 +3,5 @@
   "actions": [
     "./setup.sh"
   ],
-  "links": [ ]
+  "links": []
 }
