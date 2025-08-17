@@ -1,0 +1,31 @@
+{
+  "links": [
+    {
+      "source": "target/debug/owl",
+      "target": "~/.local/bin/owl"
+    },
+    {
+      "source": "common/config/.vimrc",
+      "target": "~/.vimrc"
+    },
+    {
+      "source": "common/scripts/daily-note.sh",
+      "target": "~/.local/bin/daily-note"
+    }
+  ],
+  "setups": [
+    "git",
+    "node",
+    "nvim",
+    "tmux",
+    "zsh-ohmy",
+    "ranger"
+  ],
+  "rc_scripts": [
+    "common:fzf.sh",
+    "common:bun.sh",
+    "common:base-aliases.sh",
+    "local:.shenv",
+    "local:.alias"
+  ]
+}

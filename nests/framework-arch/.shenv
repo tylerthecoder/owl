@@ -1,41 +1,23 @@
 #! /bin/sh
 
-echo "Welcome Tylord"
-
-# This file contains envrionment variables that depend on the Operating System
+# This file contains environment variables that depend on the Operating System
 # This includes things like the path, the editor, and the terminal emulator
 
 # OWL
 export OWL_PATH="/home/tylord/owl"
-export OWL_CONFIG_PATH="/home/tylord/owl/comps/dell-xps-desktop/owl-config.json"
-export OWL_DEFAULT_LINK="/home/tylord/owl/comps/dell-xps-desktop/link.json"
-export OWL_SHENV_PATH="/home/tylord/owl/comps/dell-xps-desktop/.shenv"
+export OWL_CONFIG_PATH="/home/tylord/owl/nests/framework-arch/nest.json"
 
-# XDG vars
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
+
 
 # DEV
 export DEV_PATH="/home/tylord/dev"
 
 # Programs
 export EDITOR="nvim"
+export BROWSER="chromium"
+export TERMINAL="terminator"
+export TERMIANL_ROLE="terminator --role"
 export TERMINAL_EXEC="terminator -e"
-
-# Local bin
-export PATH="$HOME/.local/bin:$PATH"
-
-# Load Alias
-for file in ~/.config/alias/*; do
-    [ -f "$file" ] && source "$file"
-done
-
-# Run owl-rc
-for file in ~/.config/owl-rc/*; do
-    [ -f "$file" ] && source "$file"
-done
 
 # Secrets
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
@@ -52,7 +34,6 @@ export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
 
 # Fuzzy Finders (move to another file soon)
-
 fzfopen() {
     local dir=${1:-.} # Default to current directory if no argument is given
     local file
@@ -61,7 +42,7 @@ fzfopen() {
         | grep -vFf <(git -C "$dir" ls-files --exclude-standard -oi --directory) \
         | sed "s|${dir}/||" \
         | fzf --color=dark +m) \
-    && vim "$dir/$file"
+    && nvim "$dir/$file"
 }
 
 fo() {

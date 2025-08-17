@@ -5,40 +5,12 @@
       "target": "~/.local/bin/owl"
     },
     {
-      "source": "comps/dell-xps-desktop/.shenv",
-      "target": "~/.shenv"
-    },
-    {
-      "source": "common/config/.bashrc",
-      "target": "~/.bashrc"
-    },
-    {
-      "source": "common/config/.bash_profile",
-      "target": "~/.bash_profile"
-    },
-    {
-      "source": "common/config/gitconfig",
-      "target": "~/.config/git/config"
-    },
-    {
       "source": "common/scripts/toggle-mounttab.sh",
       "target": "~/.local/bin/toggle-mounttab"
     },
     {
       "source": "common/scripts/favs.sh",
       "target": "~/.local/bin/f"
-    },
-    {
-      "source": "comps/framework-arch/.alias",
-      "target": "~/.config/alias/main"
-    },
-    {
-      "source": "common/config/.alias",
-      "target": "~/.config/alias/base"
-    },
-    {
-      "source": "common/config/.alias-git",
-      "target": "~/.config/alias/git"
     },
     {
       "source": "common/config/.xprofile",
@@ -50,6 +22,8 @@
     }
   ],
   "setups": [
+    "git",
+    "bash",
     "i3",
     "nvim",
     "tmux",
@@ -62,5 +36,11 @@
     "menu",
     "secrets",
     "notes"
+  ],
+  "rc_scripts": [
+    "common:fzf.sh",
+    "common:base-aliases.sh",
+    "local:.shenv",
+    "local:.alias"
   ]
 }

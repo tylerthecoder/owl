@@ -1,0 +1,16 @@
+{
+    "name": "ranger",
+    "actions": [
+        "./setup.sh"
+    ],
+    "links": [
+        {
+            "source": "setups/ranger/rc.conf",
+            "target": "~/.config/ranger/rc.conf"
+        },
+        {
+            "source": "setups/ranger/rifle.conf",
+            "target": "~/.config/ranger/rifle.conf"
+        }
+    ]
+}

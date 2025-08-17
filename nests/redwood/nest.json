@@ -1,0 +1,29 @@
+{
+  "links": [
+    {
+      "source": "common/config/.vimrc",
+      "target": "~/.vimrc"
+    },
+    {
+      "source": ".secrets",
+      "target": "~/.secrets"
+    },
+    {
+      "source": "common/scripts/favs.sh",
+      "target": "~/.local/bin/f"
+    }
+  ],
+  "setups": [
+    "git",
+    "nvim",
+    "tmux",
+    "zsh",
+    "rust",
+    "ranger"
+  ],
+  "rc_scripts": [
+    "common:fzf.sh",
+    "common:base-aliases.sh",
+    "local:.shenv"
+  ]
+}

@@ -1,9 +1,10 @@
 {
     "name": "rust",
-    "links": [
-        {
-            "source": "setups/rust/rc.sh",
-            "target": "~/.config/owl-rc/rustrc"
-        }
+    "actions": [
+        "./setup.sh"
+    ],
+    "links": [],
+    "rc_scripts": [
+        "local:rc.sh"
     ]
 }

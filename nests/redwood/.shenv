@@ -5,7 +5,7 @@
 
 # OWL
 export OWL_PATH="/home/tyler/owl"
-export OWL_CONFIG_PATH="/home/tyler/owl/comps/redwood/owl-config.json"
+export OWL_CONFIG_PATH="/home/tyler/owl/nests/redwood/nest.json"
 
 export TERM=xterm-256color
 
@@ -17,19 +17,6 @@ export XDG_STATE_HOME="$HOME/.local/state"
 
 # Programs
 export EDITOR="nvim"
-
-# Local bin
-export PATH="$HOME/.local/bin:$PATH"
-
-# Load Alias
-for file in ~/.config/alias/*; do
-    [ -f "$file" ] && source "$file"
-done
-
-# Run owl-rc
-for file in ~/.config/owl-rc/*; do
-    [ -f "$file" ] && source "$file"
-done
 
 # Secrets
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"

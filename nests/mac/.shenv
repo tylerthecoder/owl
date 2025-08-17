@@ -4,7 +4,7 @@ echo "Welcome Tylord"
 
 # Owl Conifg
 export OWL_PATH="/Users/tylertracy/owl"
-export OWL_CONFIG_PATH="$OWL_PATH/comps/mac/owl-config.json"
+export OWL_CONFIG_PATH="$OWL_PATH/nests/mac/nest.json"
 
 # XDG vars
 export XDG_CONFIG_HOME="$HOME/.config"

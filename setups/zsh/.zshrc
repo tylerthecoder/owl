@@ -1,7 +1,7 @@
 export ZDOTDIR="$HOME/.config/zsh"
 
-# Source environment variables
-source ~/.shenv
+# Source owl startup script
+[ -f ~/owl/owl-start.sh ] && source ~/owl/owl-start.sh
 
 # Enable colors and change prompt
 autoload -U colors && colors

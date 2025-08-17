@@ -1,0 +1,12 @@
+{
+    "name": "git",
+    "links": [
+        {
+            "source": "setups/git/gitconfig",
+            "target": "~/.config/git/config"
+        }
+    ],
+    "rc_scripts": [
+        "local:alias.sh"
+    ]
+}

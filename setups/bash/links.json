@@ -1,0 +1,13 @@
+{
+    "name": "bash",
+    "links": [
+        {
+            "source": "setups/bash/.bashrc",
+            "target": "~/.bashrc"
+        },
+        {
+            "source": "setups/bash/.bash_profile",
+            "target": "~/.bash_profile"
+        }
+    ]
+}
