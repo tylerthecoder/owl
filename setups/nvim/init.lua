@@ -8,9 +8,8 @@ vim.opt.termguicolors = true
 -- word wrap
 vim.opt.linebreak = true
 
-
--- empty setup using defaults
-require("nvim-tree").setup()
+-- Bootstrap and setup lazy.nvim
+require("config.lazy")
 
 require("tylord")
 vim.cmd.colorscheme "catppuccin"

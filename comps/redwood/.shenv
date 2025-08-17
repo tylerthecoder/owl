@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# This file contains envrionment variables that depend on the Operating System
+# This file contains environment variables that depend on the Operating System
 # This includes things like the path, the editor, and the terminal emulator
 
 # OWL
@@ -33,14 +33,3 @@ done
 
 # Secrets
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
-
-# Python stuff
-
-export PYTHONPATH=$PYTHONPATH:/home/tyler/unity/bash_ctrl
-
-# Python environment setup
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv >/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi
