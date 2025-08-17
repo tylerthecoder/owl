@@ -1,12 +1,4 @@
 #! /bin/sh
-
-# This file contains environment variables that depend on the Operating System
-# This includes things like the path, the editor, and the terminal emulator
-
-# OWL
-export OWL_PATH="/home/tyler/owl"
-export OWL_CONFIG_PATH="/home/tyler/owl/nests/redwood/nest.json"
-
 export TERM=xterm-256color
 
 # XDG vars

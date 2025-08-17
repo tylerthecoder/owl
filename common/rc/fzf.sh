@@ -15,4 +15,23 @@ if command -v fzf >/dev/null 2>&1; then
     elif [[ -f ~/.fzf.zsh ]]; then
         source ~/.fzf.zsh
     fi
+
+    fzfopen() {
+        local dir=${1:-.} # Default to current directory if no argument is given
+        local file
+        file=$(find "$dir" -type f 2> /dev/null \
+            | grep -vE '(/\.git/|/\.git$)' \
+            | grep -vFf <(git -C "$dir" ls-files --exclude-standard -oi --directory) \
+            | sed "s|${dir}/||" \
+            | fzf --color=dark +m) \
+        && nvim "$dir/$file"
+    }
+
+    fo() {
+        fzfopen ~/owl
+    }
+
+    fn() {
+        fzfopen ~/notes
+    }
 fi

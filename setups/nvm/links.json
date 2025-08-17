@@ -1,0 +1,10 @@
+{
+    "name": "nvm",
+    "actions": [
+        "./setup.sh"
+    ],
+    "links": [],
+    "rc_scripts": [
+        "local:rc.sh"
+    ]
+}
