@@ -97,8 +97,11 @@ bindkey '5~' kill-word
 [ -s "/home/tylord/.bun/_bun" ] && source "/home/tylord/.bun/_bun"
 
 # uv completions
-eval "$(uv generate-shell-completion zsh)" # you should already have these two lines
-eval "$(uvx --generate-shell-completion zsh)"
+#
+if command -v uv &> /dev/null; then
+    eval "$(uv generate-shell-completion zsh)" # you should already have these two lines
+    eval "$(uvx --generate-shell-completion zsh)"
+fi
 
 # you will need to add the lines below
 # https://github.com/astral-sh/uv/issues/8432#issuecomment-2453494736
