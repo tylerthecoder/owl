@@ -12,9 +12,10 @@ bindsym $mod+Shift+Return exec terminator --role floating
 bindsym $mod+a exec pavucontrol
 
 # Rofi
-bindsym $mod+i exec "GSK_RENDERER=cairo ~/.local/bin/omni-menu run"
-bindsym $mod+o exec "GSK_RENDERER=cairo ~/.local/bin/omni-menu window"
-bindsym $mod+p exec "GSK_RENDERER=cairo ~/.local/bin/omni-menu >> /tmp/omni-menu.log 2>&1"
+bindsym $mod+i exec "~/.local/bin/omni-menu run"
+bindsym $mod+o exec "~/.local/bin/omni-menu window"
+bindsym $mod+p exec "~/.local/bin/omni-menu"
+bindsym $mod+n exec terminator --role floating -e "tt notes tui"
 
 # bindsym Control+space exec dunstctl close
 bindsym $mod+F1 exec zathura ~/docs/help.pdf
