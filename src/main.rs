@@ -94,7 +94,9 @@ fn prompt_user_for_nest_path() -> PathBuf {
         if validate_nest_path(&path) {
             return path;
         } else {
-            eprintln!("Error: Invalid nest path. The directory must exist and contain a nest.json file.");
+            eprintln!(
+                "Error: Invalid nest path. The directory must exist and contain a nest.json file."
+            );
             eprintln!("Please try again or create a nest.json file in your nest directory.");
         }
     }
@@ -169,7 +171,8 @@ fn print_nest_info() {
             let absolute_source_path = Path::join(&config.owl_path, Path::new(&source_path));
             let absolute_target_path = shellexpand::tilde(&linked_file.target_path).to_string();
 
-            println!("  {} → {}",
+            println!(
+                "  {} → {}",
                 absolute_source_path.display().to_string().blue(),
                 absolute_target_path.red()
             );
@@ -177,18 +180,23 @@ fn print_nest_info() {
     }
     println!();
 
-        println!("{}", "🔧 NEST RC SCRIPTS:".yellow().bold());
+    println!("{}", "🔧 NEST RC SCRIPTS:".yellow().bold());
     if nests.rc_scripts.is_empty() {
         println!("  No rc scripts configured");
     } else {
         for rc_script in &nests.rc_scripts {
             let resolved_path = resolve_path(rc_script);
             let absolute_source_path = Path::join(&config.owl_path, Path::new(&resolved_path));
-            let script_name = Path::new(&resolved_path).file_name().unwrap().to_str().unwrap();
+            let script_name = Path::new(&resolved_path)
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap();
             let prefixed_filename = format!("nest-{}", script_name);
             let target_path = format!("~/.config/owl-rc/{}", prefixed_filename);
 
-            println!("  {} → {}",
+            println!(
+                "  {} → {}",
                 absolute_source_path.display().to_string().blue(),
                 target_path.red()
             );
@@ -210,27 +218,36 @@ fn print_nest_info() {
                 println!("    Links:");
                 for linked_file in &setup.links {
                     let source_path = resolve_path(&linked_file.source_path);
-                    let absolute_source_path = Path::join(&config.owl_path, Path::new(&source_path));
-                    let absolute_target_path = shellexpand::tilde(&linked_file.target_path).to_string();
+                    let absolute_source_path =
+                        Path::join(&config.owl_path, Path::new(&source_path));
+                    let absolute_target_path =
+                        shellexpand::tilde(&linked_file.target_path).to_string();
 
-                    println!("      {} → {}",
+                    println!(
+                        "      {} → {}",
                         absolute_source_path.display().to_string().blue(),
                         absolute_target_path.red()
                     );
                 }
             }
 
-                                    // Show setup rc scripts
+            // Show setup rc scripts
             if !setup.rc_scripts.is_empty() {
                 println!("    RC Scripts:");
                 for rc_script in &setup.rc_scripts {
                     let resolved_path = resolve_path_with_context(rc_script, Some(setup_name));
-                    let absolute_source_path = Path::join(&config.owl_path, Path::new(&resolved_path));
-                    let script_name = Path::new(&resolved_path).file_name().unwrap().to_str().unwrap();
+                    let absolute_source_path =
+                        Path::join(&config.owl_path, Path::new(&resolved_path));
+                    let script_name = Path::new(&resolved_path)
+                        .file_name()
+                        .unwrap()
+                        .to_str()
+                        .unwrap();
                     let prefixed_filename = format!("setup-{}-{}", setup_name, script_name);
                     let target_path = format!("~/.config/owl-rc/{}", prefixed_filename);
 
-                    println!("      {} → {}",
+                    println!(
+                        "      {} → {}",
                         absolute_source_path.display().to_string().blue(),
                         target_path.red()
                     );
@@ -241,8 +258,10 @@ fn print_nest_info() {
             if !setup.actions.is_empty() {
                 println!("    Actions:");
                 for action in &setup.actions {
-                    let action_path = Path::join(&config.owl_path,
-                        Path::new(&format!("setups/{}/{}", setup_name, action)));
+                    let action_path = Path::join(
+                        &config.owl_path,
+                        Path::new(&format!("setups/{}/{}", setup_name, action)),
+                    );
                     println!("      {}", action_path.display().to_string().yellow());
                 }
             }
@@ -271,7 +290,9 @@ enum Commands {
         nest_command: NestCommands,
     },
     Sync,
-    Setup { setup_name: String },
+    Setup {
+        setup_name: String,
+    },
     Update,
 }
 
@@ -467,10 +488,8 @@ impl LinkedFile {
     pub fn create_symlink(&self) {
         let source_path = resolve_path(&self.source_path);
 
-        let absolute_source_path = Path::join(
-            Path::new(&get_config().owl_path),
-            Path::new(&source_path),
-        );
+        let absolute_source_path =
+            Path::join(Path::new(&get_config().owl_path), Path::new(&source_path));
 
         let absolute_target_path = shellexpand::tilde(&self.target_path).to_string();
 
@@ -480,7 +499,9 @@ impl LinkedFile {
             absolute_target_path.red()
         );
 
-        if Path::new(&absolute_target_path).exists() {
+        if Path::new(&absolute_target_path).exists()
+            || Path::new(&absolute_target_path).is_symlink()
+        {
             print!("(🗑 old)");
             match std::fs::remove_file(&absolute_target_path) {
                 Ok(_) => (),
@@ -535,7 +556,11 @@ fn link_rc_script(script_path: &str, target_dir: &str) {
 
 fn link_rc_script_with_context(script_path: &str, target_dir: &str, setup_name: Option<&str>) {
     let resolved_path = resolve_path_with_context(script_path, setup_name);
-    let script_name = Path::new(&resolved_path).file_name().unwrap().to_str().unwrap();
+    let script_name = Path::new(&resolved_path)
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap();
 
     // Generate prefixed filename based on context
     let prefixed_filename = match setup_name {
@@ -581,7 +606,7 @@ fn link_with_setups() {
         link_rc_script(&rc_script, "owl-rc");
     }
 
-        // read each setup's config file
+    // read each setup's config file
     for setup_name in nests.setups {
         let setup = Setup::from_file(setup_name.clone());
 
