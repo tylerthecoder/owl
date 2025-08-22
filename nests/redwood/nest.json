@@ -5,10 +5,6 @@
       "target": "~/.vimrc"
     },
     {
-      "source": ".secrets",
-      "target": "~/.secrets"
-    },
-    {
       "source": "common/scripts/favs.sh",
       "target": "~/.local/bin/f"
     }
@@ -16,6 +12,7 @@
   "setups": [
     "git",
     "nvim",
+    "bun",
     "tmux",
     "zsh",
     "rust",
@@ -24,6 +21,8 @@
   "rc_scripts": [
     "common:fzf.sh",
     "common:base-aliases.sh",
-    "local:.shenv"
+    "common:claude.sh",
+    "local:.shenv",
+    ".secrets"
   ]
 }
