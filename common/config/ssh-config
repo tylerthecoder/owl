@@ -2,3 +2,7 @@ Host plato
     User root
     HostName 139.144.251.34
 
+Host ada
+    User tyler
+    HostName 172.233.141.113
+

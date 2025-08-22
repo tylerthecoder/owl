@@ -1,0 +1,42 @@
+#! /bin/sh
+
+echo "Welcome Tylord"
+
+# Owl Conifg
+export OWL_PATH="/Users/tylertracy/owl"
+export OWL_CONFIG_PATH="$OWL_PATH/nests/mac/nest.json"
+
+# XDG vars
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_RUNTIME_DIR=/tmp/$(whoami)/runtime_dir
+mkdir -p $XDG_RUNTIME_DIR
+
+# Programs
+export EDITOR='vim'
+
+# Local bin
+export PATH="$HOME/.local/bin:$PATH"
+
+
+# Load aliases
+source ~/.config/alias/main
+
+# Run owl-rc
+for file in ~/.config/owl-rc/*; do
+    [ -f "$file" ] && source "$file"
+done
+
+# Brew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Bun
+[ -s "/Users/tylertracy/.bun/_bun" ] && source "/Users/tylertracy/.bun/_bun"
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Modular
+export MODULAR_HOME="$HOME/.modular"
+export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"

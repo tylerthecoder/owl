@@ -1,0 +1,14 @@
+{
+  "links": [
+    {
+      "source": "local:nginx.conf",
+      "target": "~/nginx.conf"
+    },
+    {
+      "source": "local:start-eco.sh",
+      "target": "~/.local/bin/start-eco"
+    }
+  ],
+  "setups": [],
+  "rc_scripts": []
+}

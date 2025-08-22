@@ -1,0 +1,7 @@
+[user]
+	email = tylertracy1999@gmail.com
+	name = Tyler Tracy
+[core]
+	editor = vim
+[init]
+	defaultBranch = main

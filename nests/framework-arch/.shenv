@@ -1,0 +1,28 @@
+#! /bin/sh
+
+# Greeting based on time of day
+current_hour=$(date +%H)
+if [ "$current_hour" -lt 12 ]; then
+    echo "Good morning, tylord."
+else
+    echo "Good evening, tylord."
+fi
+
+
+# Programs
+export DEV_PATH="/home/tylord/dev"
+export EDITOR="nvim"
+export BROWSER="chromium"
+export TERMINAL="terminator"
+export TERMIANL_ROLE="terminator --role"
+export TERMINAL_EXEC="terminator -e"
+
+# Secrets
+[ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
+
+# Lean
+export PATH="$HOME/.elan/bin:$PATH"
+
+# Get things out of home dir
+export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"
+export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var

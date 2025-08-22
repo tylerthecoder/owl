@@ -1,7 +1,7 @@
 export ZDOTDIR="$HOME/.config/zsh"
 
-# Source environment variables
-source ~/.shenv
+# Source owl startup script
+[ -f ~/owl/owl-start.sh ] && source ~/owl/owl-start.sh
 
 # Enable colors and change prompt
 autoload -U colors && colors
@@ -113,3 +113,9 @@ _uv_run_mod() {
     fi
 }
 compdef _uv_run_mod uv
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+. "$HOME/.local/share/../bin/env"

@@ -1,0 +1,26 @@
+#! /bin/sh
+echo "Welcome Tylord"
+
+# XDG vars
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# Programs
+export DEV_PATH="/home/tylord/dev"
+export EDITOR="nvim"
+export BROWSER="chromium"
+export TERMINAL="terminator"
+export TERMIANL_ROLE="terminator --role"
+export TERMINAL_EXEC="terminator -e"
+
+# Secrets
+[ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
+
+# Lean
+export PATH="$HOME/.elan/bin:$PATH"
+
+# Get things out of home dir
+export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"
+export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var

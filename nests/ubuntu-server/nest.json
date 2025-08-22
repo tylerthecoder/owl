@@ -1,0 +1,20 @@
+{
+  "links": [
+    {
+      "source": "common/scripts/owl.sh",
+      "target": "~/.local/bin/owl"
+    },
+    {
+      "source": "common/config/.vimrc",
+      "target": "~/.vimrc"
+    }
+  ],
+  "setups": [
+    "git",
+    "zsh"
+  ],
+  "rc_scripts": [
+    "common:base-aliases.sh",
+    "local:.shenv"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "links": [
+    {
+      "source": "target/debug/owl",
+      "target": "~/.local/bin/owl"
+    },
+    {
+      "source": "common/scripts/toggle-mounttab.sh",
+      "target": "~/.local/bin/toggle-mounttab"
+    },
+    {
+      "source": "common/scripts/favs.sh",
+      "target": "~/.local/bin/f"
+    },
+    {
+      "source": "common/config/.xprofile",
+      "target": "~/.xprofile"
+    },
+    {
+      "source": "common/config/ssh-config",
+      "target": "~/.ssh/config"
+    }
+  ],
+  "setups": [
+    "git",
+    "bash",
+    "i3",
+    "nvim",
+    "tmux",
+    "zsh",
+    "node",
+    "rofi",
+    "terminator",
+    "rust",
+    "zathura",
+    "menu",
+    "secrets",
+    "notes"
+  ],
+  "rc_scripts": [
+    "common:fzf.sh",
+    "common:base-aliases.sh",
+    "local:.shenv",
+    "local:.alias"
+  ]
+}
