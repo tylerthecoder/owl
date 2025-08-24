@@ -4,7 +4,7 @@ xset r rate 300 35
 # Set Theme
 [[ -f ~/.config/X/.Xresources ]] && xrdb -merge -I$HOME ~/.config/X/.Xresources
 export GTK_THEME="Dracula"
-export GDK_SCALE=2
+# export GDK_SCALE=2
 
 # Applications
 nm-applet &

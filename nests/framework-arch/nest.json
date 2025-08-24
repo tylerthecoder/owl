@@ -31,6 +31,7 @@
   ],
   "setups": [
     "git",
+    "bun",
     "bash",
     "i3",
     "nvim",
@@ -51,3 +52,4 @@
     "local:.alias"
   ]
 }
+
