@@ -12,6 +12,7 @@
   "setups": [
     "git",
     "nvim",
+    "nvm",
     "bun",
     "tmux",
     "zsh",

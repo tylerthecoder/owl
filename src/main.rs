@@ -347,7 +347,7 @@ impl Setup {
             &Path::join(Path::new(&name), Path::new("links.json")),
         );
 
-        println!("Using setup file: {}", setup_path.display());
+        println!("Using setup file: {} for setup {}", setup_path.display(), name);
 
         let setup_raw = std::fs::read_to_string(setup_path).expect("Unable to read setup file");
         let setup: Setup = serde_json::from_str(&setup_raw).expect("Unable to parse setup file");
