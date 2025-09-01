@@ -11,13 +11,19 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+Return exec terminator --role floating
 bindsym $mod+a exec pavucontrol
 
+# Put app where I want them
+for_window [window_role=floating] floating enable
+for_window [class="Blueman-manager"] floating enable
+for_window [title="ClipGPT"] floating enable
+for_window [class="Spotify"] move to workspace 9
+
 # Rofi
 bindsym $mod+i exec "~/.local/bin/omni-menu run"
 bindsym $mod+o exec "~/.local/bin/omni-menu window"
 bindsym $mod+p exec "~/.local/bin/omni-menu"
 bindsym $mod+n exec terminator --role floating -e "tt notes tui"
 
-# bindsym Control+space exec dunstctl close
+bindsym $mod+d exec dunstctl close
 bindsym $mod+F1 exec zathura ~/docs/help.pdf
 
 # Audio controls
@@ -37,10 +43,6 @@ bindsym F7 exec --no-startup-id brightnessctl set 5%-
 bindsym Control+F12 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
 bindsym Control+F11 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
 bindsym Control+F10 exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
-
-# Set Gaps
-gaps inner 10
-# bindsym $mod+Shift+f gaps outer current set 0
 
 # change focus
 bindsym $mod+h focus left
@@ -67,8 +69,6 @@ bindsym $mod+Ctrl+l move workspace to output right
 bindsym $mod+Tab workspace next
 bindsym $mod+Shift+Tab workspace prev
 
-# Just use mod+e to toggle layout
-
 # split in horizontal orientation
 bindsym $mod+Shift+v split h
 # split in vertical orientation
@@ -88,6 +88,9 @@ bindsym $mod+Shift+space floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
 # switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -99,6 +102,9 @@ bindsym $mod+7 workspace 7
 bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
+
+# Back and forth
+bindsym $mod+Shift+b workspace back_and_forth
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1
@@ -145,12 +151,6 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-# Put things where I want them
-for_window [window_role=floating] floating enable
-for_window [class="Blueman-manager"] floating enable
-for_window [title="ClipGPT"] floating enable
-# for_window [class="Spotify"] move to workspace 10
-
 
 #####################
 #    Styles
@@ -164,12 +164,13 @@ client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
 client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
 client.background       #F8F8F2
 
+# Set Gaps
+gaps inner 10
+# bindsym $mod+Shift+f gaps outer current set 0
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 font pango:Terminus 12px
-
-# Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
 
 # Hide title bar and remove borders
 for_window [class="^.*"] border pixel 0
