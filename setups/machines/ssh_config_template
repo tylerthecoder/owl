@@ -1,0 +1,17 @@
+Host octo
+    HostName op://Dev/octo/ip-address
+    User tyler
+    ForwardX11 yes
+
+Host plato
+    User root
+    HostName op://Dev/plato/ip-address
+
+Host mrwood
+    User tyler
+    HostName op://Dev/mrwood/ip-address
+
+Host ada
+    User tyler
+    HostName op://Dev/ada/ip-address
+    ForwardX11 yes

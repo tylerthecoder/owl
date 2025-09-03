@@ -21,10 +21,6 @@
       "target": "~/.local/bin/gpt-clip"
     },
     {
-      "source": ".secrets",
-      "target": "~/.secrets"
-    },
-    {
       "source": "common/scripts/favs.sh",
       "target": "~/.local/bin/f"
     }
@@ -43,7 +39,8 @@
     "rust",
     "zathura",
     "menu",
-    "notes"
+    "notes",
+    "secrets"
   ],
   "rc_scripts": [
     "common:fzf.sh",
@@ -52,4 +49,3 @@
     "local:.alias"
   ]
 }
-

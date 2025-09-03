@@ -3,3 +3,4 @@ secrets.sh
 Cargo.lock
 target
 .secrets
+*.secret

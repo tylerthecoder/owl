@@ -1,0 +1,10 @@
+{
+  "name": "machines",
+  "links": [
+    {
+      "source": "local:ssh_config.secret",
+      "target": "~/.ssh/config"
+    }
+  ],
+  "rc_scripts": []
+}

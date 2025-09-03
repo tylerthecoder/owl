@@ -1,8 +1,4 @@
+SCRIPT_DIR="$(dirname "$0")"
 
-# Check if op cli is installed
-if ! command -v op &> /dev/null
-then
-    yay -S 1password-cli 
-fi
 
-op inject --in-file example.secrets.sh --out-file secrets.sh
+op inject --in-file $SCRIPT_DIR/example.secrets.sh --out-file $SCRIPT_DIR/secrets.sh
