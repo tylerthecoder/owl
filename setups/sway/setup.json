@@ -15,6 +15,10 @@
         {
             "source": "local:scripts/desk-sway",
             "target": "~/.local/bin/desk-sway"
+        },
+        {
+            "source": "local:environment.d/10-path.conf",
+            "target": "~/.config/environment.d/10-path.conf"
         }
     ],
     "name": "sway",

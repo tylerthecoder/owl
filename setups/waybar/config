@@ -7,6 +7,11 @@
     "format": " {usage}%",
     "interval": 3
   },
+  "custom/weather": {
+    "exec": "/home/tylord/owl/common/i3-status-scripts/weather",
+    "interval": 1800,
+    "return-type": "text"
+  },
   "layer": "top",
   "margin": 8,
   "memory": {
@@ -26,12 +31,14 @@
     "temperature",
     "pulseaudio",
     "upower",
+    "custom/weather",
     "tray"
   ],
   "network": {
     "format-disconnected": "󰖪",
     "format-ethernet": "  {ip}",
     "format-wifi": "  {essid} {signal}%",
+    "interface": "wlan0",
     "tooltip": true
   },
   "position": "top",
@@ -59,6 +66,7 @@
     "spacing": 8
   },
   "upower": {
+    "device": "DisplayDevice",
     "format": "{icon} {percentage}%",
     "icon-set": [
       "battery"

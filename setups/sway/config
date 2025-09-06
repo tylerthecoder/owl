@@ -40,9 +40,9 @@ bindsym $mod+a exec pavucontrol
 bindsym $mod+n exec kitty --class floating -e "tt notes tui"
 
 # Rofi-wayland
-bindsym $mod+i exec "omni-menu run 2>>~/.error"
-bindsym $mod+o exec "omni-menu window"
-bindsym $mod+p exec "omni-menu"
+bindsym $mod+i exec "~/.local/bin/omni-menu run 2>>~/.error"
+bindsym $mod+o exec "~/.local/bin/omni-menu window"
+bindsym $mod+p exec "~/.local/bin/omni-menu 2>>~/.error"
 
 # Audio controls via pamixer
 bindsym XF86AudioRaiseVolume exec pamixer -i 5 && pkill -SIGRTMIN+10 waybar
