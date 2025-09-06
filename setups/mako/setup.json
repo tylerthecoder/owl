@@ -8,11 +8,5 @@
     }
   ],
   "name": "mako",
-  "rc_scripts": [],
-  "services": [
-    {
-      "path": "local:systemd/mako.service",
-      "type": "user"
-    }
-  ]
+  "rc_scripts": []
 }

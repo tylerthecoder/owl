@@ -9,7 +9,4 @@ width=350
 height=120
 default-timeout=5000
 outer-margin=16
-corner-radius=8
 anchor=top-right
-
-

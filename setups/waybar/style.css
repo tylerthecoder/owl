@@ -29,7 +29,7 @@ window#waybar {
 #battery.warning { color: #f1fa8c; }
 #battery.critical { color: #ff5555; }
 
-#custom-cpu, #custom-network, #custom-ip, #pulseaudio, #battery, #tray, #clock {
+#cpu, #memory, #network, #temperature, #pulseaudio, #upower, #tray, #clock {
   background: rgba(68, 74, 90, 0.45);
   padding: 4px 8px;
   margin: 0 4px;
@@ -37,5 +37,10 @@ window#waybar {
 }
 
 #clock { background: rgba(98, 114, 164, 0.45); }
+
+/* Dracula accent colors */
+#pulseaudio.muted { color: #6272a4; }
+#temperature.critical { color: #ff5555; }
+#network.disconnected { color: #ffb86c; }
 
 

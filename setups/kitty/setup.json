@@ -1,10 +1,13 @@
 {
-  "name": "kitty",
+  "dependencies": [],
   "install": "install.sh",
-  "links": [],
+  "links": [
+    {
+      "source": "local:kitty.conf",
+      "target": "~/.config/kitty/kitty.conf"
+    }
+  ],
+  "name": "kitty",
   "rc_scripts": [],
-  "services": [],
-  "dependencies": []
+  "services": []
 }
-
-

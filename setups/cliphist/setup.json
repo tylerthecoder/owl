@@ -8,11 +8,5 @@
     }
   ],
   "name": "cliphist",
-  "rc_scripts": [],
-  "services": [
-    {
-      "path": "local:systemd/cliphist.service",
-      "type": "user"
-    }
-  ]
+  "rc_scripts": []
 }

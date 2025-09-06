@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Install SwayFX core and essentials
-sudo pacman -Syu --needed base-devel swaybg swayidle swaylock brightnessctl grim slurp jq python notify-send
+sudo pacman -Syu --needed base-devel swaybg swayidle swaylock brightnessctl grim slurp wdisplays
 
 # Install SwayFX and rofi-wayland from AUR
 if ! command -v yay >/dev/null 2>&1; then

@@ -1,10 +1,15 @@
 # SwayFX config (Wayland) - ported from i3, with SwayFX visuals
+# Import system drop-ins (imports env into systemd user + dbus)
+include /etc/sway/config.d/*
 
 set $mod Mod4
 
 # Startup
-# Services started via their own setups (mako, waybar, cliphist, swww)
+# Start session services
 exec_always swww-daemon
+exec_always mako
+exec_always wl-paste --watch cliphist store
+exec_always wl-paste --primary --watch cliphist store
 
 # Polkit agent (GNOME)
 exec_always /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
@@ -28,13 +33,14 @@ seat seat0 xcursor_theme Adwaita 24
 bindsym $mod+Return exec kitty
 
 # App binds (Wayland)
+bindsym $mod+Shift+q kill
 bindsym $mod+Shift+Return exec kitty --class floating
 for_window [app_id="floating"] floating enable
 bindsym $mod+a exec pavucontrol
 bindsym $mod+n exec kitty --class floating -e "tt notes tui"
 
 # Rofi-wayland
-bindsym $mod+i exec "omni-menu run"
+bindsym $mod+i exec "omni-menu run 2>>~/.error"
 bindsym $mod+o exec "omni-menu window"
 bindsym $mod+p exec "omni-menu"
 
@@ -141,6 +147,8 @@ corner_radius 8
 layer_effects "waybar" blur enable; shadows enable
 default_dim_inactive 0.00
 
+bar swaybar_command waybar
+
 # Border style minimal
 client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
 client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
@@ -153,8 +161,5 @@ client.background       #F8F8F2
 bindsym $mod+b exec ~/.local/bin/bg-picker
 bindsym $mod+c exec ~/.local/bin/cliphist-rofi
 bindsym $mod+Shift+d exec desk-sway
-
-# LightDM: ensure sway session selected (no config needed here)
-
 
 

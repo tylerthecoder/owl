@@ -1,64 +1,68 @@
 {
-  "layer": "top",
-  "position": "top",
-  "margin": 8,
-  "spacing": 8,
-  "modules-left": [
-    "sway/workspaces",
-    "sway/window"
-  ],
-  "modules-center": [
-    "clock"
-  ],
-  "modules-right": [
-    "custom/cpu",
-    "custom/network",
-    "custom/ip",
-    "pulseaudio",
-    "battery",
-    "tray"
-  ],
   "clock": {
     "format": "{:%a %b %d, %I:%M %p}",
     "tooltip": true
   },
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 3
+  },
+  "layer": "top",
+  "margin": 8,
+  "memory": {
+    "format": " {used}/{total}"
+  },
+  "modules-center": [
+    "clock"
+  ],
+  "modules-left": [
+    "sway/workspaces",
+    "sway/window"
+  ],
+  "modules-right": [
+    "cpu",
+    "memory",
+    "network",
+    "temperature",
+    "pulseaudio",
+    "upower",
+    "tray"
+  ],
+  "network": {
+    "format-disconnected": "󰖪",
+    "format-ethernet": "  {ip}",
+    "format-wifi": "  {essid} {signal}%",
+    "tooltip": true
+  },
+  "position": "top",
   "pulseaudio": {
     "format": "{icon} {volume}%",
-    "format-muted": "",
     "format-icons": {
-      "default": ["", "", ""]
+      "default": [
+        "",
+        "",
+        ""
+      ]
     },
+    "format-muted": "",
     "on-click": "pamixer -t && pkill -SIGRTMIN+10 waybar",
-    "on-scroll-up": "pamixer -i 5 && pkill -SIGRTMIN+10 waybar",
-    "on-scroll-down": "pamixer -d 5 && pkill -SIGRTMIN+10 waybar"
+    "on-scroll-down": "pamixer -d 5 && pkill -SIGRTMIN+10 waybar",
+    "on-scroll-up": "pamixer -i 5 && pkill -SIGRTMIN+10 waybar"
   },
-  "battery": {
-    "format": "{icon} {capacity}%",
-    "format-icons": ["", "", "", "", ""],
-    "states": {
-      "warning": 25,
-      "critical": 10
-    }
-  },
-  "custom/cpu": {
-    "exec": "/home/tylord/owl/common/i3-status-scripts/cpu",
-    "interval": 3,
-    "return-type": "text"
-  },
-  "custom/ip": {
-    "exec": "/home/tylord/owl/common/i3-status-scripts/ip",
-    "interval": 30,
-    "return-type": "text"
-  },
-  "custom/network": {
-    "exec": "/home/tylord/owl/common/i3-status-scripts/network",
-    "interval": 5,
-    "return-type": "text"
+  "spacing": 8,
+  "temperature": {
+    "critical-threshold": 80,
+    "format": " {temperatureC}°C"
   },
   "tray": {
     "icon-size": 16,
     "spacing": 8
+  },
+  "upower": {
+    "format": "{icon} {percentage}%",
+    "icon-set": [
+      "battery"
+    ],
+    "show-full": true
   }
 }
-
-

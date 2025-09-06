@@ -12,11 +12,5 @@
     }
   ],
   "name": "waybar",
-  "rc_scripts": [],
-  "services": [
-    {
-      "path": "local:systemd/waybar.service",
-      "type": "user"
-    }
-  ]
+  "rc_scripts": []
 }
