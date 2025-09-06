@@ -1,0 +1,10 @@
+{
+  "name": "kitty",
+  "install": "install.sh",
+  "links": [],
+  "rc_scripts": [],
+  "services": [],
+  "dependencies": []
+}
+
+

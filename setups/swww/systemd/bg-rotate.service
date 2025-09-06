@@ -1,0 +1,12 @@
+[Unit]
+Description=Rotate desktop wallpaper
+After=sway-session.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/swaybg-set
+
+[Install]
+WantedBy=default.target
+
+

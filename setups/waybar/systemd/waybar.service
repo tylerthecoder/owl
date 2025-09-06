@@ -1,0 +1,12 @@
+[Unit]
+Description=Waybar status bar
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/waybar
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+
+

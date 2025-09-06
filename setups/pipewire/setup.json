@@ -1,0 +1,8 @@
+{
+    "name": "pipewire",
+    "install": "install.sh",
+    "links": [],
+    "rc_scripts": [],
+    "services": [],
+    "dependencies": []
+}

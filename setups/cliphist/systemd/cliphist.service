@@ -1,0 +1,13 @@
+[Unit]
+Description=Wayland clipboard history via cliphist
+
+[Service]
+Type=simple
+ExecStart=/bin/sh -c 'wl-paste --watch cliphist store & wl-paste --primary --watch cliphist store'
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target
+
+

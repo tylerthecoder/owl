@@ -1,0 +1,26 @@
+{
+    "dependencies": [],
+    "install": "install.sh",
+    "links": [
+        {
+            "source": "local:scripts/swaybg-set",
+            "target": "~/.local/bin/swaybg-set"
+        },
+        {
+            "source": "local:scripts/bg-picker",
+            "target": "~/.local/bin/bg-picker"
+        }
+    ],
+    "name": "swww",
+    "rc_scripts": [],
+    "services": [
+        {
+            "path": "local:systemd/bg-rotate.timer",
+            "type": "user"
+        },
+        {
+            "path": "local:systemd/bg-rotate.service",
+            "type": "user"
+        }
+    ]
+}

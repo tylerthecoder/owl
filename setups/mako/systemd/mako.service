@@ -1,0 +1,12 @@
+[Unit]
+Description=Mako notification daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/mako
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+
+

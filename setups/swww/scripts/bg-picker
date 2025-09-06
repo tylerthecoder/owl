@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WALL_DIR="${WALL_DIR:-$HOME/Pictures/Wallpapers}"
+mkdir -p "$WALL_DIR"
+
+img=$(find "$WALL_DIR" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -printf '%f\n' | sort | rofi -dmenu -i -p "Select Wallpaper" -theme-str 'window { width: 50%; }')
+[[ -z "${img:-}" ]] && exit 0
+full_path="$WALL_DIR/$img"
+
+if command -v swww >/dev/null 2>&1; then
+  swww img "$full_path" --transition-type any --transition-duration 1.2
+else
+  pkill swaybg || true
+  swaybg -i "$full_path" -m fill & disown
+fi
+
+

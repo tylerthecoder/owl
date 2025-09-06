@@ -1,0 +1,64 @@
+{
+  "layer": "top",
+  "position": "top",
+  "margin": 8,
+  "spacing": 8,
+  "modules-left": [
+    "sway/workspaces",
+    "sway/window"
+  ],
+  "modules-center": [
+    "clock"
+  ],
+  "modules-right": [
+    "custom/cpu",
+    "custom/network",
+    "custom/ip",
+    "pulseaudio",
+    "battery",
+    "tray"
+  ],
+  "clock": {
+    "format": "{:%a %b %d, %I:%M %p}",
+    "tooltip": true
+  },
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "",
+    "format-icons": {
+      "default": ["", "", ""]
+    },
+    "on-click": "pamixer -t && pkill -SIGRTMIN+10 waybar",
+    "on-scroll-up": "pamixer -i 5 && pkill -SIGRTMIN+10 waybar",
+    "on-scroll-down": "pamixer -d 5 && pkill -SIGRTMIN+10 waybar"
+  },
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "states": {
+      "warning": 25,
+      "critical": 10
+    }
+  },
+  "custom/cpu": {
+    "exec": "/home/tylord/owl/common/i3-status-scripts/cpu",
+    "interval": 3,
+    "return-type": "text"
+  },
+  "custom/ip": {
+    "exec": "/home/tylord/owl/common/i3-status-scripts/ip",
+    "interval": 30,
+    "return-type": "text"
+  },
+  "custom/network": {
+    "exec": "/home/tylord/owl/common/i3-status-scripts/network",
+    "interval": 5,
+    "return-type": "text"
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  }
+}
+
+

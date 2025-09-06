@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WALL_DIR="${WALL_DIR:-$HOME/Pictures/Wallpapers}"
+mkdir -p "$WALL_DIR"
+
+img=$(find "$WALL_DIR" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | shuf -n1)
+[[ -z "${img:-}" ]] && exit 0
+
+if command -v swww >/dev/null 2>&1; then
+  swww img "$img" --transition-type any --transition-duration 1.2
+else
+  pkill swaybg || true
+  swaybg -i "$img" -m fill & disown
+fi
+
+

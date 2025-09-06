@@ -218,6 +218,7 @@ fn print_nest_info() {
                 println!("    Links:");
                 for linked_file in &setup.links {
                     let source_path = resolve_path(&linked_file.source_path);
+                    // resolved absolute path not needed for display here
                     let absolute_source_path =
                         Path::join(&config.owl_path, Path::new(&source_path));
                     let absolute_target_path =
@@ -266,6 +267,48 @@ fn print_nest_info() {
                 }
             }
 
+            // Show install script
+            if let Some(install_script) = &setup.install {
+                println!("    Install Script:");
+                let install_path = Path::join(
+                    &config.owl_path,
+                    Path::new(&format!("setups/{}/{}", setup_name, install_script)),
+                );
+                println!("      {}", install_path.display().to_string().yellow());
+            }
+
+            // Show services
+            if !setup.services.is_empty() {
+                println!("    Services:");
+                for service in &setup.services {
+                    let source_path = resolve_path_with_context(&service.path, Some(setup_name));
+                    let service_filename = Path::new(&source_path)
+                        .file_name()
+                        .unwrap()
+                        .to_str()
+                        .unwrap();
+                    let target_path = match service.service_type.as_str() {
+                        "system" => format!("/etc/systemd/system/{}", service_filename),
+                        _ => format!("~/.config/systemd/user/{}", service_filename),
+                    };
+
+                    println!(
+                        "      {} → {} ({})",
+                        Path::new(&source_path).display().to_string().blue(),
+                        target_path.red(),
+                        service.service_type
+                    );
+                }
+            }
+
+            // Show dependencies
+            if !setup.dependencies.is_empty() {
+                println!("    Dependencies:");
+                for dep in &setup.dependencies {
+                    println!("      {}", dep.cyan());
+                }
+            }
+
             println!();
         }
     }
@@ -289,17 +332,35 @@ enum Commands {
         #[command(subcommand)]
         nest_command: NestCommands,
     },
+    Nests {
+        #[command(subcommand)]
+        nests_command: NestsCommands,
+    },
     Sync,
     Setup {
         setup_name: String,
     },
+    Setups,
     Update,
 }
 
 #[derive(Subcommand)]
 enum NestCommands {
     Setup,
+    Install,
     Info,
+    Switch {
+        /// Absolute path to a nest directory (optional). If omitted, an interactive selector opens.
+        path: Option<String>,
+    },
+}
+
+#[derive(Subcommand)]
+enum NestsCommands {
+    Switch {
+        /// Absolute path to a nest directory (optional). If omitted, an interactive selector opens.
+        path: Option<String>,
+    },
 }
 
 fn main() {
@@ -311,10 +372,16 @@ fn main() {
         Some(Commands::Config) => print_config(),
         Some(Commands::Nest { nest_command }) => match nest_command {
             NestCommands::Setup => link_with_setups(),
+            NestCommands::Install => install_nest_setups(),
             NestCommands::Info => print_nest_info(),
+            NestCommands::Switch { path } => switch_nest(path),
+        },
+        Some(Commands::Nests { nests_command }) => match nests_command {
+            NestsCommands::Switch { path } => switch_nest(path),
         },
         Some(Commands::Sync) => sync(&config),
         Some(Commands::Setup { setup_name }) => run_setup(&setup_name),
+        Some(Commands::Setups) => interactive_setups(),
         Some(Commands::Update) => run_update(),
         None => println!("No command"),
     }
@@ -329,29 +396,69 @@ fn sync(config: &Config) {
     run_script(owl_sync_script_path);
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug)]
 struct Setup {
     name: String,
     links: Vec<LinkedFile>,
     // vector of script file paths relative to the setup directory
-    #[serde(default)]
     actions: Vec<String>,
-    #[serde(default)]
     rc_scripts: Vec<String>,
+    // Install script (separate from actions/setup)
+    install: Option<String>,
+    // Services to link to systemd
+    services: Vec<Service>,
+    // Dependencies on other setups
+    dependencies: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct Service {
+    #[serde(rename = "path")]
+    path: String,
+    #[serde(rename = "type", default = "default_service_type")]
+    service_type: String,
+}
+
+fn default_service_type() -> String {
+    "user".to_string()
+}
+
+#[derive(Debug, Default, Deserialize)]
+struct SetupFile {
+    name: Option<String>,
+    links: Option<Vec<LinkedFile>>,
+    actions: Option<Vec<String>>,
+    rc_scripts: Option<Vec<String>>,
+    install: Option<String>,
+    services: Option<Vec<Service>>,
+    dependencies: Option<Vec<String>>,
 }
 
 impl Setup {
     pub fn from_file(name: String) -> Setup {
         let setup_path = Path::join(
             &Path::join(Path::new(&get_config().owl_path), Path::new("setups")),
-            &Path::join(Path::new(&name), Path::new("links.json")),
+            &Path::join(Path::new(&name), Path::new("setup.json")),
         );
 
-        println!("Using setup file: {} for setup {}", setup_path.display(), name);
+        println!(
+            "Using setup file: {} for setup {}",
+            setup_path.display(),
+            name
+        );
 
         let setup_raw = std::fs::read_to_string(setup_path).expect("Unable to read setup file");
-        let setup: Setup = serde_json::from_str(&setup_raw).expect("Unable to parse setup file");
-        setup
+        let file: SetupFile = serde_json::from_str(&setup_raw).expect("Unable to parse setup file");
+
+        Setup {
+            name: file.name.unwrap_or(name),
+            links: file.links.unwrap_or_default(),
+            actions: file.actions.unwrap_or_default(),
+            rc_scripts: file.rc_scripts.unwrap_or_default(),
+            install: file.install,
+            services: file.services.unwrap_or_default(),
+            dependencies: file.dependencies.unwrap_or_default(),
+        }
     }
 }
 
@@ -439,9 +546,15 @@ fn run_setup_script(setup: &Setup) {
 
 fn run_setup_link(setup: &Setup) {
     println!("Setting up {}", setup.name.green());
-    // setup path is owl path + "/setups/" + setup + "links.json"
     for linked_file in &setup.links {
-        linked_file.create_symlink();
+        let resolved_source =
+            resolve_path_with_context(&linked_file.source_path, Some(&setup.name));
+        let contextual = LinkedFile {
+            source_path: resolved_source,
+            target_path: linked_file.target_path.clone(),
+            root: linked_file.root,
+        };
+        contextual.create_symlink();
     }
 }
 
@@ -606,25 +719,301 @@ fn link_with_setups() {
         link_rc_script(&rc_script, "owl-rc");
     }
 
-    // read each setup's config file
+    // Link each setup including dependencies recursively
+    let mut visited = std::collections::HashSet::new();
     for setup_name in nests.setups {
-        let setup = Setup::from_file(setup_name.clone());
-
-        // Link setup rc_scripts to owl-rc
-        for rc_script in setup.rc_scripts {
-            link_rc_script_with_context(&rc_script, "owl-rc", Some(&setup_name));
-        }
-
-        run_setup(&setup_name);
+        link_setup_with_deps(&setup_name, &mut visited);
     }
+}
+
+fn link_setup_with_deps(setup_name: &str, visited: &mut std::collections::HashSet<String>) {
+    if visited.contains(setup_name) {
+        return;
+    }
+
+    let setup = Setup::from_file(setup_name.to_string());
+
+    // First link dependencies
+    for dep in &setup.dependencies {
+        link_setup_with_deps(dep, visited);
+    }
+
+    // Link setup rc_scripts to owl-rc
+    for rc_script in &setup.rc_scripts {
+        link_rc_script_with_context(rc_script, "owl-rc", Some(setup_name));
+    }
+
+    // Link services to systemd user dir
+    link_services(&setup);
+
+    // Link files
+    run_setup_link(&setup);
+    // Run optional actions (not install)
+    if !setup.actions.is_empty() {
+        run_setup_script(&setup);
+    }
+
+    visited.insert(setup_name.to_string());
 }
 
 fn run_setup(setup_name: &str) {
     let setup = Setup::from_file(setup_name.to_string());
-    run_setup_script(&setup);
     run_setup_link(&setup);
+    link_services(&setup);
+    if !setup.actions.is_empty() {
+        run_setup_script(&setup);
+    }
 }
 
 fn run_update() {
     run_setup("owl");
+}
+
+fn install_nest_setups() {
+    let nest = get_nest();
+    let mut processed = std::collections::HashSet::new();
+
+    for setup_name in &nest.setups {
+        install_setup_with_deps(setup_name, &mut processed);
+    }
+}
+
+fn install_setup_with_deps(setup_name: &str, processed: &mut std::collections::HashSet<String>) {
+    if processed.contains(setup_name) {
+        return;
+    }
+
+    let setup = Setup::from_file(setup_name.to_string());
+
+    // Install dependencies first
+    for dep in &setup.dependencies {
+        install_setup_with_deps(dep, processed);
+    }
+
+    // Install this setup
+    if let Some(install_script) = &setup.install {
+        println!("Installing {}", setup_name.green());
+        let config = get_config();
+        let install_path = Path::join(
+            &config.owl_path,
+            Path::new(&format!("setups/{}/{}", setup_name, install_script)),
+        );
+        run_script(install_path);
+    }
+
+    processed.insert(setup_name.to_string());
+}
+
+fn link_services(setup: &Setup) {
+    for service in &setup.services {
+        let resolved_path = resolve_path_with_context(&service.path, Some(&setup.name));
+
+        let filename = Path::new(&resolved_path)
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+
+        let target = match service.service_type.as_str() {
+            "system" => format!("/etc/systemd/system/{}", filename),
+            _ => format!("~/.config/systemd/user/{}", filename),
+        };
+
+        let linked = LinkedFile {
+            source_path: resolved_path,
+            target_path: target,
+            root: Some(service.service_type == "system"),
+        };
+
+        linked.create_symlink();
+    }
+}
+
+fn interactive_setups() {
+    use std::io::{self, Write};
+
+    let config = get_config();
+    let setups_dir = Path::join(&config.owl_path, Path::new("setups"));
+
+    let mut setups = Vec::new();
+    if let Ok(entries) = std::fs::read_dir(&setups_dir) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                if entry.file_type().unwrap().is_dir() {
+                    if let Some(name) = entry.file_name().to_str() {
+                        setups.push(name.to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    setups.sort();
+
+    loop {
+        println!("\n{}", "Available Setups:".blue().bold());
+        for (i, setup) in setups.iter().enumerate() {
+            println!("{}. {}", i + 1, setup.cyan());
+        }
+        println!("0. Exit");
+
+        print!("\nSelect setup number: ");
+        io::stdout().flush().unwrap();
+
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+
+        let choice: usize = match input.trim().parse() {
+            Ok(n) => n,
+            Err(_) => continue,
+        };
+
+        if choice == 0 {
+            break;
+        }
+
+        if choice > setups.len() {
+            continue;
+        }
+
+        let setup_name = &setups[choice - 1];
+
+        loop {
+            println!("\n{} {}", "Setup:".blue().bold(), setup_name.cyan());
+            println!("1. View");
+            println!("2. Edit");
+            println!("3. Install");
+            println!("0. Back");
+
+            print!("\nSelect action: ");
+            io::stdout().flush().unwrap();
+
+            let mut input = String::new();
+            io::stdin().read_line(&mut input).unwrap();
+
+            let action: usize = match input.trim().parse() {
+                Ok(n) => n,
+                Err(_) => continue,
+            };
+
+            match action {
+                0 => break,
+                1 => view_setup(setup_name),
+                2 => edit_setup(setup_name),
+                3 => {
+                    let mut processed = std::collections::HashSet::new();
+                    install_setup_with_deps(setup_name, &mut processed);
+                }
+                _ => continue,
+            }
+        }
+    }
+}
+
+fn view_setup(setup_name: &str) {
+    let setup = Setup::from_file(setup_name.to_string());
+    println!("\n{} {}", "Setup:".blue().bold(), setup_name.cyan());
+
+    if !setup.dependencies.is_empty() {
+        println!("Dependencies: {}", setup.dependencies.join(", ").yellow());
+    }
+
+    if let Some(install) = &setup.install {
+        println!("Install script: {}", install.green());
+    }
+
+    if !setup.actions.is_empty() {
+        println!("Actions: {}", setup.actions.join(", ").magenta());
+    }
+
+    if !setup.links.is_empty() {
+        println!("Links: {} files", setup.links.len());
+    }
+
+    if !setup.services.is_empty() {
+        println!("Services: {} files", setup.services.len());
+    }
+
+    if !setup.rc_scripts.is_empty() {
+        println!("RC Scripts: {}", setup.rc_scripts.join(", ").blue());
+    }
+}
+
+fn edit_setup(setup_name: &str) {
+    let config = get_config();
+    let links_path = Path::join(
+        &config.owl_path,
+        Path::new(&format!("setups/{}/setup.json", setup_name)),
+    );
+
+    let mut cmd = Command::new("vim");
+    cmd.arg(&links_path);
+
+    match cmd.status() {
+        Ok(status) => {
+            if !status.success() {
+                eprintln!("Editor exited with non-zero status");
+            }
+        }
+        Err(e) => eprintln!("Failed to launch editor: {}", e),
+    }
+}
+
+fn list_nests() -> Vec<PathBuf> {
+    let config = get_config();
+    let nests_dir = Path::join(&config.owl_path, Path::new("nests"));
+    let mut nests = Vec::new();
+    if let Ok(entries) = std::fs::read_dir(&nests_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() && path.join("nest.json").exists() {
+                nests.push(path);
+            }
+        }
+    }
+    nests
+}
+
+fn switch_nest(path: Option<String>) {
+    let mut config = get_config();
+
+    let target_path = match path {
+        Some(p) => PathBuf::from(p),
+        None => {
+            // interactive selection
+            let nests = list_nests();
+            if nests.is_empty() {
+                eprintln!("No nests found under nests/");
+                return;
+            }
+            println!("Select a nest:");
+            for (i, p) in nests.iter().enumerate() {
+                println!("{}: {}", i + 1, p.display());
+            }
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input).unwrap();
+            let idx: usize = match input.trim().parse() {
+                Ok(n) => n,
+                Err(_) => {
+                    eprintln!("Invalid selection");
+                    return;
+                }
+            };
+            if idx == 0 || idx > nests.len() {
+                eprintln!("Invalid selection");
+                return;
+            }
+            nests[idx - 1].clone()
+        }
+    };
+
+    if !validate_nest_path(&target_path) {
+        eprintln!("Invalid nest path: {}", target_path.display());
+        return;
+    }
+
+    config.nest_path = Some(target_path.clone());
+    save_config(config);
+    println!("Switched nest to {}", target_path.display());
 }

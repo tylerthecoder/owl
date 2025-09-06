@@ -1,0 +1,18 @@
+{
+  "dependencies": [],
+  "install": "install.sh",
+  "links": [
+    {
+      "source": "local:scripts/cliphist-rofi",
+      "target": "~/.local/bin/cliphist-rofi"
+    }
+  ],
+  "name": "cliphist",
+  "rc_scripts": [],
+  "services": [
+    {
+      "path": "local:systemd/cliphist.service",
+      "type": "user"
+    }
+  ]
+}

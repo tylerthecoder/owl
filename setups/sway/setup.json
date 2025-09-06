@@ -1,0 +1,25 @@
+{
+    "dependencies": [
+        "waybar",
+        "mako",
+        "cliphist",
+        "swww",
+        "kitty"
+    ],
+    "install": "install.sh",
+    "links": [
+        {
+            "source": "local:config",
+            "target": "~/.config/sway/config"
+        },
+        {
+            "source": "local:scripts/desk-sway",
+            "target": "~/.local/bin/desk-sway"
+        }
+    ],
+    "name": "sway",
+    "rc_scripts": [
+        "local:rc.sh"
+    ],
+    "services": []
+}

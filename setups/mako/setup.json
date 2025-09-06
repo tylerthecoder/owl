@@ -1,0 +1,18 @@
+{
+  "dependencies": [],
+  "install": "install.sh",
+  "links": [
+    {
+      "source": "local:config",
+      "target": "~/.config/mako/config"
+    }
+  ],
+  "name": "mako",
+  "rc_scripts": [],
+  "services": [
+    {
+      "path": "local:systemd/mako.service",
+      "type": "user"
+    }
+  ]
+}

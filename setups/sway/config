@@ -1,0 +1,160 @@
+# SwayFX config (Wayland) - ported from i3, with SwayFX visuals
+
+set $mod Mod4
+
+# Startup
+# Services started via their own setups (mako, waybar, cliphist, swww)
+exec_always swww-daemon
+
+# Polkit agent (GNOME)
+exec_always /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+
+# Wallpaper
+exec_always ~/.local/bin/swaybg-set
+
+# Idle and lock (sleep on lid close handled by logind)
+exec_always swayidle -w \
+  timeout 300 'swaymsg "output * dpms off"' \
+  resume 'swaymsg "output * dpms on"' \
+  before-sleep 'swaylock -f'
+
+input * {
+  xkb_options caps:super
+}
+
+seat seat0 xcursor_theme Adwaita 24
+
+# Kitty as default terminal
+bindsym $mod+Return exec kitty
+
+# App binds (Wayland)
+bindsym $mod+Shift+Return exec kitty --class floating
+for_window [app_id="floating"] floating enable
+bindsym $mod+a exec pavucontrol
+bindsym $mod+n exec kitty --class floating -e "tt notes tui"
+
+# Rofi-wayland
+bindsym $mod+i exec "omni-menu run"
+bindsym $mod+o exec "omni-menu window"
+bindsym $mod+p exec "omni-menu"
+
+# Audio controls via pamixer
+bindsym XF86AudioRaiseVolume exec pamixer -i 5 && pkill -SIGRTMIN+10 waybar
+bindsym XF86AudioLowerVolume exec pamixer -d 5 && pkill -SIGRTMIN+10 waybar
+bindsym XF86AudioMute exec pamixer -t && pkill -SIGRTMIN+10 waybar
+bindsym $mod+m exec pamixer -t && pkill -SIGRTMIN+10 waybar
+
+# Brightness
+bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym F8 exec brightnessctl set 5%+
+bindsym F7 exec brightnessctl set 5%-
+
+# Spotify via MPRIS can be handled via playerctl if needed
+
+# Focus/move
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+h move left 40px
+bindsym $mod+Shift+j move down 40px
+bindsym $mod+Shift+k move up 40px
+bindsym $mod+Shift+l move right 40px
+
+bindsym $mod+Ctrl+h move workspace to output left
+bindsym $mod+Ctrl+j move workspace to output down
+bindsym $mod+Ctrl+k move workspace to output up
+bindsym $mod+Ctrl+l move workspace to output right
+
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
+
+bindsym $mod+Shift+v splith
+bindsym $mod+v splitv
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+floating_modifier $mod
+
+# Workspaces
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+set $ws10 10
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r exec "swaymsg reload"
+bindsym $mod+Shift+e exec "swaynag -t warning -m 'Exit Sway?' -b 'Yes' 'swaymsg exit'"
+
+mode "resize" {
+  bindsym h resize shrink width 10px
+  bindsym j resize grow height 10px
+  bindsym k resize shrink height 10px
+  bindsym l resize grow width 10px
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# SwayFX visuals
+smart_gaps on
+gaps inner 10
+# Rounded corners and effects (SwayFX options)
+corner_radius 8
+layer_effects "waybar" blur enable; shadows enable
+default_dim_inactive 0.00
+
+# Border style minimal
+client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+client.background       #F8F8F2
+
+# Keybinds for tools
+bindsym $mod+b exec ~/.local/bin/bg-picker
+bindsym $mod+c exec ~/.local/bin/cliphist-rofi
+bindsym $mod+Shift+d exec desk-sway
+
+# LightDM: ensure sway session selected (no config needed here)
+
+
+
