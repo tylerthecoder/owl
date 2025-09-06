@@ -4,7 +4,7 @@ set -euo pipefail
 desks_dir="$HOME/.config/desks-sway"
 mkdir -p "$desks_dir"
 
-selected=$(ls "$desks_dir" 2>/dev/null | fzf --height=30 --layout=reverse --prompt="Select Sway Desk: ")
+selected=$(ls "$desks_dir" 2>/dev/null | rofi -dmenu -i -p "Select Sway Desk")
 [[ -z "${selected:-}" ]] && exit 0
 
 "$desks_dir/$selected"

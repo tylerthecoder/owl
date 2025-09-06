@@ -17,6 +17,18 @@
             "target": "~/.local/bin/desk-sway"
         },
         {
+            "source": "local:scripts/desks/framework-sway.sh",
+            "target": "~/.config/desks-sway/framework-sway.sh"
+        },
+        {
+            "source": "local:scripts/desks/home-sway.sh",
+            "target": "~/.config/desks-sway/home-sway.sh"
+        },
+        {
+            "source": "local:scripts/desks/redwood-sway.sh",
+            "target": "~/.config/desks-sway/redwood-sway.sh"
+        },
+        {
             "source": "local:environment.d/10-path.conf",
             "target": "~/.config/environment.d/10-path.conf"
         }
@@ -24,6 +36,9 @@
     "name": "sway",
     "rc_scripts": [
         "local:rc.sh"
+    ],
+    "menu_scripts": [
+        "local:scripts/desk-sway"
     ],
     "services": []
 }

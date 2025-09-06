@@ -1,8 +1,5 @@
 {
-  "actions": [
-    "./setup.sh"
-  ],
+  "install": "install.sh",
   "name": "menu",
   "links": []
 }
-

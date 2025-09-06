@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WALL_DIR="${WALL_DIR:-$HOME/Pictures/Wallpapers}"
+WALL_DIR="${WALL_DIR:-$HOME/docs/media/wallpapers}"
 mkdir -p "$WALL_DIR"
 
 img=$(find "$WALL_DIR" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -printf '%f\n' | sort | rofi -dmenu -i -p "Select Wallpaper" -theme-str 'window { width: 50%; }')

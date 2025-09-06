@@ -13,6 +13,22 @@
             "target": "~/.local/bin/f"
         }
     ],
+    "menu_scripts": [
+        {
+            "name": "Emoji",
+            "path": "common/menu-scripts/emoji.sh"
+        },
+        {
+            "name": "Run Script",
+            "path": "common/menu-scripts/run-script.sh"
+        }
+    ],
+    "rc_scripts": [
+        "common:fzf.sh",
+        "common:base-aliases.sh",
+        "local:.shenv",
+        "local:.alias"
+    ],
     "setups": [
         "git",
         "bun",
@@ -31,11 +47,5 @@
         "menu",
         "notes",
         "secrets"
-    ],
-    "rc_scripts": [
-        "common:fzf.sh",
-        "common:base-aliases.sh",
-        "local:.shenv",
-        "local:.alias"
     ]
 }

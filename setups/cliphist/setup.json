@@ -7,6 +7,11 @@
       "target": "~/.local/bin/cliphist-rofi"
     }
   ],
-  "name": "cliphist",
-  "rc_scripts": []
+  "menu_scripts": [
+    {
+      "name": "Clipboard",
+      "path": "local:scripts/cliphist-rofi"
+    }
+  ],
+  "name": "cliphist"
 }

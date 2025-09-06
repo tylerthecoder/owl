@@ -9,10 +9,17 @@
         {
             "source": "local:scripts/bg-picker",
             "target": "~/.local/bin/bg-picker"
+        },
+        {
+            "source": "local:environment.d/20-wall.conf",
+            "target": "~/.config/environment.d/20-wall.conf"
         }
     ],
     "name": "swww",
     "rc_scripts": [],
+    "menu_scripts": [
+        "local:scripts/bg-picker"
+    ],
     "services": [
         {
             "path": "local:systemd/bg-rotate.timer",

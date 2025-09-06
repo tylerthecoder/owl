@@ -7,6 +7,11 @@
     "format": " {usage}%",
     "interval": 3
   },
+  "custom/ip": {
+    "exec": "/home/tylord/owl/common/i3-status-scripts/ip",
+    "interval": 30,
+    "return-type": "text"
+  },
   "custom/weather": {
     "exec": "/home/tylord/owl/common/i3-status-scripts/weather",
     "interval": 1800,
@@ -27,20 +32,13 @@
   "modules-right": [
     "cpu",
     "memory",
-    "network",
+    "custom/ip",
     "temperature",
     "pulseaudio",
-    "upower",
+    "bluetooth",
     "custom/weather",
     "tray"
   ],
-  "network": {
-    "format-disconnected": "󰖪",
-    "format-ethernet": "  {ip}",
-    "format-wifi": "  {essid} {signal}%",
-    "interface": "wlan0",
-    "tooltip": true
-  },
   "position": "top",
   "pulseaudio": {
     "format": "{icon} {volume}%",
@@ -56,6 +54,13 @@
     "on-scroll-down": "pamixer -d 5 && pkill -SIGRTMIN+10 waybar",
     "on-scroll-up": "pamixer -i 5 && pkill -SIGRTMIN+10 waybar"
   },
+  "bluetooth": {
+    "format": " {status}",
+    "format-connected": " {device_alias}",
+    "format-disabled": " off",
+    "on-click": "blueman-manager",
+    "tooltip": true
+  },
   "spacing": 8,
   "temperature": {
     "critical-threshold": 80,
@@ -64,13 +69,5 @@
   "tray": {
     "icon-size": 16,
     "spacing": 8
-  },
-  "upower": {
-    "device": "DisplayDevice",
-    "format": "{icon} {percentage}%",
-    "icon-set": [
-      "battery"
-    ],
-    "show-full": true
   }
 }

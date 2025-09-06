@@ -131,6 +131,8 @@ struct Nest {
     setups: Vec<String>,
     #[serde(default)]
     rc_scripts: Vec<String>,
+    #[serde(default)]
+    menu_scripts: Vec<MenuScriptItem>,
 }
 
 fn get_nest() -> Nest {
@@ -203,6 +205,30 @@ fn print_nest_info() {
         }
     }
     println!();
+
+    if !nests.menu_scripts.is_empty() {
+        println!("{}", "📜 NEST MENU SCRIPTS:".yellow().bold());
+        for menu in &nests.menu_scripts {
+            let resolved_path = resolve_path(menu.get_path());
+            let absolute_source_path = Path::join(&config.owl_path, Path::new(&resolved_path));
+            let script_name = menu.get_name().map(|s| s.to_string()).unwrap_or_else(|| {
+                Path::new(&resolved_path)
+                    .file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_string()
+            });
+            let target_path = format!("~/.config/owl/menu-scripts/{}", script_name);
+
+            println!(
+                "  {} → {}",
+                absolute_source_path.display().to_string().blue(),
+                target_path.red()
+            );
+        }
+        println!();
+    }
 
     println!("{}", "📦 SETUPS:".magenta().bold());
     if nests.setups.is_empty() {
@@ -403,6 +429,7 @@ struct Setup {
     // vector of script file paths relative to the setup directory
     actions: Vec<String>,
     rc_scripts: Vec<String>,
+    menu_scripts: Vec<MenuScriptItem>,
     // Install script (separate from actions/setup)
     install: Option<String>,
     // Services to link to systemd
@@ -429,9 +456,37 @@ struct SetupFile {
     links: Option<Vec<LinkedFile>>,
     actions: Option<Vec<String>>,
     rc_scripts: Option<Vec<String>>,
+    menu_scripts: Option<Vec<MenuScriptItem>>,
     install: Option<String>,
     services: Option<Vec<Service>>,
     dependencies: Option<Vec<String>>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(untagged)]
+enum MenuScriptItem {
+    Simple(String),
+    Detailed {
+        path: String,
+        #[serde(default)]
+        name: Option<String>,
+    },
+}
+
+impl MenuScriptItem {
+    fn get_path(&self) -> &str {
+        match self {
+            MenuScriptItem::Simple(p) => p.as_str(),
+            MenuScriptItem::Detailed { path, .. } => path.as_str(),
+        }
+    }
+
+    fn get_name(&self) -> Option<&str> {
+        match self {
+            MenuScriptItem::Simple(_) => None,
+            MenuScriptItem::Detailed { name, .. } => name.as_deref(),
+        }
+    }
 }
 
 impl Setup {
@@ -455,6 +510,8 @@ impl Setup {
             links: file.links.unwrap_or_default(),
             actions: file.actions.unwrap_or_default(),
             rc_scripts: file.rc_scripts.unwrap_or_default(),
+            menu_scripts: file.menu_scripts.unwrap_or_default(),
+            // menu scripts will be linked to ~/.config/owl/menu-scripts
             install: file.install,
             services: file.services.unwrap_or_default(),
             dependencies: file.dependencies.unwrap_or_default(),
@@ -463,13 +520,16 @@ impl Setup {
 }
 
 fn run_script(script_path: PathBuf) {
-    let script_path = script_path
-        .canonicalize()
-        .expect("Failed to canonicalize path");
-    println!("Running script: {}", script_path.display());
+    let display_path = script_path.display().to_string();
+    if !Path::new(&script_path).exists() {
+        eprintln!("Script not found, skipping: {}", display_path);
+        return;
+    }
+
+    println!("Running script: {}", display_path);
 
     let mut cmd = Command::new("bash");
-    cmd.arg("-c").arg(script_path);
+    cmd.arg(&script_path);
 
     let mut child = cmd
         .stdout(std::process::Stdio::piped())
@@ -706,6 +766,28 @@ fn link_rc_script_with_context(script_path: &str, target_dir: &str, setup_name: 
     context_linked_file.create_symlink();
 }
 
+fn link_menu_script(menu: &MenuScriptItem, setup_name: Option<&str>) {
+    let resolved_path = resolve_path_with_context(menu.get_path(), setup_name);
+    let default_name = Path::new(&resolved_path)
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_string();
+    let script_name = menu
+        .get_name()
+        .map(|s| s.to_string())
+        .unwrap_or(default_name);
+
+    let linked_file = LinkedFile {
+        source_path: resolved_path,
+        target_path: format!("~/.config/owl/menu-scripts/{}", script_name),
+        root: None,
+    };
+
+    linked_file.create_symlink();
+}
+
 fn link_with_setups() {
     // get the config
     let nests = get_nest();
@@ -717,6 +799,11 @@ fn link_with_setups() {
     // Link nest rc_scripts to owl-rc
     for rc_script in nests.rc_scripts {
         link_rc_script(&rc_script, "owl-rc");
+    }
+
+    // Link nest menu scripts
+    for menu in nests.menu_scripts {
+        link_menu_script(&menu, None);
     }
 
     // Link each setup including dependencies recursively
@@ -741,6 +828,11 @@ fn link_setup_with_deps(setup_name: &str, visited: &mut std::collections::HashSe
     // Link setup rc_scripts to owl-rc
     for rc_script in &setup.rc_scripts {
         link_rc_script_with_context(rc_script, "owl-rc", Some(setup_name));
+    }
+
+    // Link setup menu_scripts to owl/menu-scripts
+    for menu in &setup.menu_scripts {
+        link_menu_script(menu, Some(setup_name));
     }
 
     // Link services to systemd user dir
