@@ -41,7 +41,7 @@ Example nest `setup.json`:
 ```json
 {
   "links": [
-    { "source": "common/config/.vimrc", "target": "~/.vimrc" },
+    { "source": "common:config/.vimrc", "target": "~/.vimrc" },
     { "source": "local:.xprofile", "target": "~/.xprofile" }
   ],
   "dependencies": ["git", "zsh", "rust"],
@@ -78,11 +78,16 @@ Naming and destination:
 
 ### Path Syntax
 
-Nest and setup configurations support clean path syntax:
+Nest and setup configurations support tokenized paths with context:
 
-- `common:filename.sh` → `common/rc/filename.sh`
-- `local:filename` → `nests/{nest-name}/filename`
-- Regular absolute/relative paths work as before; if no token is provided and the path is relative, it resolves from the owl repo root (`owl_path`).
+- rc_scripts: `common:filename.sh` → `common/rc/filename.sh`
+- menu_scripts: `common:emoji.sh` → `common/menu-scripts/emoji.sh`
+- services: `common:greenclip.service` → `common/services/greenclip.service`
+- links: `common:path/inside/common` → `common/path/inside/common`
+- `local:relative/path` → relative to the setup directory (either `setups/<name>` or `nests/<name>`, depending on context)
+- Relative paths without tokens resolve from the repo root (`owl_path`)
+
+All source paths are validated to exist during setup validation; target paths need not exist and will be created as needed.
 
 ### Initialization (`owl-start.sh`)
 
@@ -102,7 +107,7 @@ The simplified startup script that:
 - `owl nest systemd [--shallow]`: Link and enable/restart services
 - `owl nest info [--shallow]`: Show what would be linked
 - `owl nest edit`: Open the active root setup for editing
-- `owl nest switch [NAME]`: Switch the active nest by name (interactive if omitted)
+- `owl nest switch`: Switch the active nest interactively
 
 ### Setup Management
 
@@ -114,6 +119,8 @@ The simplified startup script that:
 - `owl sync`: Run synchronization scripts
 - `owl setups-validate`: Validate all setups and nests
 - `owl update`: Update owl itself
+
+Note: owl is designed for interactive use. Prompts during first-run config are expected.
 
 ## Conventions
 
@@ -140,7 +147,7 @@ sudo pacman -S --needed git base-devel curl
 git clone https://github.com/tylerthecoder/owl ~/owl
 cd ~/owl
 cargo build --release
-~/.local/bin/owl nest switch framework-sway
+~/.local/bin/owl nest switch
 ```
 
 1. Link configs and services:

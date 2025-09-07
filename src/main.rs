@@ -101,6 +101,10 @@ fn save_config(config: Config) -> Config {
     config
 }
 
+// =======================================
+//            Setup Header
+// =======================================
+
 #[derive(Clone)]
 struct SetupHeader {
     name: String,
@@ -147,26 +151,6 @@ fn read_setup_headers_from_dir(dir: &Path) -> Vec<SetupHeader> {
 // =======================================
 //              Raw Setup
 // =======================================
-fn resolve_tokenized_path(input: &str, setup_dir: &Path, common_prefix: &str) -> PathBuf {
-    let expanded = shellexpand::tilde(input).into_owned();
-    let s = expanded.as_str();
-    if Path::new(s).is_absolute() {
-        return PathBuf::from(s);
-    }
-    if s.starts_with("common:") {
-        let relative = &s[7..];
-        return get_config()
-            .owl_path
-            .join("common")
-            .join(common_prefix)
-            .join(relative);
-    }
-    if s.starts_with("local:") {
-        let relative = &s[6..];
-        return setup_dir.join(relative);
-    }
-    get_config().owl_path.join(s)
-}
 
 #[derive(Debug, Deserialize)]
 struct SetupServiceRaw {
@@ -192,88 +176,50 @@ enum SetupMenuScriptItemRaw {
 
 #[derive(Debug, Deserialize)]
 struct SetupFileRaw {
-    #[serde(default)]
-    name: Option<String>,
-    #[serde(default)]
     install: Option<String>,
-    #[serde(default)]
     links: Option<Vec<SetupFileLinkRaw>>,
-    #[serde(default)]
     rc_scripts: Option<Vec<String>>,
-    #[serde(default)]
     menu_scripts: Option<Vec<SetupMenuScriptItemRaw>>,
-    #[serde(default)]
     services: Option<Vec<SetupServiceRaw>>,
-    #[serde(default)]
     dependencies: Option<Vec<String>>,
-}
-
-impl SetupFileRaw {
-    fn validate(&self, setup_dir: &Path, setup_name: &str) -> Result<Setup, String> {
-        let name = self.name.clone().unwrap_or_else(|| setup_name.to_string());
-
-        let links = self
-            .links
-            .as_ref()
-            .unwrap_or(&Vec::new())
-            .into_iter()
-            .map(|l| ValidatedSetupLink::make(&l, setup_dir))
-            .collect::<Result<Vec<_>, _>>()?;
-
-        let rc_scripts = self
-            .rc_scripts
-            .as_ref()
-            .unwrap_or(&Vec::new())
-            .into_iter()
-            .map(|s| ValidatedRunScript::make(&s, setup_dir, &name))
-            .collect::<Result<Vec<_>, _>>()?;
-
-        let menu_scripts = self
-            .menu_scripts
-            .as_ref()
-            .unwrap_or(&Vec::new())
-            .into_iter()
-            .map(|s| ValidatedSetupMenuScriptItem::make(&s, setup_dir))
-            .collect::<Result<Vec<_>, _>>()?;
-
-        let services = self
-            .services
-            .as_ref()
-            .unwrap_or(&Vec::new())
-            .into_iter()
-            .map(|s| ValidatedSetupService::make(&s, setup_dir))
-            .collect::<Result<Vec<_>, _>>()?;
-
-        let dependencies = self
-            .dependencies
-            .as_ref()
-            .unwrap_or(&Vec::new())
-            .into_iter()
-            .map(|s| ValidatedSetupDependency::make(&s))
-            .collect::<Result<Vec<_>, _>>()?;
-
-        let install_script = if let Some(install) = self.install.as_ref() {
-            Some(ValidatedSetupInstallScript::make(install, setup_dir)?)
-        } else {
-            None
-        };
-
-        Ok(Setup {
-            name,
-            origin_dir: setup_dir.to_path_buf(),
-            links,
-            rc_scripts,
-            menu_scripts,
-            services,
-            dependencies,
-            install_script,
-        })
-    }
 }
 
 // =======================================
 //              Validated Setup
 // =======================================
+
+fn tilde_expand(input: &str) -> String {
+    shellexpand::tilde(&input).into_owned()
+}
+
+fn tilde_expand_path(input: &str) -> PathBuf {
+    PathBuf::from(tilde_expand(input))
+}
+
+fn replace_tokens(input: &str, area: &str, setup_dir: &Path) -> PathBuf {
+    if input.starts_with("common:") {
+        let input = input.split(":").nth(1).unwrap();
+        return get_config().owl_path.join("common").join(area).join(input);
+    } else if input.starts_with("local:") {
+        let input = input.split(":").nth(1).unwrap();
+        return setup_dir.join(input);
+    } else {
+        return get_config().owl_path.join(input);
+    }
+}
+
+fn ensure_exists(path: &Path) -> Result<(), String> {
+    if !path.exists() {
+        return Err(format!("path not found: {}", path.display()));
+    }
+    Ok(())
+}
+
+fn get_filename(path: &Path) -> Result<String, String> {
+    path.file_name()
+        .and_then(|n| n.to_str().map(|s| s.to_string()))
+        .ok_or_else(|| format!("invalid filename: {}", path.display()))
+}
 
 // ---------- Setup Links ----------
 struct ValidatedSetupLink {
@@ -284,11 +230,9 @@ struct ValidatedSetupLink {
 
 impl ValidatedSetupLink {
     fn make(raw: &SetupFileLinkRaw, setup_dir: &Path) -> Result<Self, String> {
-        let source_path = resolve_tokenized_path(&raw.source, setup_dir, "");
-        if !source_path.exists() {
-            return Err(format!("link source not found: {}", source_path.display()));
-        }
-        let target_path = resolve_tokenized_path(&raw.target, setup_dir, "");
+        let source_path = replace_tokens(&tilde_expand(&raw.source), "", setup_dir);
+        ensure_exists(&source_path)?;
+        let target_path = tilde_expand_path(&raw.target);
         Ok(Self {
             source_path,
             target_path,
@@ -320,14 +264,9 @@ struct ValidatedRunScript {
 
 impl ValidatedRunScript {
     fn make(raw: &str, setup_dir: &Path, setup_name: &str) -> Result<Self, String> {
-        let path = resolve_tokenized_path(raw, setup_dir, "rc");
-        if !path.exists() {
-            return Err(format!("rc script missing: {}", path.display()));
-        }
-        let filename = path
-            .file_name()
-            .and_then(|n| n.to_str())
-            .ok_or_else(|| "invalid script filename".to_string())?;
+        let path = replace_tokens(&tilde_expand(raw), "rc", setup_dir);
+        ensure_exists(&path)?;
+        let filename = get_filename(&path)?;
         let name = format!("rc-{}-{}", setup_name, filename);
         Ok(Self { name, path })
     }
@@ -353,30 +292,17 @@ struct ValidatedSetupMenuScriptItem {
 
 impl ValidatedSetupMenuScriptItem {
     fn make(raw: &SetupMenuScriptItemRaw, setup_dir: &Path) -> Result<Self, String> {
-        match raw {
-            SetupMenuScriptItemRaw::Simple(p) => {
-                let path = resolve_tokenized_path(p, setup_dir, "menu-scripts");
-                if !path.exists() {
-                    return Err(format!("menu script missing: {}", path.display()));
-                }
-                let name = path
-                    .file_name()
-                    .and_then(|n| n.to_str())
-                    .unwrap_or("menu-script")
-                    .to_string();
-                Ok(Self { path, name })
-            }
-            SetupMenuScriptItemRaw::Detailed { path, name } => {
-                let path = resolve_tokenized_path(path, setup_dir, "menu-scripts");
-                if !path.exists() {
-                    return Err(format!("menu script missing: {}", path.display()));
-                }
-                Ok(Self {
-                    path,
-                    name: name.clone(),
-                })
-            }
-        }
+        let path: String = match raw {
+            SetupMenuScriptItemRaw::Simple(p) => p.clone(),
+            SetupMenuScriptItemRaw::Detailed { path, .. } => path.clone(),
+        };
+        let path = replace_tokens(&tilde_expand(&path), "menu-scripts", setup_dir);
+        ensure_exists(&path)?;
+        let name: String = match raw {
+            SetupMenuScriptItemRaw::Simple(p) => get_filename(&PathBuf::from(p))?,
+            SetupMenuScriptItemRaw::Detailed { name, .. } => name.clone(),
+        };
+        Ok(Self { path, name })
     }
 }
 
@@ -413,6 +339,14 @@ impl ServiceScope {
     fn is_root(self) -> bool {
         matches!(self, ServiceScope::System)
     }
+    fn get_target_path(&self) -> PathBuf {
+        match self {
+            ServiceScope::System => PathBuf::from("/etc/systemd/system"),
+            ServiceScope::User => {
+                PathBuf::from(shellexpand::tilde("~/.config/systemd/user").into_owned())
+            }
+        }
+    }
 }
 
 struct ValidatedSetupService {
@@ -425,26 +359,15 @@ struct ValidatedSetupService {
 impl ValidatedSetupService {
     fn make(raw: &SetupServiceRaw, setup_dir: &Path) -> Result<Self, String> {
         let scope = ServiceScope::from_str_or_default(raw.r#type.clone());
-        let path = resolve_tokenized_path(&raw.path, setup_dir, "services");
-        if !path.exists() {
-            return Err(format!("service file missing: {}", path.display()));
-        }
-        let path_copy = path.clone();
-        let name = path_copy
-            .file_name()
-            .and_then(|n| n.to_str())
-            .ok_or_else(|| "invalid service filename".to_string())?;
-        let target_path = match scope {
-            ServiceScope::System => PathBuf::from("/etc/systemd/system").join(name),
-            ServiceScope::User => {
-                PathBuf::from(shellexpand::tilde("~/.config/systemd/user").into_owned()).join(name)
-            }
-        };
+        let path = replace_tokens(&tilde_expand(&raw.path), "services", setup_dir);
+        ensure_exists(&path)?;
+        let name: String = get_filename(&path)?;
+
         Ok(Self {
-            path,
+            path: path.clone(),
             scope,
             name: name.to_string(),
-            target_path,
+            target_path: scope.get_target_path().join(name),
         })
     }
 
@@ -516,15 +439,13 @@ struct ValidatedSetupInstallScript {
 
 impl ValidatedSetupInstallScript {
     fn make(raw: &str, setup_dir: &Path) -> Result<Self, String> {
-        let path = resolve_tokenized_path(raw, setup_dir, "");
-        if !path.exists() {
-            return Err(format!("install script missing: {}", path.display()));
-        }
+        let path = replace_tokens(&tilde_expand(raw), "", setup_dir);
+        ensure_exists(&path)?;
         Ok(Self { path })
     }
 
     fn install(&self) {
-        run_script(self.path.clone());
+        run_script(&self.path);
     }
 }
 
@@ -565,6 +486,53 @@ struct Setup {
 }
 
 impl Setup {
+    fn make(setup_raw: &SetupFileRaw, setup_header: &SetupHeader) -> Result<Self, String> {
+        fn validate_vec<T, U>(
+            vec: Option<&Vec<T>>,
+            make: impl Fn(&T) -> Result<U, String>,
+        ) -> Result<Vec<U>, String> {
+            vec.unwrap_or(&Vec::new())
+                .iter()
+                .map(|t| make(t))
+                .collect::<Result<Vec<_>, _>>()
+        }
+
+        let links = validate_vec(setup_raw.links.as_ref(), |l| {
+            ValidatedSetupLink::make(l, &setup_header.setup_dir)
+        })?;
+
+        let rc_scripts = validate_vec(setup_raw.rc_scripts.as_ref(), |s| {
+            ValidatedRunScript::make(s, &setup_header.setup_dir, &setup_header.name)
+        })?;
+
+        let menu_scripts = validate_vec(setup_raw.menu_scripts.as_ref(), |s| {
+            ValidatedSetupMenuScriptItem::make(s, &setup_header.setup_dir)
+        })?;
+
+        let services = validate_vec(setup_raw.services.as_ref(), |s| {
+            ValidatedSetupService::make(s, &setup_header.setup_dir)
+        })?;
+
+        let dependencies = validate_vec(setup_raw.dependencies.as_ref(), |s| {
+            ValidatedSetupDependency::make(s)
+        })?;
+
+        let install_script = setup_raw.install.as_ref().and_then(|install| {
+            ValidatedSetupInstallScript::make(install, &setup_header.setup_dir).ok()
+        });
+
+        Ok(Setup {
+            name: setup_header.name.clone(),
+            origin_dir: setup_header.setup_dir.clone(),
+            links,
+            rc_scripts,
+            menu_scripts,
+            services,
+            dependencies,
+            install_script,
+        })
+    }
+
     fn edit(&self) {
         let links_path = self.origin_dir.join("setup.json");
         let editor = std::env::var("VISUAL")
@@ -705,8 +673,11 @@ enum SetupLoadError {
 }
 
 fn load_setup_by_path(setup_path: &Path) -> Result<Setup, SetupLoadError> {
-    let setup_dir = setup_path.parent().unwrap();
-    let setup_name = setup_path.file_name().unwrap().to_str().unwrap();
+    let setup_header =
+        SetupHeader::new(setup_path.to_path_buf()).map_err(|e| SetupLoadError::Validation {
+            path: setup_path.to_path_buf(),
+            message: e,
+        })?;
 
     let setup_raw = std::fs::read_to_string(setup_path).map_err(|e| SetupLoadError::Io {
         path: setup_path.to_path_buf(),
@@ -718,12 +689,10 @@ fn load_setup_by_path(setup_path: &Path) -> Result<Setup, SetupLoadError> {
         source: e,
     })?;
 
-    let setup = raw
-        .validate(setup_dir, setup_name)
-        .map_err(|e| SetupLoadError::Validation {
-            path: setup_path.to_path_buf(),
-            message: e,
-        })?;
+    let setup = Setup::make(&raw, &setup_header).map_err(|e| SetupLoadError::Validation {
+        path: setup_path.to_path_buf(),
+        message: e,
+    })?;
     Ok(setup)
 }
 
@@ -781,12 +750,12 @@ fn validate_all_setups() {
     for header in all_headers {
         let setup = load_setup_by_path(&header.setup_file_path);
         match setup {
-            Ok(s) => {
+            Ok(_) => {
                 println!("{} {}", "✓".green(), header.name.green());
                 total_ok += 1;
             }
             Err(e) => {
-                println!("{} {}", "✗".red(), header.name.red());
+                println!("{} {} {}", "✗".red(), header.name.red(), e);
                 total_err += 1;
             }
         }
@@ -806,20 +775,21 @@ fn validate_all_setups() {
 //              Nests
 // =======================================
 
-fn get_nest_path() -> PathBuf {
+fn get_nest_path() -> Option<PathBuf> {
     let config = get_config();
-    config
-        .nest_path
-        .clone()
-        .unwrap_or_else(|| {
-            eprintln!("No active nest found!");
-            std::process::exit(1);
-        })
-        .join("setup.json")
+    config.nest_path.clone().map(|p| p.join("setup.json"))
 }
 
 fn load_nest() -> Result<Setup, SetupLoadError> {
-    let nest_path = get_nest_path();
+    let nest_path = match get_nest_path() {
+        Some(p) => p,
+        None => {
+            return Err(SetupLoadError::Validation {
+                path: get_config_path(),
+                message: "No active nest found".to_string(),
+            });
+        }
+    };
     return load_setup_by_path(&nest_path);
 }
 
@@ -827,7 +797,7 @@ fn get_nest() -> Setup {
     match load_nest() {
         Ok(s) => s,
         Err(e) => {
-            eprintln!("No active nest found! {}", e);
+            eprintln!("No active nest found! {}", e.to_string().red());
             return switch_nest();
         }
     }
@@ -973,10 +943,9 @@ fn sync() {
     println!("Syncing");
 
     let config = get_config();
-    let owl_sync_script_path =
-        Path::join(&config.owl_path, Path::new("common/scripts/owl-sync.sh"));
+    let owl_sync_script_path = config.owl_path.join("common/scripts/owl-sync.sh");
 
-    run_script(owl_sync_script_path);
+    run_script(&owl_sync_script_path);
 }
 fn run_update() {
     let s = get_setup("owl");
@@ -999,9 +968,9 @@ fn print_kv(label: &str, value: &str) {
     println!("  {} {}", format!("{}:", label).white(), value.cyan());
 }
 
-fn run_script(script_path: PathBuf) {
+fn run_script(script_path: &Path) {
     let display_path = script_path.display().to_string();
-    if !Path::new(&script_path).exists() {
+    if !script_path.exists() {
         eprintln!("Script not found, skipping: {}", display_path);
         return;
     }
@@ -1072,17 +1041,57 @@ trait Linkable {
         let root = self.requires_root();
         let source_path = self.source_path();
 
-        if target_path.exists() || target_path.is_symlink() {
-            if target_path.is_dir() {
-                if let Err(e) = std::fs::remove_dir_all(target_path.clone()) {
+        // Carefully remove existing targets:
+        // - If symlink: remove the symlink only
+        // - If file: remove the file
+        // - If directory: remove ONLY if empty; otherwise fail with a clear message
+        if target_path.is_symlink() {
+            if let Err(e) = std::fs::remove_file(&target_path) {
+                return Err(LinkingError {
+                    message: format!("remove old symlink: {}", e),
+                });
+            }
+        } else if target_path.exists() {
+            match std::fs::symlink_metadata(&target_path) {
+                Ok(meta) => {
+                    if meta.is_file() {
+                        if let Err(e) = std::fs::remove_file(&target_path) {
+                            return Err(LinkingError {
+                                message: format!("remove old file: {}", e),
+                            });
+                        }
+                    } else if meta.is_dir() {
+                        match std::fs::read_dir(&target_path) {
+                            Ok(mut it) => {
+                                let is_empty = it.next().is_none();
+                                if is_empty {
+                                    if let Err(e) = std::fs::remove_dir(&target_path) {
+                                        return Err(LinkingError {
+                                            message: format!("remove empty dir: {}", e),
+                                        });
+                                    }
+                                } else {
+                                    return Err(LinkingError {
+                                        message: format!(
+                                            "target is a non-empty directory: {}",
+                                            target_path.display()
+                                        ),
+                                    });
+                                }
+                            }
+                            Err(e) => {
+                                return Err(LinkingError {
+                                    message: format!("inspect target dir: {}", e),
+                                });
+                            }
+                        }
+                    }
+                }
+                Err(e) => {
                     return Err(LinkingError {
-                        message: format!("remove old dir: {}", e),
+                        message: format!("stat target: {}", e),
                     });
                 }
-            } else if let Err(e) = std::fs::remove_file(target_path.clone()) {
-                return Err(LinkingError {
-                    message: format!("remove old: {}", e),
-                });
             }
         }
 

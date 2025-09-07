@@ -33,3 +33,4 @@ description: Rust validate-first pattern and conventions for owl CLI
 
 - Prefer free functions for CLI orchestration and shallow nesting.
 - Keep optional fields optional in raw types; avoid duplicates; pass `quiet: bool` when needed instead of separate variants.
+- Environment assumption: interactive prompts are acceptable; non-interactive/CI-safe behavior is not required.

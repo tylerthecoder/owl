@@ -32,11 +32,11 @@
     "menu_scripts": [
         {
             "name": "Emoji",
-            "path": "common/menu-scripts/emoji.sh"
+            "path": "common:emoji.sh"
         },
         {
             "name": "Run Script",
-            "path": "common/menu-scripts/run-script.sh"
+            "path": "common:run-script.sh"
         }
     ],
     "name": "framework-sway",

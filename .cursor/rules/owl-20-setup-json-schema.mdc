@@ -35,7 +35,7 @@ All fields are optional; validation fills defaults and resolves paths.
     { "source": "local:kitty.conf", "target": "~/.config/kitty/kitty.conf" }
   ],
   "rc_scripts": [ "common:base-aliases.sh", "common:fzf.sh" ],
-  "menu_scripts": [ "common:emoji.sh", { "path": "common:run-script.sh", "name": "run" } ],
+  "menu_scripts": [ "common:menu-scripts/emoji.sh", { "path": "common:menu-scripts/run-script.sh", "name": "Run Script" } ],
   "services": [ { "path": "common:services/greenclip.service", "type": "user" } ]
 }
 ```

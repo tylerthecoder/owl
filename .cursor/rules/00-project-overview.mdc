@@ -36,3 +36,4 @@ description: High-level overview of the owl dotfiles CLI, setups model, and conv
 - Keep all fields in `setup.json` optional. Validate before any operation.
 - Unify path resolution via a single resolver that understands `local:`, `common:`, `~`, and absolute paths.
 - Remove dead code and quiet-variant duplication; prefer a single function with flags when needed.
+- Environment assumption: interactive use is expected; no CI/non-interactive requirement.
