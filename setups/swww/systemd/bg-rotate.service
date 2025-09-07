@@ -4,7 +4,7 @@ After=sway-session.target
 
 [Service]
 Type=oneshot
-ExecStart=%h/.local/bin/swaybg-set
+ExecStart=swaybg-set
 
 [Install]
 WantedBy=default.target
