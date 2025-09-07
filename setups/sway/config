@@ -48,13 +48,19 @@ bindsym XF86AudioLowerVolume exec pamixer -d 5 && pkill -SIGRTMIN+10 waybar
 bindsym XF86AudioMute exec pamixer -t && pkill -SIGRTMIN+10 waybar
 bindsym $mod+m exec pamixer -t && pkill -SIGRTMIN+10 waybar
 
+# Media controls via playerctl
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+bindsym $mod+F12 exec playerctl play-pause
+bindsym $mod+F11 exec playerctl previous
+bindsym $mod+F10 exec playerctl next
+
 # Brightness
 bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym F8 exec brightnessctl set 5%+
 bindsym F7 exec brightnessctl set 5%-
-
-# Spotify via MPRIS can be handled via playerctl if needed
 
 # Focus/move
 bindsym $mod+h focus left
