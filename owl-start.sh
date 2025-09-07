@@ -12,8 +12,8 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export PATH="$HOME/.local/bin:$PATH"
 
 # Run owl-rc (all rc scripts)
-if [ -d ~/.config/owl-rc ]; then
-    for file in ~/.config/owl-rc/*; do
+if [ -d ~/.config/owl/rc ]; then
+    for file in ~/.config/owl/rc/*; do
         [ -f "$file" ] && source "$file"
     done
 fi

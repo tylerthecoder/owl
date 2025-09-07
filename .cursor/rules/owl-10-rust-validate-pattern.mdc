@@ -1,0 +1,36 @@
+---
+alwaysApply: false
+description: Rust validate-first pattern and conventions for owl CLI
+---
+# Rust Validate-first Pattern
+
+- Parse JSON into raw types (e.g., `SetupFileRaw`) with `Option<T>` for all fields.
+- Validate/resolve into strict types used by the CLI (e.g., `Setup`, `ValidatedSetupLink`, `ValidatedSetupService`, `ValidatedRunScript`, `ValidatedSetupMenuScriptItem`).
+- Only run link/install/service operations on validated items.
+
+## Path Resolution Rules
+
+- Single resolver converts strings to `PathBuf`:
+  - `local:` → relative to the setup directory
+  - `common:` → relative to the owl repo root under `common/<area>/...`
+  - `~` expands to home; absolute paths pass through
+- Validated items store resolved `PathBuf`s.
+
+## Services
+
+- Service has `path` and `type` in JSON (`system` or `user`, case-insensitive).
+- Validation resolves the unit path and computes target link destinations:
+  - System → `/etc/systemd/system/<filename>` (sudo required)
+  - User → `~/.config/systemd/user/<filename>`
+- Helpers link, enable, start, restart units.
+
+## Logging and Errors
+
+- Fail fast at validation time with clear errors showing the offending setup and field.
+- During operations, print structured progress with emojis and colors.
+
+## Code Style
+
+- Prefer free functions for CLI orchestration and shallow nesting.
+- Keep optional fields optional in raw types; avoid duplicates; pass `quiet: bool` when needed instead of separate variants.
+- Environment assumption: interactive prompts are acceptable; non-interactive/CI-safe behavior is not required.

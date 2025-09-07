@@ -1,0 +1,5 @@
+{
+  "install": "local:install.sh",
+  "name": "menu",
+  "links": []
+}

@@ -1,0 +1,17 @@
+{
+  "dependencies": [],
+  "install": "local:install.sh",
+  "links": [
+    {
+      "source": "local:scripts/cliphist-rofi",
+      "target": "~/.local/bin/cliphist-rofi"
+    }
+  ],
+  "menu_scripts": [
+    {
+      "name": "Clipboard",
+      "path": "local:scripts/cliphist-rofi"
+    }
+  ],
+  "name": "cliphist"
+}

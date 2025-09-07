@@ -1,11 +1,8 @@
 {
   "name": "bun",
-  "actions": [
-    "./setup.sh"
-  ],
+  "install": "local:setup.sh",
   "links": [],
   "rc_scripts": [
     "local:bun-rc.sh"
   ]
 }
-

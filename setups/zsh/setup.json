@@ -1,8 +1,6 @@
 {
   "name": "zsh",
-  "actions": [
-    "./setup.sh"
-  ],
+  "install": "local:install.sh",
   "links": [
     {
       "source": "setups/zsh/.zshrc",

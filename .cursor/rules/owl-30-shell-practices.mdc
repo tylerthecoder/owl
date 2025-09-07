@@ -1,0 +1,16 @@
+---
+alwaysApply: false
+description: Shell scripting practices for setups and scripts
+globs: **/*.sh
+---
+# Shell Practices
+
+- Use `set -euo pipefail` in scripts unless interactive.
+- Prefer `${VAR}` over `$VAR`; quote expansions.
+- Resolve owl repo root via the setup path or `$OWL_ROOT` if present.
+- Use `local:` and `common:` tokens in JSON; scripts should accept resolved absolute paths.
+- Keep install steps idempotent; check if already installed before re-installing.
+- For systemd user services, ensure `graphical-session.target` dependencies if needed.
+- Avoid hardcoding interfaces; allow overrides via env vars.
+
+These practices apply to setup and service scripts under the repo.

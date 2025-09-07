@@ -1,0 +1,41 @@
+---
+alwaysApply: false
+description: `setup.json` flexible schema and examples for owl setups
+---
+# `setup.json` Schema
+
+All fields are optional; validation fills defaults and resolves paths.
+
+```json
+{
+  "name": "string",
+  "install": "string (path)",
+  "links": [ { "source": "string", "target": "string", "root": true } ],
+  "rc_scripts": [ "string" ],
+  "menu_scripts": [
+    "string" | { "path": "string", "name": "string" }
+  ],
+  "services": [ { "path": "string", "type": "user|system" } ],
+  "dependencies": [ "string" ]
+}
+```
+
+## Path Tokens
+
+- `local:` → resolves relative to the setup directory
+- `common:` → resolves under repo `common/<area>/...` based on context (e.g., `rc`, `menu-scripts`, `services`)
+- `~` expands to home; absolute paths allowed
+
+## Examples
+
+```json
+{
+  "links": [
+    { "source": "common:config/gitconfig", "target": "~/.gitconfig" },
+    { "source": "local:kitty.conf", "target": "~/.config/kitty/kitty.conf" }
+  ],
+  "rc_scripts": [ "common:base-aliases.sh", "common:fzf.sh" ],
+  "menu_scripts": [ "common:menu-scripts/emoji.sh", { "path": "common:menu-scripts/run-script.sh", "name": "Run Script" } ],
+  "services": [ { "path": "common:services/greenclip.service", "type": "user" } ]
+}
+```

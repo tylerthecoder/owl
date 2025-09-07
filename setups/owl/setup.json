@@ -1,0 +1,5 @@
+{
+  "install": "local:install.sh",
+  "links": [],
+  "name": "owl"
+}

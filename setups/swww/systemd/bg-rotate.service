@@ -1,0 +1,12 @@
+[Unit]
+Description=Rotate desktop wallpaper
+After=sway-session.target
+
+[Service]
+Type=oneshot
+ExecStart=swaybg-set
+
+[Install]
+WantedBy=default.target
+
+

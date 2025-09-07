@@ -1,0 +1,46 @@
+* {
+  font-family: "SourceCodePro", "Terminus", monospace;
+  font-size: 13px;
+}
+
+window#waybar {
+  background: rgba(40, 42, 54, 0.6);
+  border-radius: 10px;
+  border: 1px solid rgba(68, 74, 90, 0.8);
+  color: #f8f8f2;
+  padding: 6px 8px;
+}
+
+.modules-left, .modules-right, .modules-center {
+  margin: 0 8px;
+}
+
+#workspaces button {
+  padding: 2px 8px;
+  color: #bfbfbf;
+  border-radius: 8px;
+}
+
+#workspaces button.active {
+  background: #44475a;
+  color: #f8f8f2;
+}
+
+#battery.warning { color: #f1fa8c; }
+#battery.critical { color: #ff5555; }
+
+#cpu, #memory, #network, #temperature, #pulseaudio, #upower, #tray, #clock {
+  background: rgba(68, 74, 90, 0.45);
+  padding: 4px 8px;
+  margin: 0 4px;
+  border-radius: 8px;
+}
+
+#clock { background: rgba(98, 114, 164, 0.45); }
+
+/* Dracula accent colors */
+#pulseaudio.muted { color: #6272a4; }
+#temperature.critical { color: #ff5555; }
+#network.disconnected { color: #ffb86c; }
+
+

@@ -1,0 +1,73 @@
+{
+  "clock": {
+    "format": "{:%a %b %d, %I:%M %p}",
+    "tooltip": true
+  },
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 3
+  },
+  "custom/ip": {
+    "exec": "/home/tylord/owl/common/i3-status-scripts/ip",
+    "interval": 30,
+    "return-type": "text"
+  },
+  "custom/weather": {
+    "exec": "/home/tylord/owl/common/i3-status-scripts/weather",
+    "interval": 1800,
+    "return-type": "text"
+  },
+  "layer": "top",
+  "margin": 8,
+  "memory": {
+    "format": " {used}/{total}"
+  },
+  "modules-center": [
+    "clock"
+  ],
+  "modules-left": [
+    "sway/workspaces",
+    "sway/window"
+  ],
+  "modules-right": [
+    "cpu",
+    "memory",
+    "custom/ip",
+    "temperature",
+    "pulseaudio",
+    "bluetooth",
+    "custom/weather",
+    "tray"
+  ],
+  "position": "top",
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-icons": {
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "format-muted": "",
+    "on-click": "pamixer -t && pkill -SIGRTMIN+10 waybar",
+    "on-scroll-down": "pamixer -d 5 && pkill -SIGRTMIN+10 waybar",
+    "on-scroll-up": "pamixer -i 5 && pkill -SIGRTMIN+10 waybar"
+  },
+  "bluetooth": {
+    "format": " {status}",
+    "format-connected": " {device_alias}",
+    "format-disabled": " off",
+    "on-click": "blueman-manager",
+    "tooltip": true
+  },
+  "spacing": 8,
+  "temperature": {
+    "critical-threshold": 80,
+    "format": " {temperatureC}°C"
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  }
+}

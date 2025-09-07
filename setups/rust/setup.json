@@ -1,8 +1,6 @@
 {
-    "name": "nvm",
-    "actions": [
-        "./setup.sh"
-    ],
+    "name": "rust",
+    "install": "local:install.sh",
     "links": [],
     "rc_scripts": [
         "local:rc.sh"

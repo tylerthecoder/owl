@@ -1,0 +1,48 @@
+{
+    "dependencies": [
+        "git",
+        "bun",
+        "bash",
+        "sway",
+        "pipewire",
+        "polkit",
+        "nvim",
+        "tmux",
+        "zsh",
+        "node",
+        "rofi",
+        "rust",
+        "zathura",
+        "dracula-theme",
+        "playerctl",
+        "menu",
+        "notes",
+        "secrets"
+    ],
+    "links": [
+        {
+            "source": "common/config/.vimrc",
+            "target": "~/.vimrc"
+        },
+        {
+            "source": "common/scripts/favs.sh",
+            "target": "~/.local/bin/f"
+        }
+    ],
+    "menu_scripts": [
+        {
+            "name": "Emoji",
+            "path": "common:emoji.sh"
+        },
+        {
+            "name": "Run Script",
+            "path": "common:run-script.sh"
+        }
+    ],
+    "name": "framework-sway",
+    "rc_scripts": [
+        "common:fzf.sh",
+        "common:base-aliases.sh",
+        "common:systemctl-aliases.sh"
+    ]
+}
