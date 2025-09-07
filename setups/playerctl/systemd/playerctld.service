@@ -1,0 +1,14 @@
+[Unit]
+Description=Playerctld MPRIS control daemon
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/playerctld daemon
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target
+
+

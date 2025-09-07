@@ -1,4 +1,24 @@
 {
+    "dependencies": [
+        "git",
+        "bun",
+        "bash",
+        "sway",
+        "pipewire",
+        "polkit",
+        "nvim",
+        "tmux",
+        "zsh",
+        "node",
+        "rofi",
+        "rust",
+        "zathura",
+        "dracula-theme",
+        "playerctl",
+        "menu",
+        "notes",
+        "secrets"
+    ],
     "links": [
         {
             "source": "target/debug/owl",
@@ -23,29 +43,10 @@
             "path": "common/menu-scripts/run-script.sh"
         }
     ],
+    "name": "framework-sway",
     "rc_scripts": [
         "common:fzf.sh",
         "common:base-aliases.sh",
-        "local:.shenv",
-        "local:.alias"
-    ],
-    "setups": [
-        "git",
-        "bun",
-        "bash",
-        "sway",
-        "pipewire",
-        "polkit",
-        "nvim",
-        "tmux",
-        "zsh",
-        "node",
-        "rofi",
-        "rust",
-        "zathura",
-        "dracula-theme",
-        "menu",
-        "notes",
-        "secrets"
+        "common:systemctl-aliases.sh"
     ]
 }

@@ -1,8 +1,6 @@
 {
     "name": "tmux",
-    "actions": [
-        "./setup.sh"
-    ],
+    "install": "install.sh",
     "links": [
         {
             "source": "setups/tmux/tmux.conf",

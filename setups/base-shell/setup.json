@@ -1,7 +1,5 @@
 {
   "name": "base-shell",
-  "actions": [
-    "./setup.sh"
-  ],
-  "links": [ ]
+  "install": "install.sh",
+  "links": []
 }

@@ -1,7 +1,5 @@
 {
-  "name": "owl",
-  "actions": [
-    "./setup.sh"
-  ],
-  "links": []
+  "install": "local:install.sh",
+  "links": [],
+  "name": "owl"
 }

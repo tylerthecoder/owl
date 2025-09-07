@@ -1,0 +1,35 @@
+---
+description: `setup.json` flexible schema and examples for owl setups
+---
+
+## setup.json Schema (all fields optional)
+
+```json
+{
+  "name": "<setup-name>",
+  "install": "install.sh",
+  "links": [
+    { "source_path": "local:path/to/file", "target_path": "~/.config/file", "root": false }
+  ],
+  "rc_scripts": [
+    "common:rc/systemctl-aliases.sh",
+    "local:rc.sh"
+  ],
+  "menu_scripts": [
+    "local:scripts/emoji.sh",
+    { "path": "common:menu-scripts/run-script.sh", "name": "Run Script" }
+  ],
+  "services": [
+    { "path": "local:systemd/playerctld.service", "service_type": "User" }
+  ],
+  "dependencies": ["git", "zsh"]
+}
+```
+
+### Notes
+
+- `local:` resolves relative to this setup directory.
+- `common:` resolves relative to the repo root (e.g., `common/...`).
+- `~` is expanded; absolute paths are respected.
+- Services support `User` and `System` scopes.
+- Root setups (formerly nests) use the exact same file format.

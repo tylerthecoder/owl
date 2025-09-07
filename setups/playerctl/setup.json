@@ -1,0 +1,13 @@
+{
+    "dependencies": [],
+    "install": "install.sh",
+    "links": [],
+    "name": "playerctl",
+    "rc_scripts": [],
+    "services": [
+        {
+            "path": "local:systemd/playerctld.service",
+            "type": "user"
+        }
+    ]
+}
