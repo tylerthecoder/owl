@@ -6,11 +6,11 @@ description: High-level overview of the owl dotfiles CLI, setups model, and conv
 ## Owl Workspace Overview
 
 - **Entry point**: [src/main.rs](mdc:src/main.rs)
-- **Purpose**: Manage modular dotfile "setups" (including former "nests"), link files, install dependencies, and manage services.
+- **Purpose**: Manage modular dotfile setups (including root setups in `nests/`), link files, install dependencies, and manage services.
 
 ### Core Concepts
 
-- **Setup**: A modular unit with optional fields in `setup.json` located at `setups/<name>/setup.json`. Former "nests" are now just root setups (same format) under `nests/<name>/setup.json`.
+- **Setup**: A modular unit with optional fields in `setup.json` located at `setups/<name>/setup.json`. Root setups use the same format under `nests/<name>/setup.json` and declare other setups via `dependencies`.
 - **Validate-first pattern**: Parse `SetupFile` (raw, optional fields), then validate/resolve into an in-memory `Setup` with resolved paths. All operations run only on validated types.
 - **Path tokens**:
   - `local:` paths resolve relative to the setup directory (e.g., `setups/<name>/...`).
@@ -27,7 +27,7 @@ description: High-level overview of the owl dotfiles CLI, setups model, and conv
 ### Common Effects
 
 - Linking files to target locations (respecting tokens and creating parent dirs).
-- Linking `rc_scripts` into `~/.config/owl-rc/` with `setup-<setup>-<script>` naming.
+- Linking `rc_scripts` into `~/.config/owl/rc/` with `rc-<setup>-<script>` naming.
 - Linking `menu_scripts` into `~/.config/owl/menu-scripts/`.
 - Linking systemd unit files and enabling/restarting per scope.
 

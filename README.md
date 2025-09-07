@@ -34,32 +34,18 @@ owl setup rust
 
 ### Nests (`nests/`)
 
-Each nest represents a machine configuration with:
+Each nest is just a root setup: it uses the same `setup.json` schema as any other setup, and typically declares other setups via `dependencies`.
 
-- **links**: File symlinks from owl to system locations
-- **setups**: List of setup modules to install/configure
-- **rc_scripts**: Common run scripts to load during shell initialization
-
-Example nest structure:
+Example nest `setup.json`:
 
 ```json
 {
   "links": [
-    {
-      "source": "common/config/.vimrc",
-      "target": "~/.vimrc"
-    },
-    {
-      "source": "local:.xprofile",
-      "target": "~/.xprofile"
-    }
+    { "source": "common/config/.vimrc", "target": "~/.vimrc" },
+    { "source": "local:.xprofile", "target": "~/.xprofile" }
   ],
-  "setups": ["git", "zsh", "rust"],
-  "rc_scripts": [
-    "common:fzf.sh",
-    "common:base-aliases.sh",
-    "local:.shenv"
-  ]
+  "dependencies": ["git", "zsh", "rust"],
+  "rc_scripts": ["common:fzf.sh", "common:base-aliases.sh", "local:.shenv"]
 }
 ```
 
@@ -129,9 +115,9 @@ The simplified startup script that:
 - `owl setups-validate`: Validate all setups and nests
 - `owl update`: Update owl itself
 
-## Workspace Rules
+## Conventions
 
-See the repository rules and conventions in [`docs/workspace-rules.md`](docs/workspace-rules.md).
+The project follows a validate-first pattern and path tokens as described below.
 
 ## Configuration
 

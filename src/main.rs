@@ -53,14 +53,11 @@ fn load_config() -> Option<Config> {
 
 fn print_config() {
     let config = get_config();
-    println!("{}", "Owl Config".blue().bold());
-    println!(
-        "  owl_path: {}",
-        config.owl_path.display().to_string().cyan()
-    );
+    print_section("Owl Config");
+    print_kv("owl_path", &config.owl_path.display().to_string());
     match &config.nest_path {
-        Some(p) => println!("  active_root: {}", p.display().to_string().cyan()),
-        None => println!("  active_root: {}", "(none)".yellow()),
+        Some(p) => print_kv("active_root", &p.display().to_string()),
+        None => println!("  {} {}", "active_root:".white(), "(none)".yellow()),
     }
 }
 
@@ -102,6 +99,49 @@ fn save_config(config: Config) -> Config {
     let config_raw = serde_json::to_string(&config).expect("Unable to serialize config");
     std::fs::write(config_path, config_raw).expect("Unable to write config file");
     config
+}
+
+#[derive(Clone)]
+struct SetupHeader {
+    name: String,
+    setup_dir: PathBuf,
+    setup_file_path: PathBuf,
+}
+
+impl SetupHeader {
+    fn new(setup_file_path: PathBuf) -> Result<Self, String> {
+        if setup_file_path.extension().unwrap() != "json" {
+            return Err("setup file must be a JSON file".to_string());
+        }
+        let setup_dir = setup_file_path.parent().unwrap();
+        let name = setup_dir.file_name().unwrap().to_str().unwrap().to_string();
+        if !setup_file_path.exists() {
+            return Err("setup file does not exist".to_string());
+        }
+        Ok(Self {
+            name,
+            setup_dir: setup_dir.to_path_buf(),
+            setup_file_path: setup_file_path.to_path_buf(),
+        })
+    }
+}
+
+fn read_setup_headers_from_dir(dir: &Path) -> Vec<SetupHeader> {
+    let mut headers = Vec::new();
+    if let Ok(entries) = std::fs::read_dir(dir) {
+        for entry in entries.flatten() {
+            let setup_dir = entry.path();
+            let setup_file_path = setup_dir.join("setup.json");
+            if setup_dir.is_dir() && setup_file_path.exists() {
+                headers.push(SetupHeader {
+                    name: setup_dir.file_name().unwrap().to_str().unwrap().to_string(),
+                    setup_dir,
+                    setup_file_path,
+                });
+            }
+        }
+    }
+    headers
 }
 
 // =======================================
@@ -267,8 +307,8 @@ impl Linkable for ValidatedSetupLink {
     fn requires_root(&self) -> bool {
         self.root
     }
-    fn display_info() -> String {
-        return "🔗 Links".to_string();
+    fn display_info() -> &'static str {
+        "Links"
     }
 }
 
@@ -300,8 +340,8 @@ impl Linkable for ValidatedRunScript {
     fn target_path(&self) -> PathBuf {
         get_owl_rc_path().join(&self.name)
     }
-    fn display_info() -> String {
-        return "📜 RC Scripts".to_string();
+    fn display_info() -> &'static str {
+        "RC Scripts"
     }
 }
 
@@ -347,8 +387,8 @@ impl Linkable for ValidatedSetupMenuScriptItem {
     fn target_path(&self) -> PathBuf {
         get_owl_menu_scripts_path().join(&self.name)
     }
-    fn display_info() -> String {
-        return "🧭 Menu Scripts".to_string();
+    fn display_info() -> &'static str {
+        "Menu Scripts"
     }
 }
 
@@ -418,11 +458,7 @@ impl ValidatedSetupService {
                 let _ = Command::new("sudo")
                     .arg("systemctl")
                     .arg("enable")
-                    .arg(&self.name)
-                    .status();
-                let _ = Command::new("sudo")
-                    .arg("systemctl")
-                    .arg("restart")
+                    .arg("--now")
                     .arg(&self.name)
                     .status();
             }
@@ -434,11 +470,7 @@ impl ValidatedSetupService {
                 let _ = Command::new("systemctl")
                     .arg("--user")
                     .arg("enable")
-                    .arg(&self.name)
-                    .status();
-                let _ = Command::new("systemctl")
-                    .arg("--user")
-                    .arg("restart")
+                    .arg("--now")
                     .arg(&self.name)
                     .status();
             }
@@ -456,8 +488,8 @@ impl Linkable for ValidatedSetupService {
     fn requires_root(&self) -> bool {
         self.scope.is_root()
     }
-    fn display_info() -> String {
-        return "🧩 Services".to_string();
+    fn display_info() -> &'static str {
+        "Services"
     }
 }
 
@@ -470,7 +502,7 @@ impl ValidatedSetupDependency {
     fn make(raw: &str) -> Result<Self, String> {
         let name = raw.to_string();
         // Ensure the dependency is a valid setup
-        if load_setup(&name).is_err() {
+        if load_setup_by_name(&name).is_err() {
             return Err(format!("dependency not found: {}", name));
         }
         Ok(Self { name })
@@ -555,7 +587,7 @@ impl Setup {
         if items.is_empty() {
             return;
         }
-        println!("  {}", T::display_info().green().bold());
+        print_subsection(T::display_info());
         for item in items {
             let src = item.source_path();
             let dst = item.target_path();
@@ -586,7 +618,8 @@ impl Setup {
     }
 
     fn info_once(&self) {
-        println!("\n{} {}", "Setup:".blue().bold(), self.name.cyan());
+        print_section("Setup:");
+        println!("  {}", self.name.cyan());
         if !self.dependencies.is_empty() {
             println!(
                 "Dependencies: {}",
@@ -628,7 +661,7 @@ impl Setup {
             .to_string()
             .green();
 
-        println!("{} {} ({} )", op_description_colored, setup_name, setup_dir);
+        println!("{} {} ({})", op_description_colored, setup_name, setup_dir);
         match op {
             Operation::Link => self.link_once(),
             Operation::Install => self.install_once(),
@@ -669,48 +702,62 @@ enum SetupLoadError {
     },
     #[error("Validation error in {path}: {message}")]
     Validation { path: PathBuf, message: String },
-    #[error("setup.json not found in either nests or setups directory (looked for {path})")]
-    NotFound { path: PathBuf },
 }
 
-fn read_setup_file(setup_json_path: &Path) -> Result<SetupFileRaw, SetupLoadError> {
-    let setup_raw = std::fs::read_to_string(setup_json_path).map_err(|e| SetupLoadError::Io {
-        path: setup_json_path.to_path_buf(),
+fn load_setup_by_path(setup_path: &Path) -> Result<Setup, SetupLoadError> {
+    let setup_dir = setup_path.parent().unwrap();
+    let setup_name = setup_path.file_name().unwrap().to_str().unwrap();
+
+    let setup_raw = std::fs::read_to_string(setup_path).map_err(|e| SetupLoadError::Io {
+        path: setup_path.to_path_buf(),
         source: e,
     })?;
-    let parsed: SetupFileRaw =
-        serde_json::from_str(&setup_raw).map_err(|e| SetupLoadError::Json {
-            path: setup_json_path.to_path_buf(),
-            source: e,
+
+    let raw: SetupFileRaw = serde_json::from_str(&setup_raw).map_err(|e| SetupLoadError::Json {
+        path: setup_path.to_path_buf(),
+        source: e,
+    })?;
+
+    let setup = raw
+        .validate(setup_dir, setup_name)
+        .map_err(|e| SetupLoadError::Validation {
+            path: setup_path.to_path_buf(),
+            message: e,
         })?;
-    Ok(parsed)
+    Ok(setup)
 }
 
-fn load_setup(name: &str) -> Result<Setup, SetupLoadError> {
+#[derive(Debug, Error)]
+enum SetupLoadByNameError {
+    #[error("Failed to load setup by name: {nest_error} and {setup_error}")]
+    Error {
+        nest_error: SetupLoadError,
+        setup_error: SetupLoadError,
+    },
+}
+
+fn load_setup_by_name(name: &str) -> Result<Setup, SetupLoadByNameError> {
     let config = get_config();
 
-    let nest_dir = config.owl_path.join("nests").join(name);
-    let setup_dir = config.owl_path.join("setups").join(name);
+    let nest_dir = config.owl_path.join("nests").join(name).join("setup.json");
+    let setup_dir = config.owl_path.join("setups").join(name).join("setup.json");
 
-    let (chosen_dir, path) = if nest_dir.join("setup.json").exists() {
-        (nest_dir.clone(), nest_dir.join("setup.json"))
-    } else if setup_dir.join("setup.json").exists() {
-        (setup_dir.clone(), setup_dir.join("setup.json"))
-    } else {
-        return Err(SetupLoadError::NotFound {
-            path: setup_dir.join("setup.json"),
-        });
-    };
+    let nest_dir_setup = load_setup_by_path(&nest_dir);
+    let setup_dir_setup = load_setup_by_path(&setup_dir);
 
-    let raw = read_setup_file(&path)?;
-    match raw.validate(&chosen_dir, name) {
-        Ok(s) => Ok(s),
-        Err(e) => Err(SetupLoadError::Validation { path, message: e }),
+    match (nest_dir_setup, setup_dir_setup) {
+        (Ok(nest_dir_setup), Ok(_)) => Ok(nest_dir_setup),
+        (Err(_), Ok(setup_dir_setup)) => Ok(setup_dir_setup),
+        (Ok(nest_dir_setup), Err(_)) => Ok(nest_dir_setup),
+        (Err(e1), Err(e2)) => Err(SetupLoadByNameError::Error {
+            nest_error: e1,
+            setup_error: e2,
+        }),
     }
 }
 
 fn get_setup(name: &str) -> Setup {
-    match load_setup(name) {
+    match load_setup_by_name(name) {
         Ok(s) => s,
         Err(e) => {
             eprintln!("{} {}", "Error loading setup:".red(), e);
@@ -724,79 +771,33 @@ fn validate_all_setups() {
     let setups_dir = config.owl_path.join("setups");
     let nests_dir = config.owl_path.join("nests");
 
-    fn collect(dir: &Path) -> Vec<String> {
-        let mut out = Vec::new();
-        if let Ok(entries) = std::fs::read_dir(dir) {
-            for entry in entries.flatten() {
-                let path = entry.path();
-                if path.is_dir() && path.join("setup.json").exists() {
-                    if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                        out.push(name.to_string());
-                    }
-                }
-            }
-        }
-        out.sort();
-        out
-    }
+    let setups_headers = read_setup_headers_from_dir(&setups_dir);
+    let nests_headers = read_setup_headers_from_dir(&nests_dir);
+    let all_headers = [setups_headers, nests_headers].concat();
 
     let mut total_ok = 0usize;
     let mut total_err = 0usize;
 
-    for (label, base_dir, names) in [
-        ("setups", setups_dir.as_path(), collect(&setups_dir)),
-        ("nests", nests_dir.as_path(), collect(&nests_dir)),
-    ] {
-        if names.is_empty() {
-            continue;
-        }
-        println!("\n{} {}", "Validating".blue().bold(), label.cyan().bold());
-        let mut num_ok = 0usize;
-        let mut num_err = 0usize;
-        for name in names {
-            let dir = base_dir.join(&name);
-            let json = dir.join("setup.json");
-            match read_setup_file(&json).and_then(|raw| {
-                raw.validate(&dir, &name)
-                    .map_err(|e| SetupLoadError::Validation {
-                        path: json.clone(),
-                        message: e,
-                    })
-            }) {
-                Ok(_) => {
-                    print_ok_setup(&name);
-                    num_ok += 1;
-                }
-                Err(e) => {
-                    print_err_setup(&name, &e);
-                    num_err += 1;
-                }
+    for header in all_headers {
+        let setup = load_setup_by_path(&header.setup_file_path);
+        match setup {
+            Ok(s) => {
+                println!("{} {}", "✓".green(), header.name.green());
+                total_ok += 1;
+            }
+            Err(e) => {
+                println!("{} {}", "✗".red(), header.name.red());
+                total_err += 1;
             }
         }
-        println!(
-            "Validated {} {}: {} ok, {} failed",
-            (num_ok + num_err).to_string().bold(),
-            label,
-            num_ok.to_string().green(),
-            (if num_err == 0 {
-                num_err.to_string().green()
-            } else {
-                num_err.to_string().red()
-            })
-        );
-        total_ok += num_ok;
-        total_err += num_err;
     }
+
     if total_ok + total_err > 0 {
         println!(
             "\nValidated total {}: {} ok, {} failed",
             (total_ok + total_err).to_string().bold(),
             total_ok.to_string().green(),
-            (if total_err == 0 {
-                total_err.to_string().green()
-            } else {
-                total_err.to_string().red()
-            })
+            total_err.to_string().red()
         );
     }
 }
@@ -805,120 +806,71 @@ fn validate_all_setups() {
 //              Nests
 // =======================================
 
-fn load_nest() -> Option<Setup> {
+fn get_nest_path() -> PathBuf {
     let config = get_config();
-    if let Some(nest_dir) = config.nest_path.clone() {
-        if let Some(os) = nest_dir.file_name() {
-            if let Some(name) = os.to_str() {
-                let setup = get_setup(name);
-                return Some(setup);
-            }
-        }
-        eprintln!(
-            "Invalid active root setup path in config: {}",
-            nest_dir.display()
-        );
-        return None;
-    }
-    None
+    config
+        .nest_path
+        .clone()
+        .unwrap_or_else(|| {
+            eprintln!("No active nest found!");
+            std::process::exit(1);
+        })
+        .join("setup.json")
+}
+
+fn load_nest() -> Result<Setup, SetupLoadError> {
+    let nest_path = get_nest_path();
+    return load_setup_by_path(&nest_path);
 }
 
 fn get_nest() -> Setup {
     match load_nest() {
-        Some(s) => s,
-        None => {
-            eprintln!("No active root setup found!");
-            return switch_nest(None);
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("No active nest found! {}", e);
+            return switch_nest();
         }
     }
 }
 
-fn switch_nest(name: Option<String>) -> Setup {
+fn switch_nest() -> Setup {
     let mut config = get_config();
 
-    let target_path = match name {
-        Some(n) => {
-            let p = PathBuf::from(&n);
-            let resolved = if p.components().count() == 1 {
-                Path::join(&config.owl_path, Path::new(&format!("nests/{}", n)))
-            } else {
-                p
-            };
-            if !resolved.join("setup.json").exists() {
-                eprintln!(
-                    "Nest '{}' not found (expected {}/setup.json)",
-                    n,
-                    resolved.display()
-                );
-                std::process::exit(1);
+    let nests = list_nests();
+    println!("Select a nest:");
+    for (i, p) in nests.iter().enumerate() {
+        println!("{}: {}", i + 1, p.name.cyan());
+    }
+    let mut idx: usize;
+    loop {
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).unwrap();
+        idx = match input.trim().parse() {
+            Ok(n) => n,
+            Err(_) => {
+                eprintln!("Invalid selection");
+                continue;
             }
-            resolved
+        };
+        if idx == 0 || idx > nests.len() {
+            eprintln!("Invalid selection");
+            continue;
         }
-        None => {
-            let nests = list_nests();
-            if nests.is_empty() {
-                eprintln!("No nests found under nests/");
-                std::process::exit(1);
-            }
-            println!("Select a nest:");
-            for (i, p) in nests.iter().enumerate() {
-                if let Some(name) = p.file_name().and_then(|n| n.to_str()) {
-                    println!("{}: {}", i + 1, name);
-                } else {
-                    println!("{}: {}", i + 1, p.display());
-                }
-            }
-            let mut idx: usize;
-            loop {
-                let mut input = String::new();
-                std::io::stdin().read_line(&mut input).unwrap();
-                idx = match input.trim().parse() {
-                    Ok(n) => n,
-                    Err(_) => {
-                        eprintln!("Invalid selection");
-                        continue;
-                    }
-                };
-                if idx == 0 || idx > nests.len() {
-                    eprintln!("Invalid selection");
-                    continue;
-                }
-                break;
-            }
-            nests[idx - 1].clone()
-        }
-    };
+        break;
+    }
 
-    let setup_name = target_path
-        .file_name()
-        .and_then(|n| n.to_str())
-        .unwrap_or_else(|| {
-            eprintln!("Invalid nest path: {}", target_path.display());
-            std::process::exit(1);
-        })
-        .to_string();
-    let setup = get_setup(&setup_name);
+    let setup_header = nests[idx - 1].clone();
 
-    config.nest_path = Some(target_path.clone());
+    config.nest_path = Some(setup_header.setup_dir.clone());
     save_config(config);
-    println!("Switched nest to {}", setup_name.cyan());
+    println!("Switched nest to {}", setup_header.name.cyan());
 
-    return setup;
+    return get_setup(&setup_header.name);
 }
 
-fn list_nests() -> Vec<PathBuf> {
+fn list_nests() -> Vec<SetupHeader> {
     let config = get_config();
-    let nests_dir = Path::join(&config.owl_path, Path::new("nests"));
-    let mut nests = Vec::new();
-    if let Ok(entries) = std::fs::read_dir(&nests_dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_dir() && path.join("setup.json").exists() {
-                nests.push(path);
-            }
-        }
-    }
-    nests
+    read_setup_headers_from_dir(&config.owl_path.join("nests"))
 }
 
 // =======================================
@@ -971,7 +923,7 @@ enum NestCommands {
     Install,
     Systemd,
     All,
-    Switch { name: Option<String> },
+    Switch,
 }
 
 fn main() {
@@ -990,8 +942,8 @@ fn main() {
                 Some(NestCommands::Systemd) => nest.run_op(Operation::Systemd, shallow),
                 Some(NestCommands::All) => nest.run_op(Operation::All, shallow),
                 Some(NestCommands::Edit) => nest.edit(),
-                Some(NestCommands::Switch { name }) => {
-                    let _ = switch_nest(name);
+                Some(NestCommands::Switch) => {
+                    let _ = switch_nest();
                 }
             }
         }
@@ -1034,6 +986,18 @@ fn run_update() {
 // =======================================
 //              Utils
 // =======================================
+
+fn print_section(title: &str) {
+    println!("{}", title.blue().bold());
+}
+
+fn print_subsection(title: &str) {
+    println!("  {}", title.green().bold());
+}
+
+fn print_kv(label: &str, value: &str) {
+    println!("  {} {}", format!("{}:", label).white(), value.cyan());
+}
 
 fn run_script(script_path: PathBuf) {
     let display_path = script_path.display().to_string();
@@ -1091,19 +1055,6 @@ fn run_script(script_path: PathBuf) {
     }
 }
 
-// Small printing helpers used in validation output
-fn print_ok_setup(name: &str) {
-    println!("{} {}", "✓".green(), name.green());
-}
-fn print_err_setup(name: &str, err: &SetupLoadError) {
-    eprintln!(
-        "{} {} -> {}",
-        "✗".red(),
-        name.red(),
-        format!("{}", err).red()
-    );
-}
-
 struct LinkingError {
     message: String,
 }
@@ -1114,7 +1065,7 @@ trait Linkable {
     fn requires_root(&self) -> bool {
         false
     }
-    fn display_info() -> String;
+    fn display_info() -> &'static str;
 
     fn link(&self) -> Result<(), LinkingError> {
         let target_path = self.target_path();
@@ -1122,7 +1073,13 @@ trait Linkable {
         let source_path = self.source_path();
 
         if target_path.exists() || target_path.is_symlink() {
-            if let Err(e) = std::fs::remove_file(target_path.clone()) {
+            if target_path.is_dir() {
+                if let Err(e) = std::fs::remove_dir_all(target_path.clone()) {
+                    return Err(LinkingError {
+                        message: format!("remove old dir: {}", e),
+                    });
+                }
+            } else if let Err(e) = std::fs::remove_file(target_path.clone()) {
                 return Err(LinkingError {
                     message: format!("remove old: {}", e),
                 });
@@ -1131,7 +1088,26 @@ trait Linkable {
 
         if let Some(parent) = target_path.parent() {
             if !parent.exists() {
-                if let Err(e) = fs::create_dir_all(parent) {
+                if root {
+                    let status = Command::new("sudo")
+                        .arg("mkdir")
+                        .arg("-p")
+                        .arg(parent)
+                        .status();
+                    match status {
+                        Ok(s) if s.success() => {}
+                        Ok(s) => {
+                            return Err(LinkingError {
+                                message: format!("sudo mkdir -p failed with code {:?}", s.code()),
+                            })
+                        }
+                        Err(e) => {
+                            return Err(LinkingError {
+                                message: format!("exec sudo mkdir -p: {}", e),
+                            })
+                        }
+                    }
+                } else if let Err(e) = fs::create_dir_all(parent) {
                     return Err(LinkingError {
                         message: format!("mkdir: {}", e),
                     });
