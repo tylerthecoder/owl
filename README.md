@@ -19,7 +19,7 @@ curl https://raw.githubusercontent.com/tylerthecoder/owl/main/setups/owl/setup.s
 1. Set up your nest configuration:
 
 ```bash
-owl nest setup
+owl nest link
 ```
 
 1. Setup software:
@@ -71,9 +71,8 @@ Modules that handle software installation and configuration:
   - `name` (string)
   - `links` (array of { source, target, root? })
   - `rc_scripts` (array of strings; supports `common:` and `local:`)
-  - `actions` (array of scripts to run during linking)
   - `install` (string path to install script)
-  - `services` (array of { path, type } where type is `user` or `system`)
+  - `services` (array of { path, type } where type is `user` or `system`; daemon-reload is triggered automatically when linking services)
   - `dependencies` (array of setup names)
 - **install.sh**: Installation script with OS detection
 - **rc_scripts**: Shell scripts that get loaded per setup
@@ -86,6 +85,10 @@ Reusable shell scripts for environment configuration:
 - `git-aliases.sh`: Git aliases and functions
 - `base-aliases.sh`: Common aliases used across machines
 - `bun.sh`: Bun runtime environment variables
+
+Naming and destination:
+
+- Linked as `rc-<setup>-<script-file>` and placed in `~/.config/owl/rc/`.
 
 ### Path Syntax
 
@@ -108,28 +111,34 @@ The simplified startup script that:
 
 ### Nest Management
 
-- `owl nest setup`: Link nest files and setup configurations (and services)
-- `owl nest install`: Run install scripts with dependency resolution
-- `owl nest info`: Show what files would be linked (dry run)
+- `owl nest link [--shallow]`: Link files, rc scripts, menu scripts, and services
+- `owl nest install [--shallow]`: Run install scripts with dependency resolution
+- `owl nest systemd [--shallow]`: Link and enable/restart services
+- `owl nest info [--shallow]`: Show what would be linked
+- `owl nest edit`: Open the active root setup for editing
 - `owl nest switch [NAME]`: Switch the active nest by name (interactive if omitted)
 
 ### Setup Management
 
-- `owl setup <name>`: Link and run actions for a specific setup (not install)
-- `owl setups`: Interactive UI to view/edit/install setups
+- `owl setup <name> <link|install|systemd|info|edit|all> [--shallow]`
 
 ### System
 
 - `owl config`: Show current configuration
 - `owl sync`: Run synchronization scripts
+- `owl setups-validate`: Validate all setups and nests
 - `owl update`: Update owl itself
+
+## Workspace Rules
+
+See the repository rules and conventions in [`docs/workspace-rules.md`](docs/workspace-rules.md).
 
 ## Configuration
 
 Config stored in `~/.config/owl/config.json`:
 
 - **owl_path**: Location of this repository
-- **nest_path**: Path to your nest.json file
+- **nest_path**: Path to your active root setup directory (e.g., `nests/<name>`)
 
 ## Quick Start on a new machine
 
@@ -151,7 +160,7 @@ cargo build --release
 1. Link configs and services:
 
 ```bash
-owl nest setup
+owl nest link
 ```
 
 1. Install software (with dependencies):
@@ -166,5 +175,5 @@ Build and test:
 
 ```bash
 cargo build
-cargo run -- nest setup
+cargo run -- nest link
 ```

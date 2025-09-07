@@ -105,14 +105,9 @@ fn save_config(config: Config) -> Config {
 }
 
 // =======================================
-//              Setups
+//              Raw Setup
 // =======================================
-fn resolve_tokenized_path(
-    input: &str,
-    setup_dir: &Path,
-    config: &Config,
-    common_prefix: &str,
-) -> PathBuf {
+fn resolve_tokenized_path(input: &str, setup_dir: &Path, common_prefix: &str) -> PathBuf {
     let expanded = shellexpand::tilde(input).into_owned();
     let s = expanded.as_str();
     if Path::new(s).is_absolute() {
@@ -120,7 +115,7 @@ fn resolve_tokenized_path(
     }
     if s.starts_with("common:") {
         let relative = &s[7..];
-        return config
+        return get_config()
             .owl_path
             .join("common")
             .join(common_prefix)
@@ -130,7 +125,7 @@ fn resolve_tokenized_path(
         let relative = &s[6..];
         return setup_dir.join(relative);
     }
-    config.owl_path.join(s)
+    get_config().owl_path.join(s)
 }
 
 #[derive(Debug, Deserialize)]
@@ -174,12 +169,7 @@ struct SetupFileRaw {
 }
 
 impl SetupFileRaw {
-    fn validate(
-        &self,
-        setup_dir: &Path,
-        setup_name: &str,
-        config: &Config,
-    ) -> Result<Setup, String> {
+    fn validate(&self, setup_dir: &Path, setup_name: &str) -> Result<Setup, String> {
         let name = self.name.clone().unwrap_or_else(|| setup_name.to_string());
 
         let links = self
@@ -187,7 +177,7 @@ impl SetupFileRaw {
             .as_ref()
             .unwrap_or(&Vec::new())
             .into_iter()
-            .map(|l| ValidatedSetupLink::make(&l, setup_dir, config))
+            .map(|l| ValidatedSetupLink::make(&l, setup_dir))
             .collect::<Result<Vec<_>, _>>()?;
 
         let rc_scripts = self
@@ -195,7 +185,7 @@ impl SetupFileRaw {
             .as_ref()
             .unwrap_or(&Vec::new())
             .into_iter()
-            .map(|s| ValidatedRunScript::make(&s, setup_dir, &name, config))
+            .map(|s| ValidatedRunScript::make(&s, setup_dir, &name))
             .collect::<Result<Vec<_>, _>>()?;
 
         let menu_scripts = self
@@ -203,7 +193,7 @@ impl SetupFileRaw {
             .as_ref()
             .unwrap_or(&Vec::new())
             .into_iter()
-            .map(|s| ValidatedSetupMenuScriptItem::make(&s, setup_dir, config))
+            .map(|s| ValidatedSetupMenuScriptItem::make(&s, setup_dir))
             .collect::<Result<Vec<_>, _>>()?;
 
         let services = self
@@ -211,7 +201,7 @@ impl SetupFileRaw {
             .as_ref()
             .unwrap_or(&Vec::new())
             .into_iter()
-            .map(|s| ValidatedSetupService::make(&s, setup_dir, config))
+            .map(|s| ValidatedSetupService::make(&s, setup_dir))
             .collect::<Result<Vec<_>, _>>()?;
 
         let dependencies = self
@@ -223,15 +213,14 @@ impl SetupFileRaw {
             .collect::<Result<Vec<_>, _>>()?;
 
         let install_script = if let Some(install) = self.install.as_ref() {
-            Some(ValidatedSetupInstallScript::make(
-                install, setup_dir, config,
-            )?)
+            Some(ValidatedSetupInstallScript::make(install, setup_dir)?)
         } else {
             None
         };
 
         Ok(Setup {
             name,
+            origin_dir: setup_dir.to_path_buf(),
             links,
             rc_scripts,
             menu_scripts,
@@ -242,6 +231,11 @@ impl SetupFileRaw {
     }
 }
 
+// =======================================
+//              Validated Setup
+// =======================================
+
+// ---------- Setup Links ----------
 struct ValidatedSetupLink {
     source_path: PathBuf,
     target_path: PathBuf,
@@ -249,37 +243,44 @@ struct ValidatedSetupLink {
 }
 
 impl ValidatedSetupLink {
-    fn make(raw: &SetupFileLinkRaw, setup_dir: &Path, config: &Config) -> Result<Self, String> {
-        let source_path = resolve_tokenized_path(&raw.source, setup_dir, config, "");
+    fn make(raw: &SetupFileLinkRaw, setup_dir: &Path) -> Result<Self, String> {
+        let source_path = resolve_tokenized_path(&raw.source, setup_dir, "");
         if !source_path.exists() {
             return Err(format!("link source not found: {}", source_path.display()));
         }
-        let target_path = resolve_tokenized_path(&raw.target, setup_dir, config, "");
+        let target_path = resolve_tokenized_path(&raw.target, setup_dir, "");
         Ok(Self {
             source_path,
             target_path,
             root: raw.root.unwrap_or(false),
         })
     }
+}
 
-    fn link(&self, quiet: bool) -> Result<(), String> {
-        link_paths(&self.source_path, &self.target_path, self.root, quiet)
+impl Linkable for ValidatedSetupLink {
+    fn source_path(&self) -> PathBuf {
+        self.source_path.clone()
+    }
+    fn target_path(&self) -> PathBuf {
+        self.target_path.clone()
+    }
+    fn requires_root(&self) -> bool {
+        self.root
+    }
+    fn display_info() -> String {
+        return "🔗 Links".to_string();
     }
 }
 
+// ---------- RC Scripts ----------
 struct ValidatedRunScript {
     name: String,
     path: PathBuf,
 }
 
 impl ValidatedRunScript {
-    fn make(
-        raw: &str,
-        setup_dir: &Path,
-        setup_name: &str,
-        config: &Config,
-    ) -> Result<Self, String> {
-        let path = resolve_tokenized_path(raw, setup_dir, config, "rc");
+    fn make(raw: &str, setup_dir: &Path, setup_name: &str) -> Result<Self, String> {
+        let path = resolve_tokenized_path(raw, setup_dir, "rc");
         if !path.exists() {
             return Err(format!("rc script missing: {}", path.display()));
         }
@@ -290,28 +291,31 @@ impl ValidatedRunScript {
         let name = format!("rc-{}-{}", setup_name, filename);
         Ok(Self { name, path })
     }
+}
 
-    fn link_into_rc(&self) -> Result<PathBuf, String> {
-        let dest = get_owl_rc_path().join(&self.name);
-        link_paths(&self.path, &dest, false, true)?;
-        Ok(dest)
+impl Linkable for ValidatedRunScript {
+    fn source_path(&self) -> PathBuf {
+        self.path.clone()
+    }
+    fn target_path(&self) -> PathBuf {
+        get_owl_rc_path().join(&self.name)
+    }
+    fn display_info() -> String {
+        return "📜 RC Scripts".to_string();
     }
 }
 
+// ---------- Menu Scripts ----------
 struct ValidatedSetupMenuScriptItem {
     path: PathBuf,
     name: String,
 }
 
 impl ValidatedSetupMenuScriptItem {
-    fn make(
-        raw: &SetupMenuScriptItemRaw,
-        setup_dir: &Path,
-        config: &Config,
-    ) -> Result<Self, String> {
+    fn make(raw: &SetupMenuScriptItemRaw, setup_dir: &Path) -> Result<Self, String> {
         match raw {
             SetupMenuScriptItemRaw::Simple(p) => {
-                let path = resolve_tokenized_path(p, setup_dir, config, "menu-scripts");
+                let path = resolve_tokenized_path(p, setup_dir, "menu-scripts");
                 if !path.exists() {
                     return Err(format!("menu script missing: {}", path.display()));
                 }
@@ -323,7 +327,7 @@ impl ValidatedSetupMenuScriptItem {
                 Ok(Self { path, name })
             }
             SetupMenuScriptItemRaw::Detailed { path, name } => {
-                let path = resolve_tokenized_path(path, setup_dir, config, "menu-scripts");
+                let path = resolve_tokenized_path(path, setup_dir, "menu-scripts");
                 if !path.exists() {
                     return Err(format!("menu script missing: {}", path.display()));
                 }
@@ -334,14 +338,21 @@ impl ValidatedSetupMenuScriptItem {
             }
         }
     }
+}
 
-    fn link_into_menu(&self) -> Result<PathBuf, String> {
-        let dest_dir = get_owl_menu_scripts_path().join(&self.name);
-        link_paths(&self.path, &dest_dir, false, true)?;
-        Ok(dest_dir)
+impl Linkable for ValidatedSetupMenuScriptItem {
+    fn source_path(&self) -> PathBuf {
+        self.path.clone()
+    }
+    fn target_path(&self) -> PathBuf {
+        get_owl_menu_scripts_path().join(&self.name)
+    }
+    fn display_info() -> String {
+        return "🧭 Menu Scripts".to_string();
     }
 }
 
+// ---------- Services ----------
 #[derive(Debug, Clone, Copy)]
 enum ServiceScope {
     System,
@@ -372,9 +383,9 @@ struct ValidatedSetupService {
 }
 
 impl ValidatedSetupService {
-    fn make(raw: &SetupServiceRaw, setup_dir: &Path, config: &Config) -> Result<Self, String> {
+    fn make(raw: &SetupServiceRaw, setup_dir: &Path) -> Result<Self, String> {
         let scope = ServiceScope::from_str_or_default(raw.r#type.clone());
-        let path = resolve_tokenized_path(&raw.path, setup_dir, config, "services");
+        let path = resolve_tokenized_path(&raw.path, setup_dir, "services");
         if !path.exists() {
             return Err(format!("service file missing: {}", path.display()));
         }
@@ -395,10 +406,6 @@ impl ValidatedSetupService {
             name: name.to_string(),
             target_path,
         })
-    }
-
-    fn link(&self, quiet: bool) -> Result<(), String> {
-        link_paths(&self.path, &self.target_path, self.scope.is_root(), quiet)
     }
 
     fn enable_and_restart(&self) {
@@ -439,6 +446,22 @@ impl ValidatedSetupService {
     }
 }
 
+impl Linkable for ValidatedSetupService {
+    fn source_path(&self) -> PathBuf {
+        self.path.clone()
+    }
+    fn target_path(&self) -> PathBuf {
+        self.target_path.clone()
+    }
+    fn requires_root(&self) -> bool {
+        self.scope.is_root()
+    }
+    fn display_info() -> String {
+        return "🧩 Services".to_string();
+    }
+}
+
+// ---------- Dependencies ----------
 struct ValidatedSetupDependency {
     name: String,
 }
@@ -454,13 +477,14 @@ impl ValidatedSetupDependency {
     }
 }
 
+// ---------- Install Script ----------
 struct ValidatedSetupInstallScript {
     path: PathBuf,
 }
 
 impl ValidatedSetupInstallScript {
-    fn make(raw: &str, setup_dir: &Path, config: &Config) -> Result<Self, String> {
-        let path = resolve_tokenized_path(raw, setup_dir, config, "");
+    fn make(raw: &str, setup_dir: &Path) -> Result<Self, String> {
+        let path = resolve_tokenized_path(raw, setup_dir, "");
         if !path.exists() {
             return Err(format!("install script missing: {}", path.display()));
         }
@@ -472,8 +496,34 @@ impl ValidatedSetupInstallScript {
     }
 }
 
+// =======================================
+//              Setup
+// =======================================
+
+#[derive(Clone, Copy)]
+enum Operation {
+    Link,
+    Install,
+    Systemd,
+    Info,
+    All,
+}
+
+impl Operation {
+    fn description(&self) -> &str {
+        match self {
+            Operation::Link => "🔗 Links",
+            Operation::Install => "📦 Installing",
+            Operation::Systemd => "🧩 Systemd",
+            Operation::Info => "ℹ️  Info",
+            Operation::All => "🚀 All",
+        }
+    }
+}
+
 struct Setup {
     name: String,
+    origin_dir: PathBuf,
     links: Vec<ValidatedSetupLink>,
     rc_scripts: Vec<ValidatedRunScript>,
     menu_scripts: Vec<ValidatedSetupMenuScriptItem>,
@@ -483,152 +533,56 @@ struct Setup {
 }
 
 impl Setup {
-    // ========= Recursion helper =========
-    fn for_each_dep_depth_first<F>(start_name: &str, mut f: F)
-    where
-        F: FnMut(&Setup),
-    {
-        let mut visited = std::collections::HashSet::new();
-        fn walk<F>(name: &str, visited: &mut std::collections::HashSet<String>, f: &mut F)
-        where
-            F: FnMut(&Setup),
-        {
-            if visited.contains(name) {
-                return;
+    fn edit(&self) {
+        let links_path = self.origin_dir.join("setup.json");
+        let editor = std::env::var("VISUAL")
+            .ok()
+            .or_else(|| std::env::var("EDITOR").ok())
+            .unwrap_or_else(|| "vim".to_string());
+        let mut cmd = Command::new(editor);
+        cmd.arg(&links_path);
+        match cmd.status() {
+            Ok(status) => {
+                if !status.success() {
+                    eprintln!("Editor exited with non-zero status");
+                }
             }
-            visited.insert(name.to_string());
-            let setup = get_setup(name);
-            for dep in &setup.dependencies {
-                walk(dep.name.as_str(), visited, f);
-            }
-            f(&setup);
+            Err(e) => eprintln!("Failed to launch editor: {}", e),
         }
-        walk(start_name, &mut visited, &mut f);
     }
-    fn link_files(&self) {
-        if self.links.is_empty() {
+
+    fn run_linkables<T: Linkable>(items: &[T]) {
+        if items.is_empty() {
             return;
         }
-        println!("  {}", "🔗 Links:".green().bold());
-        for link in &self.links {
-            match link.link(true) {
-                Ok(()) => println!(
-                    "    {} → {} {}",
-                    link.source_path.display().to_string().blue(),
-                    link.target_path.display().to_string().green(),
-                    "✅"
-                ),
+        println!("  {}", T::display_info().green().bold());
+        for item in items {
+            let src = item.source_path();
+            let dst = item.target_path();
+            let src_display = src.display().to_string().blue();
+            let dst_display = dst.display().to_string().green();
+            match item.link() {
+                Ok(()) => println!("    {} → {} {}", src_display, dst_display, "✅"),
                 Err(e) => println!(
                     "    {} → {} {} {}",
-                    link.source_path.display().to_string().blue(),
-                    link.target_path.display().to_string().red(),
-                    "❌",
-                    e
+                    src_display, dst_display, "❌", e.message
                 ),
             }
         }
     }
 
-    fn link_rc_scripts(&self) {
-        if self.rc_scripts.is_empty() {
-            return;
-        }
-        println!("  {}", "📜 RC Scripts:".yellow().bold());
-        for rc in &self.rc_scripts {
-            match rc.link_into_rc() {
-                Ok(dest) => println!(
-                    "    {} → {} {}",
-                    rc.path.display().to_string().blue(),
-                    dest.display().to_string().green(),
-                    "✅"
-                ),
-                Err(e) => println!(
-                    "    {} → {} {} {}",
-                    rc.path.display().to_string().blue(),
-                    "~/.config/owl/rc".red(),
-                    "❌",
-                    e
-                ),
-            }
-        }
+    fn link_once(&self) {
+        Self::run_linkables(&self.links);
+        Self::run_linkables(&self.rc_scripts);
+        Self::run_linkables(&self.menu_scripts);
+        Self::run_linkables(&self.services);
     }
 
-    fn link_menu_scripts(&self) {
-        if self.menu_scripts.is_empty() {
-            return;
-        }
-        println!("  {}", "🧭 Menu Scripts:".cyan().bold());
-        for menu in &self.menu_scripts {
-            match menu.link_into_menu() {
-                Ok(dest) => println!(
-                    "    {} → {} {}",
-                    menu.path.display().to_string().blue(),
-                    dest.display().to_string().green(),
-                    "✅"
-                ),
-                Err(e) => println!(
-                    "    {} → {} {} {}",
-                    menu.path.display().to_string().blue(),
-                    "~/.config/owl/menu-scripts".red(),
-                    "❌",
-                    e
-                ),
-            }
-        }
-    }
-
-    fn link_services(&self) {
-        if self.services.is_empty() {
-            return;
-        }
-        println!("  {}", "🧩 Services:".cyan().bold());
-        for svc in &self.services {
-            match svc.link(true) {
-                Ok(()) => println!(
-                    "    {} → {} ({}) {}",
-                    svc.path.display().to_string().blue(),
-                    svc.target_path.display().to_string().green(),
-                    match svc.scope {
-                        ServiceScope::System => "system",
-                        ServiceScope::User => "user",
-                    },
-                    "✅"
-                ),
-                Err(e) => println!(
-                    "    {} → {} ({}) {} {}",
-                    svc.path.display().to_string().blue(),
-                    svc.target_path.display().to_string().red(),
-                    match svc.scope {
-                        ServiceScope::System => "system",
-                        ServiceScope::User => "user",
-                    },
-                    "❌",
-                    e
-                ),
-            }
-        }
-    }
-
-    // ========= Setup Runners =========
-    fn run_enable_and_restart_services(&self) {
-        for svc in &self.services {
-            svc.enable_and_restart();
-        }
-    }
-
-    // One-shot runners (no recursion)
     fn install_once(&self) {
         if let Some(script) = &self.install_script {
             println!("Installing {}", self.name.green());
             script.install();
         }
-    }
-
-    fn link_once(&self) {
-        self.link_files();
-        self.link_rc_scripts();
-        self.link_menu_scripts();
-        self.link_services();
     }
 
     fn info_once(&self) {
@@ -657,105 +611,44 @@ impl Setup {
     }
 
     fn systemd_once(&self) {
-        self.link_services();
-        self.run_enable_and_restart_services();
-    }
-
-    // ========= Recursive runners =========
-    fn run_link_recursive(&self) {
-        Self::for_each_dep_depth_first(&self.name, |s| {
-            println!(
-                "{} {} (setups/{}/setup.json)",
-                "🚀 Linking".magenta().bold(),
-                s.name.cyan().bold(),
-                s.name
-            );
-            s.link_once();
-        });
-    }
-
-    fn run_install_recursive(&self) {
-        Self::for_each_dep_depth_first(&self.name, |s| s.install_once());
-    }
-
-    fn run_systemd_recursive(&self) {
-        Self::for_each_dep_depth_first(&self.name, |s| s.systemd_once());
-    }
-
-    fn run_info_recursive(&self) {
-        Self::for_each_dep_depth_first(&self.name, |s| s.info_once());
-    }
-
-    fn run_all_recursive(&self) {
-        Self::for_each_dep_depth_first(&self.name, |s| {
-            s.link_once();
-            s.install_once();
-            s.systemd_once();
-        });
-    }
-
-    // ========= Public entry surface expected by CLI =========
-    fn run_link(&self, shallow: bool) {
-        if shallow {
-            self.link_once();
-        } else {
-            self.run_link_recursive();
+        Self::run_linkables(&self.services);
+        for svc in &self.services {
+            svc.enable_and_restart();
         }
     }
 
-    fn run_install(&self, shallow: bool) {
-        if shallow {
-            self.install_once();
-        } else {
-            self.run_install_recursive();
-        }
-    }
+    fn apply_operation_once(&self, op: Operation) {
+        let op_description = op.description();
+        let op_description_colored = op_description.magenta().bold();
+        let setup_name = self.name.cyan().bold();
+        let setup_dir = self
+            .origin_dir
+            .join("setup.json")
+            .display()
+            .to_string()
+            .green();
 
-    fn run_systemd(&self, shallow: bool) {
-        if shallow {
-            self.systemd_once();
-        } else {
-            self.run_systemd_recursive();
-        }
-    }
-
-    fn run_info(&self, shallow: bool) {
-        if shallow {
-            self.info_once();
-        } else {
-            self.run_info_recursive();
-        }
-    }
-
-    fn run_all(&self, shallow: bool) {
-        if shallow {
-            self.link_once();
-            self.install_once();
-            self.systemd_once();
-        } else {
-            self.run_all_recursive();
-        }
-    }
-
-    fn run_edit(&self) {
-        let config = get_config();
-        let links_path = Path::join(
-            &config.owl_path,
-            Path::new(&format!("setups/{}/setup.json", self.name)),
-        );
-        let editor = std::env::var("VISUAL")
-            .ok()
-            .or_else(|| std::env::var("EDITOR").ok())
-            .unwrap_or_else(|| "vim".to_string());
-        let mut cmd = Command::new(editor);
-        cmd.arg(&links_path);
-        match cmd.status() {
-            Ok(status) => {
-                if !status.success() {
-                    eprintln!("Editor exited with non-zero status");
-                }
+        println!("{} {} ({} )", op_description_colored, setup_name, setup_dir);
+        match op {
+            Operation::Link => self.link_once(),
+            Operation::Install => self.install_once(),
+            Operation::Systemd => self.systemd_once(),
+            Operation::Info => self.info_once(),
+            Operation::All => {
+                self.link_once();
+                self.install_once();
+                self.systemd_once();
             }
-            Err(e) => eprintln!("Failed to launch editor: {}", e),
+        }
+    }
+
+    fn run_op(&self, op: Operation, shallow: bool) {
+        if shallow {
+            self.apply_operation_once(op);
+        } else {
+            for_each_dep_depth_first(&self.name, |s| {
+                s.apply_operation_once(op);
+            });
         }
     }
 }
@@ -796,7 +689,6 @@ fn read_setup_file(setup_json_path: &Path) -> Result<SetupFileRaw, SetupLoadErro
 fn load_setup(name: &str) -> Result<Setup, SetupLoadError> {
     let config = get_config();
 
-    // Check both nests and setups directories
     let nest_dir = config.owl_path.join("nests").join(name);
     let setup_dir = config.owl_path.join("setups").join(name);
 
@@ -811,7 +703,7 @@ fn load_setup(name: &str) -> Result<Setup, SetupLoadError> {
     };
 
     let raw = read_setup_file(&path)?;
-    match raw.validate(&chosen_dir, name, &config) {
+    match raw.validate(&chosen_dir, name) {
         Ok(s) => Ok(s),
         Err(e) => Err(SetupLoadError::Validation { path, message: e }),
     }
@@ -865,7 +757,7 @@ fn validate_all_setups() {
             let dir = base_dir.join(&name);
             let json = dir.join("setup.json");
             match read_setup_file(&json).and_then(|raw| {
-                raw.validate(&dir, &name, &config)
+                raw.validate(&dir, &name)
                     .map_err(|e| SetupLoadError::Validation {
                         path: json.clone(),
                         message: e,
@@ -1083,8 +975,6 @@ enum NestCommands {
 }
 
 fn main() {
-    let config = get_config();
-
     let cli = Cli::parse();
     match cli.command {
         Commands::Config => print_config(),
@@ -1094,18 +984,18 @@ fn main() {
         } => {
             let nest = get_nest();
             match nest_command {
-                None | Some(NestCommands::Info) => nest.run_info(shallow),
-                Some(NestCommands::Link) => nest.run_link(shallow),
-                Some(NestCommands::Install) => nest.run_install(shallow),
-                Some(NestCommands::Systemd) => nest.run_systemd(shallow),
-                Some(NestCommands::All) => nest.run_all(shallow),
-                Some(NestCommands::Edit) => nest.run_edit(),
+                None | Some(NestCommands::Info) => nest.run_op(Operation::Info, shallow),
+                Some(NestCommands::Link) => nest.run_op(Operation::Link, shallow),
+                Some(NestCommands::Install) => nest.run_op(Operation::Install, shallow),
+                Some(NestCommands::Systemd) => nest.run_op(Operation::Systemd, shallow),
+                Some(NestCommands::All) => nest.run_op(Operation::All, shallow),
+                Some(NestCommands::Edit) => nest.edit(),
                 Some(NestCommands::Switch { name }) => {
                     let _ = switch_nest(name);
                 }
             }
         }
-        Commands::Sync => sync(&config),
+        Commands::Sync => sync(),
         Commands::Setup {
             setup_name,
             setup_command,
@@ -1114,12 +1004,12 @@ fn main() {
             let s = get_setup(&setup_name);
 
             match setup_command {
-                SetupCommands::Link => s.run_link(shallow),
-                SetupCommands::Info => s.run_info(shallow),
-                SetupCommands::Edit => s.run_edit(),
-                SetupCommands::Install => s.run_install(shallow),
-                SetupCommands::Systemd => s.run_systemd(shallow),
-                SetupCommands::All => s.run_all(shallow),
+                SetupCommands::Link => s.run_op(Operation::Link, shallow),
+                SetupCommands::Info => s.run_op(Operation::Info, shallow),
+                SetupCommands::Edit => s.edit(),
+                SetupCommands::Install => s.run_op(Operation::Install, shallow),
+                SetupCommands::Systemd => s.run_op(Operation::Systemd, shallow),
+                SetupCommands::All => s.run_op(Operation::All, shallow),
             }
         }
         Commands::SetupsValidate => validate_all_setups(),
@@ -1127,9 +1017,10 @@ fn main() {
     }
 }
 
-fn sync(config: &Config) {
+fn sync() {
     println!("Syncing");
 
+    let config = get_config();
     let owl_sync_script_path =
         Path::join(&config.owl_path, Path::new("common/scripts/owl-sync.sh"));
 
@@ -1137,7 +1028,7 @@ fn sync(config: &Config) {
 }
 fn run_update() {
     let s = get_setup("owl");
-    s.run_install(true);
+    s.run_op(Operation::Install, true);
 }
 
 // =======================================
@@ -1213,61 +1104,84 @@ fn print_err_setup(name: &str, err: &SetupLoadError) {
     );
 }
 
-fn link_paths(
-    source_path: &Path,
-    target_path: &Path,
-    root: bool,
-    quiet: bool,
-) -> Result<(), String> {
-    if target_path.exists() || target_path.is_symlink() {
-        if let Err(e) = std::fs::remove_file(target_path) {
-            if !quiet {
-                eprintln!("remove old: {}", e);
-            }
-            return Err(format!("remove old: {}", e));
-        }
-    }
+struct LinkingError {
+    message: String,
+}
 
-    if let Some(parent) = target_path.parent() {
-        if !parent.exists() {
-            if let Err(e) = fs::create_dir_all(parent) {
-                if !quiet {
-                    eprintln!("mkdir: {}", e);
-                }
-                return Err(format!("mkdir: {}", e));
-            }
-        }
+trait Linkable {
+    fn source_path(&self) -> PathBuf;
+    fn target_path(&self) -> PathBuf;
+    fn requires_root(&self) -> bool {
+        false
     }
+    fn display_info() -> String;
 
-    if root {
-        let output = Command::new("sudo")
-            .arg("ln")
-            .arg("-s")
-            .arg(&source_path)
-            .arg(&target_path)
-            .output();
-        match output {
-            Ok(o) if o.status.success() => Ok(()),
-            Ok(o) => {
-                let msg = format!("sudo ln failed: {}", String::from_utf8_lossy(&o.stderr));
-                if !quiet {
-                    eprintln!("{}", msg);
-                }
-                Err(msg)
-            }
-            Err(e) => {
-                if !quiet {
-                    eprintln!("exec sudo ln: {}", e);
-                }
-                Err(format!("exec sudo ln: {}", e))
+    fn link(&self) -> Result<(), LinkingError> {
+        let target_path = self.target_path();
+        let root = self.requires_root();
+        let source_path = self.source_path();
+
+        if target_path.exists() || target_path.is_symlink() {
+            if let Err(e) = std::fs::remove_file(target_path.clone()) {
+                return Err(LinkingError {
+                    message: format!("remove old: {}", e),
+                });
             }
         }
-    } else {
-        std::os::unix::fs::symlink(&source_path, &target_path).map_err(|e| {
-            if !quiet {
-                eprintln!("{}", e);
+
+        if let Some(parent) = target_path.parent() {
+            if !parent.exists() {
+                if let Err(e) = fs::create_dir_all(parent) {
+                    return Err(LinkingError {
+                        message: format!("mkdir: {}", e),
+                    });
+                }
             }
-            e.to_string()
-        })
+        }
+
+        if root {
+            let output = Command::new("sudo")
+                .arg("ln")
+                .arg("-s")
+                .arg(&source_path)
+                .arg(&target_path)
+                .output();
+            match output {
+                Ok(o) if o.status.success() => Ok(()),
+                Ok(o) => {
+                    let msg = format!("sudo ln failed: {}", String::from_utf8_lossy(&o.stderr));
+                    Err(LinkingError { message: msg })
+                }
+                Err(e) => Err(LinkingError {
+                    message: format!("exec sudo ln: {}", e),
+                }),
+            }
+        } else {
+            std::os::unix::fs::symlink(&source_path, &target_path).map_err(|e| LinkingError {
+                message: format!("symlink: {}", e),
+            })
+        }
     }
+}
+
+fn for_each_dep_depth_first<F>(start_name: &str, mut f: F)
+where
+    F: FnMut(&Setup),
+{
+    let mut visited = std::collections::HashSet::new();
+    fn walk<F>(name: &str, visited: &mut std::collections::HashSet<String>, f: &mut F)
+    where
+        F: FnMut(&Setup),
+    {
+        if visited.contains(name) {
+            return;
+        }
+        visited.insert(name.to_string());
+        let setup = get_setup(name);
+        for dep in &setup.dependencies {
+            walk(dep.name.as_str(), visited, f);
+        }
+        f(&setup);
+    }
+    walk(start_name, &mut visited, &mut f);
 }
