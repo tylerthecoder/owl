@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+# Owl Workspace Overview
+
+- Entry point: [src/main.rs](mdc:src/main.rs)
+- Purpose: Manage modular dotfile "setups" (including former "nests"), link files, install dependencies, and manage services.
+
+## Core Concepts
+
+- Setup: A modular unit with optional fields in `setup.json` located at `setups/<name>/setup.json`. Former "nests" are root setups at `nests/<name>/setup.json`.
+- Validate-first pattern: Parse `SetupFileRaw` (optional fields), then validate/resolve into `Setup` and specific validated items. All operations run only on validated types.
+- Path tokens:
+  - `local:` → relative to the setup directory
+  - `common:` → relative to the repo root under `common/<area>/...`
+  - `~` expands to home; absolute paths pass through
+- Menu scripts: Linked to `~/.config/owl/menu-scripts/` and surfaced via Omni-Menu.
+- Services: Setups can declare systemd units to link under user or system scope.
+
+## CLI
+
+- `owl setup <name> link|install|systemd|info|edit|all [--shallow]`
+- `owl nest ...` acts on the active root setup; `owl nest switch` selects it.
+- `owl setups-validate` validates all setups and nests.
+
+## Common Effects
+
+- Link files (respecting tokens; ensure parent dirs exist).
+- Link rc scripts into `~/.config/owl/rc/` with `rc-<setup>-<script>` naming.
+- Link menu scripts into `~/.config/owl/menu-scripts/`.
+- Link systemd unit files and enable/restart per scope.
