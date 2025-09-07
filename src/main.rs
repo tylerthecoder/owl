@@ -486,6 +486,56 @@ struct Setup {
 }
 
 impl Setup {
+    fn print_op_header(&self, op: Operation) {
+        let op_description_colored = op.description().magenta().bold();
+        let setup_name = self.name.cyan().bold();
+        let setup_dir = self
+            .origin_dir
+            .join("setup.json")
+            .display()
+            .to_string()
+            .green();
+        println!("{} {} ({})", op_description_colored, setup_name, setup_dir);
+    }
+
+    fn print_linkables_plan<T: Linkable>(&self, items: &[T]) {
+        if items.is_empty() {
+            return;
+        }
+        print_subsection(T::display_info());
+        for item in items {
+            let src = item.source_path();
+            let dst = item.target_path();
+            let src_display = src.display().to_string().blue();
+            let dst_display = dst.display().to_string().green();
+            println!("    {} → {}", src_display, dst_display);
+        }
+    }
+
+    fn print_systemd_enable_plan(&self) {
+        if self.services.is_empty() {
+            return;
+        }
+        print_subsection("Services (enable)");
+        for svc in &self.services {
+            match svc.scope {
+                ServiceScope::System => {
+                    println!(
+                        "    {} {}",
+                        "sudo systemctl enable --now".yellow(),
+                        svc.name.green()
+                    );
+                }
+                ServiceScope::User => {
+                    println!(
+                        "    {} {}",
+                        "systemctl --user enable --now".yellow(),
+                        svc.name.green()
+                    );
+                }
+            }
+        }
+    }
     fn make(setup_raw: &SetupFileRaw, setup_header: &SetupHeader) -> Result<Self, String> {
         fn validate_vec<T, U>(
             vec: Option<&Vec<T>>,
@@ -586,29 +636,30 @@ impl Setup {
     }
 
     fn info_once(&self) {
-        print_section("Setup:");
-        println!("  {}", self.name.cyan());
-        if !self.dependencies.is_empty() {
-            println!(
-                "Dependencies: {}",
-                self.dependencies
-                    .iter()
-                    .map(|d| d.name.clone())
-                    .collect::<Vec<String>>()
-                    .join(", ")
-                    .yellow()
-            );
-        }
+        // Dry-run Links
+        self.print_op_header(Operation::Link);
+        self.print_linkables_plan(&self.links);
+        self.print_linkables_plan(&self.rc_scripts);
+        self.print_linkables_plan(&self.menu_scripts);
+        self.print_linkables_plan(&self.services);
+
+        // Dry-run Install
         if let Some(install) = &self.install_script {
+            self.print_op_header(Operation::Install);
+            print_subsection("Install Script");
             println!(
-                "Install script: {}",
+                "    {} {}",
+                "Run:".yellow(),
                 install.path.display().to_string().green()
             );
         }
-        println!("Links: {} files", self.links.len());
-        println!("RC Scripts: {}", self.rc_scripts.len());
-        println!("Menu Scripts: {}", self.menu_scripts.len());
-        println!("Services: {} files", self.services.len());
+
+        // Dry-run Systemd
+        if !self.services.is_empty() {
+            self.print_op_header(Operation::Systemd);
+            self.print_linkables_plan(&self.services);
+            self.print_systemd_enable_plan();
+        }
     }
 
     fn systemd_once(&self) {
