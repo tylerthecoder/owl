@@ -1,6 +1,6 @@
 {
-    "name": "dracula-theme",
-    "install": "setup.sh",
+    "dependencies": [],
+    "install": "local:setup.sh",
     "links": [
         {
             "source": "local:gtk-3.0/settings.ini",
@@ -15,7 +15,7 @@
             "target": "~/.config/environment.d/10-gtk-theme.conf"
         }
     ],
+    "name": "dracula-theme",
     "rc_scripts": [],
-    "services": [],
-    "dependencies": []
+    "services": []
 }

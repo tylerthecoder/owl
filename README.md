@@ -16,13 +16,13 @@ A modular dotfiles and environment management system that allows you to manage c
 curl https://raw.githubusercontent.com/tylerthecoder/owl/main/setups/owl/setup.sh | sh
 ```
 
-2. Set up your nest configuration:
+1. Set up your nest configuration:
 
 ```bash
 owl nest setup
 ```
 
-3. Setup software:
+1. Setup software:
 
 ```bash
 owl setup git
@@ -93,7 +93,7 @@ Nest and setup configurations support clean path syntax:
 
 - `common:filename.sh` → `common/rc/filename.sh`
 - `local:filename` → `nests/{nest-name}/filename`
-- Regular absolute/relative paths work as before
+- Regular absolute/relative paths work as before; if no token is provided and the path is relative, it resolves from the owl repo root (`owl_path`).
 
 ### Initialization (`owl-start.sh`)
 
@@ -101,7 +101,7 @@ The simplified startup script that:
 
 1. Sets XDG environment variables
 2. Adds local bin to PATH
-3. Sources all scripts from `~/.config/owl-rc/`
+3. Sources all scripts from `~/.config/owl/rc/`
 4. Sources machine-specific environment from `~/.shenv`
 
 ## Commands
@@ -111,7 +111,7 @@ The simplified startup script that:
 - `owl nest setup`: Link nest files and setup configurations (and services)
 - `owl nest install`: Run install scripts with dependency resolution
 - `owl nest info`: Show what files would be linked (dry run)
-- `owl nest switch [PATH]`: Switch the active nest (interactive if PATH omitted)
+- `owl nest switch [NAME]`: Switch the active nest by name (interactive if omitted)
 
 ### Setup Management
 
@@ -139,22 +139,22 @@ Config stored in `~/.config/owl/config.json`:
 sudo pacman -S --needed git base-devel curl
 ```
 
-2. Clone owl and set the nest:
+1. Clone owl and set the nest:
 
 ```bash
 git clone https://github.com/tylerthecoder/owl ~/owl
 cd ~/owl
 cargo build --release
-~/.local/bin/owl nest switch /home/$USER/owl/nests/framework-sway
+~/.local/bin/owl nest switch framework-sway
 ```
 
-3. Link configs and services:
+1. Link configs and services:
 
 ```bash
 owl nest setup
 ```
 
-4. Install software (with dependencies):
+1. Install software (with dependencies):
 
 ```bash
 owl nest install

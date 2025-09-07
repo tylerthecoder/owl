@@ -5,6 +5,7 @@ use std::fs;
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use thiserror::Error;
 
 // =======================================
 //            Paths
@@ -93,6 +94,11 @@ fn get_config() -> Config {
 
 fn save_config(config: Config) -> Config {
     let config_path = get_config_path();
+    if let Some(parent) = config_path.parent() {
+        if let Err(e) = std::fs::create_dir_all(parent) {
+            eprintln!("Unable to create config directory: {}", e);
+        }
+    }
     let config_raw = serde_json::to_string(&config).expect("Unable to serialize config");
     std::fs::write(config_path, config_raw).expect("Unable to write config file");
     config
@@ -400,6 +406,10 @@ impl ValidatedSetupService {
             ServiceScope::System => {
                 let _ = Command::new("sudo")
                     .arg("systemctl")
+                    .arg("daemon-reload")
+                    .status();
+                let _ = Command::new("sudo")
+                    .arg("systemctl")
                     .arg("enable")
                     .arg(&self.name)
                     .status();
@@ -410,6 +420,10 @@ impl ValidatedSetupService {
                     .status();
             }
             ServiceScope::User => {
+                let _ = Command::new("systemctl")
+                    .arg("--user")
+                    .arg("daemon-reload")
+                    .status();
                 let _ = Command::new("systemctl")
                     .arg("--user")
                     .arg("enable")
@@ -447,6 +461,9 @@ struct ValidatedSetupInstallScript {
 impl ValidatedSetupInstallScript {
     fn make(raw: &str, setup_dir: &Path, config: &Config) -> Result<Self, String> {
         let path = resolve_tokenized_path(raw, setup_dir, config, "");
+        if !path.exists() {
+            return Err(format!("install script missing: {}", path.display()));
+        }
         Ok(Self { path })
     }
 
@@ -528,7 +545,7 @@ impl Setup {
                 Err(e) => println!(
                     "    {} → {} {} {}",
                     rc.path.display().to_string().blue(),
-                    "~/.config/owl-rc".red(),
+                    "~/.config/owl/rc".red(),
                     "❌",
                     e
                 ),
@@ -726,7 +743,11 @@ impl Setup {
             &config.owl_path,
             Path::new(&format!("setups/{}/setup.json", self.name)),
         );
-        let mut cmd = Command::new("vim");
+        let editor = std::env::var("VISUAL")
+            .ok()
+            .or_else(|| std::env::var("EDITOR").ok())
+            .unwrap_or_else(|| "vim".to_string());
+        let mut cmd = Command::new(editor);
         cmd.arg(&links_path);
         match cmd.status() {
             Ok(status) => {
@@ -739,21 +760,36 @@ impl Setup {
     }
 }
 
-#[derive(Debug)]
-struct SetupLoadError {
-    setup_path: PathBuf,
-    error: Box<dyn std::error::Error>,
+#[derive(Debug, Error)]
+enum SetupLoadError {
+    #[error("Failed to read {path}: {source}")]
+    Io {
+        path: PathBuf,
+        #[source]
+        source: std::io::Error,
+    },
+    #[error("Invalid JSON in {path}: {source}")]
+    Json {
+        path: PathBuf,
+        #[source]
+        source: serde_json::Error,
+    },
+    #[error("Validation error in {path}: {message}")]
+    Validation { path: PathBuf, message: String },
+    #[error("setup.json not found in either nests or setups directory (looked for {path})")]
+    NotFound { path: PathBuf },
 }
 
 fn read_setup_file(setup_json_path: &Path) -> Result<SetupFileRaw, SetupLoadError> {
-    let setup_raw = std::fs::read_to_string(setup_json_path).map_err(|e| SetupLoadError {
-        setup_path: setup_json_path.to_path_buf(),
-        error: Box::new(e),
+    let setup_raw = std::fs::read_to_string(setup_json_path).map_err(|e| SetupLoadError::Io {
+        path: setup_json_path.to_path_buf(),
+        source: e,
     })?;
-    let parsed: SetupFileRaw = serde_json::from_str(&setup_raw).map_err(|e| SetupLoadError {
-        setup_path: setup_json_path.to_path_buf(),
-        error: Box::new(e),
-    })?;
+    let parsed: SetupFileRaw =
+        serde_json::from_str(&setup_raw).map_err(|e| SetupLoadError::Json {
+            path: setup_json_path.to_path_buf(),
+            source: e,
+        })?;
     Ok(parsed)
 }
 
@@ -769,19 +805,15 @@ fn load_setup(name: &str) -> Result<Setup, SetupLoadError> {
     } else if setup_dir.join("setup.json").exists() {
         (setup_dir.clone(), setup_dir.join("setup.json"))
     } else {
-        return Err(SetupLoadError {
-            setup_path: setup_dir.join("setup.json"),
-            error: "setup.json not found in either nests or setups directory".into(),
+        return Err(SetupLoadError::NotFound {
+            path: setup_dir.join("setup.json"),
         });
     };
 
     let raw = read_setup_file(&path)?;
     match raw.validate(&chosen_dir, name, &config) {
         Ok(s) => Ok(s),
-        Err(e) => Err(SetupLoadError {
-            setup_path: path,
-            error: e.into(),
-        }),
+        Err(e) => Err(SetupLoadError::Validation { path, message: e }),
     }
 }
 
@@ -789,11 +821,7 @@ fn get_setup(name: &str) -> Setup {
     match load_setup(name) {
         Ok(s) => s,
         Err(e) => {
-            eprintln!(
-                "Error loading setup at {}: {}",
-                e.setup_path.display(),
-                e.error
-            );
+            eprintln!("{} {}", "Error loading setup:".red(), e);
             std::process::exit(1);
         }
     }
@@ -802,56 +830,83 @@ fn get_setup(name: &str) -> Setup {
 fn validate_all_setups() {
     let config = get_config();
     let setups_dir = config.owl_path.join("setups");
-    let mut names: Vec<String> = Vec::new();
-    if let Ok(entries) = std::fs::read_dir(&setups_dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_dir() && path.join("setup.json").exists() {
-                if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                    names.push(name.to_string());
+    let nests_dir = config.owl_path.join("nests");
+
+    fn collect(dir: &Path) -> Vec<String> {
+        let mut out = Vec::new();
+        if let Ok(entries) = std::fs::read_dir(dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.is_dir() && path.join("setup.json").exists() {
+                    if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
+                        out.push(name.to_string());
+                    }
                 }
             }
         }
+        out.sort();
+        out
     }
-    names.sort();
 
-    let mut num_ok = 0usize;
-    let mut num_err = 0usize;
-    for name in names {
-        let setup_dir = setups_dir.join(&name);
-        let setup_json = setup_dir.join("setup.json");
-        match read_setup_file(&setup_json).and_then(|raw| {
-            raw.validate(&setup_dir, &name, &config)
-                .map_err(|e| SetupLoadError {
-                    setup_path: setup_json.clone(),
-                    error: e.into(),
-                })
-        }) {
-            Ok(_) => {
-                println!("{} {}", "✓".green(), name.green());
-                num_ok += 1;
-            }
-            Err(e) => {
-                eprintln!(
-                    "{} {} -> {}",
-                    "✗".red(),
-                    name.red(),
-                    format!("{}", e.error).red()
-                );
-                num_err += 1;
+    let mut total_ok = 0usize;
+    let mut total_err = 0usize;
+
+    for (label, base_dir, names) in [
+        ("setups", setups_dir.as_path(), collect(&setups_dir)),
+        ("nests", nests_dir.as_path(), collect(&nests_dir)),
+    ] {
+        if names.is_empty() {
+            continue;
+        }
+        println!("\n{} {}", "Validating".blue().bold(), label.cyan().bold());
+        let mut num_ok = 0usize;
+        let mut num_err = 0usize;
+        for name in names {
+            let dir = base_dir.join(&name);
+            let json = dir.join("setup.json");
+            match read_setup_file(&json).and_then(|raw| {
+                raw.validate(&dir, &name, &config)
+                    .map_err(|e| SetupLoadError::Validation {
+                        path: json.clone(),
+                        message: e,
+                    })
+            }) {
+                Ok(_) => {
+                    print_ok_setup(&name);
+                    num_ok += 1;
+                }
+                Err(e) => {
+                    print_err_setup(&name, &e);
+                    num_err += 1;
+                }
             }
         }
+        println!(
+            "Validated {} {}: {} ok, {} failed",
+            (num_ok + num_err).to_string().bold(),
+            label,
+            num_ok.to_string().green(),
+            (if num_err == 0 {
+                num_err.to_string().green()
+            } else {
+                num_err.to_string().red()
+            })
+        );
+        total_ok += num_ok;
+        total_err += num_err;
     }
-    println!(
-        "\nValidated {} setups: {} ok, {} failed",
-        (num_ok + num_err).to_string().bold(),
-        num_ok.to_string().green(),
-        (if num_err == 0 {
-            num_err.to_string().green()
-        } else {
-            num_err.to_string().red()
-        })
-    );
+    if total_ok + total_err > 0 {
+        println!(
+            "\nValidated total {}: {} ok, {} failed",
+            (total_ok + total_err).to_string().bold(),
+            total_ok.to_string().green(),
+            (if total_err == 0 {
+                total_err.to_string().green()
+            } else {
+                total_err.to_string().red()
+            })
+        );
+    }
 }
 
 // =======================================
@@ -861,9 +916,17 @@ fn validate_all_setups() {
 fn load_nest() -> Option<Setup> {
     let config = get_config();
     if let Some(nest_dir) = config.nest_path.clone() {
-        let setup_name = nest_dir.file_name().unwrap().to_str().unwrap().to_string();
-        let setup = get_setup(&setup_name);
-        return Some(setup);
+        if let Some(os) = nest_dir.file_name() {
+            if let Some(name) = os.to_str() {
+                let setup = get_setup(name);
+                return Some(setup);
+            }
+        }
+        eprintln!(
+            "Invalid active root setup path in config: {}",
+            nest_dir.display()
+        );
+        return None;
     }
     None
 }
@@ -878,11 +941,27 @@ fn get_nest() -> Setup {
     }
 }
 
-fn switch_nest(path: Option<String>) -> Setup {
+fn switch_nest(name: Option<String>) -> Setup {
     let mut config = get_config();
 
-    let target_path = match path {
-        Some(p) => PathBuf::from(p),
+    let target_path = match name {
+        Some(n) => {
+            let p = PathBuf::from(&n);
+            let resolved = if p.components().count() == 1 {
+                Path::join(&config.owl_path, Path::new(&format!("nests/{}", n)))
+            } else {
+                p
+            };
+            if !resolved.join("setup.json").exists() {
+                eprintln!(
+                    "Nest '{}' not found (expected {}/setup.json)",
+                    n,
+                    resolved.display()
+                );
+                std::process::exit(1);
+            }
+            resolved
+        }
         None => {
             let nests = list_nests();
             if nests.is_empty() {
@@ -891,7 +970,11 @@ fn switch_nest(path: Option<String>) -> Setup {
             }
             println!("Select a nest:");
             for (i, p) in nests.iter().enumerate() {
-                println!("{}: {}", i + 1, p.display());
+                if let Some(name) = p.file_name().and_then(|n| n.to_str()) {
+                    println!("{}: {}", i + 1, name);
+                } else {
+                    println!("{}: {}", i + 1, p.display());
+                }
             }
             let mut idx: usize;
             loop {
@@ -916,9 +999,11 @@ fn switch_nest(path: Option<String>) -> Setup {
 
     let setup_name = target_path
         .file_name()
-        .unwrap()
-        .to_str()
-        .unwrap()
+        .and_then(|n| n.to_str())
+        .unwrap_or_else(|| {
+            eprintln!("Invalid nest path: {}", target_path.display());
+            std::process::exit(1);
+        })
         .to_string();
     let setup = get_setup(&setup_name);
 
@@ -951,10 +1036,6 @@ fn list_nests() -> Vec<PathBuf> {
 #[derive(Parser)]
 #[command(author, version, about, long_about = None, arg_required_else_help = true)]
 struct Cli {
-    /// Sets a custom config file
-    #[arg(short, long, value_name = "FILE")]
-    config: Option<PathBuf>,
-
     #[command(subcommand)]
     command: Commands,
 }
@@ -998,7 +1079,7 @@ enum NestCommands {
     Install,
     Systemd,
     All,
-    Switch { path: Option<String> },
+    Switch { name: Option<String> },
 }
 
 fn main() {
@@ -1019,8 +1100,8 @@ fn main() {
                 Some(NestCommands::Systemd) => nest.run_systemd(shallow),
                 Some(NestCommands::All) => nest.run_all(shallow),
                 Some(NestCommands::Edit) => nest.run_edit(),
-                Some(NestCommands::Switch { path }) => {
-                    let _ = switch_nest(path);
+                Some(NestCommands::Switch { name }) => {
+                    let _ = switch_nest(name);
                 }
             }
         }
@@ -1081,33 +1162,55 @@ fn run_script(script_path: PathBuf) {
         .spawn()
         .expect("Failed to spawn command");
 
-    // Read and print stdout
-    if let Some(stdout) = child.stdout.take() {
-        let stdout_reader = BufReader::new(stdout);
-        for line in stdout_reader.lines() {
-            if let Ok(line) = line {
+    // Read and print stdout/stderr concurrently to avoid deadlocks
+    let stdout_handle = if let Some(stdout) = child.stdout.take() {
+        Some(std::thread::spawn(move || {
+            let stdout_reader = BufReader::new(stdout);
+            for line in stdout_reader.lines().flatten() {
                 println!("{}", line);
             }
-        }
-    }
+        }))
+    } else {
+        None
+    };
 
-    // Read and print stderr
-    if let Some(stderr) = child.stderr.take() {
-        let stderr_reader = BufReader::new(stderr);
-        for line in stderr_reader.lines() {
-            if let Ok(line) = line {
+    let stderr_handle = if let Some(stderr) = child.stderr.take() {
+        Some(std::thread::spawn(move || {
+            let stderr_reader = BufReader::new(stderr);
+            for line in stderr_reader.lines().flatten() {
                 eprintln!("{}", line);
             }
-        }
-    }
+        }))
+    } else {
+        None
+    };
 
     // Wait for the command to finish and check the status
     let status = child.wait().expect("Failed to wait on child process");
+    if let Some(h) = stdout_handle {
+        let _ = h.join();
+    }
+    if let Some(h) = stderr_handle {
+        let _ = h.join();
+    }
     if !status.success() {
         eprintln!("Command failed with exit code: {:?}", status.code());
     } else {
         println!("Script completed successfully");
     }
+}
+
+// Small printing helpers used in validation output
+fn print_ok_setup(name: &str) {
+    println!("{} {}", "✓".green(), name.green());
+}
+fn print_err_setup(name: &str, err: &SetupLoadError) {
+    eprintln!(
+        "{} {} -> {}",
+        "✗".red(),
+        name.red(),
+        format!("{}", err).red()
+    );
 }
 
 fn link_paths(

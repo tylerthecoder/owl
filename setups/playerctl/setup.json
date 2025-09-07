@@ -1,6 +1,6 @@
 {
     "dependencies": [],
-    "install": "install.sh",
+    "install": "local:install.sh",
     "links": [],
     "name": "playerctl",
     "rc_scripts": [],

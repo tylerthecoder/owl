@@ -1,6 +1,6 @@
 {
     "name": "polkit",
-    "install": "install.sh",
+    "install": "local:install.sh",
     "links": [],
     "rc_scripts": [],
     "services": [],

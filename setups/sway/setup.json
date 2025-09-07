@@ -6,7 +6,7 @@
         "swww",
         "kitty"
     ],
-    "install": "install.sh",
+    "install": "local:install.sh",
     "links": [
         {
             "source": "local:config",

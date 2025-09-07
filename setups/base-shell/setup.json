@@ -1,5 +1,5 @@
 {
   "name": "base-shell",
-  "install": "install.sh",
+  "install": "local:install.sh",
   "links": []
 }

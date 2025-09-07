@@ -1,6 +1,6 @@
 {
   "name": "python",
-  "install": "install.sh",
+  "install": "local:install.sh",
   "links": [
     {
       "source": "setups/python/rc",

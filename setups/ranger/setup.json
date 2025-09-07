@@ -1,6 +1,6 @@
 {
     "name": "ranger",
-    "install": "install.sh",
+    "install": "local:install.sh",
     "links": [
         {
             "source": "setups/ranger/rc.conf",

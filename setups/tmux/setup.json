@@ -1,6 +1,6 @@
 {
     "name": "tmux",
-    "install": "install.sh",
+    "install": "local:install.sh",
     "links": [
         {
             "source": "setups/tmux/tmux.conf",
