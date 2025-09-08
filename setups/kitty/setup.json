@@ -1,5 +1,4 @@
 {
-  "dependencies": [],
   "install": "local:install.sh",
   "links": [
     {
@@ -7,13 +6,9 @@
       "target": "~/.config/kitty/kitty.conf"
     },
     {
-      "source": "local:10-terminal.conf",
-      "target": "~/.config/environment.d/10-terminal.conf"
+      "source": "local:set-sway.sh",
+      "target": "~/.config/owl/programs-rc/kitty.sh"
     }
   ],
-  "name": "kitty",
-  "rc_scripts": [
-    "local:rc.sh"
-  ],
-  "services": []
+  "name": "kitty"
 }

@@ -7,12 +7,13 @@ set $mod Mod4
 bindsym $mod+Shift+q kill
 
 # Launch Applications
-bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Shift+Return exec terminator --role floating
+bindsym $mod+Return exec $TERMINAL
+bindsym $mod+Shift+Return exec "$TERMINAL --class floating"
 bindsym $mod+a exec pavucontrol
 
 # Put app where I want them
 for_window [window_role=floating] floating enable
+for_window [class="floating"] floating enable
 for_window [class="Blueman-manager"] floating enable
 for_window [title="ClipGPT"] floating enable
 for_window [class="Spotify"] move to workspace 9
@@ -21,7 +22,7 @@ for_window [class="Spotify"] move to workspace 9
 bindsym $mod+i exec "~/.local/bin/omni-menu run"
 bindsym $mod+o exec "~/.local/bin/omni-menu window"
 bindsym $mod+p exec "~/.local/bin/omni-menu"
-bindsym $mod+n exec terminator --role floating -e "tt notes tui"
+bindsym $mod+n exec $TERMINAL --role floating -e "tt notes tui"
 
 bindsym $mod+d exec dunstctl close
 bindsym $mod+F1 exec zathura ~/docs/help.pdf

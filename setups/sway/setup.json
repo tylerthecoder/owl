@@ -3,8 +3,7 @@
         "waybar",
         "mako",
         "cliphist",
-        "swww",
-        "kitty"
+        "swww"
     ],
     "install": "local:install.sh",
     "links": [
@@ -36,9 +35,5 @@
     "menu_scripts": [
         "local:scripts/desk-sway"
     ],
-    "name": "sway",
-    "rc_scripts": [
-        "local:rc.sh"
-    ],
-    "services": []
+    "name": "sway"
 }

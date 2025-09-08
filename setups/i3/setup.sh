@@ -13,9 +13,6 @@ sudo pacman -Syu pipewire pipewire-pulse pipewire-jack pavucontrol volumeicon
 # Brightness
 sudo pacman -Syu brightnessctl
 
-# Terminal
-sudo pacman -Syu terminator xclip
-
 git clone https://github.com/vivien/i3blocks-contrib ~/.config/i3blocks
 
 
