@@ -13,9 +13,7 @@ fi
 export DEV_PATH="/home/tylord/dev"
 export EDITOR="nvim"
 export BROWSER="chromium"
-export TERMINAL="terminator"
-export TERMIANL_ROLE="terminator --role"
-export TERMINAL_EXEC="terminator -e"
+
 
 # Secrets
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"

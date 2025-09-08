@@ -25,19 +25,21 @@ exec_always swayidle -w \
 
 input * {
   xkb_options caps:super
+  repeat_delay 200
+  repeat_rate 40
 }
 
 seat seat0 xcursor_theme Adwaita 24
 
 # Kitty as default terminal
-bindsym $mod+Return exec kitty
+bindsym $mod+Return exec $TERMINAL
 
 # App binds (Wayland)
 bindsym $mod+Shift+q kill
-bindsym $mod+Shift+Return exec kitty --class floating
+bindsym $mod+Shift+Return exec $TERMINAL --class floating
 for_window [app_id="floating"] floating enable
 bindsym $mod+a exec pavucontrol
-bindsym $mod+n exec kitty --class floating -e "tt notes tui"
+bindsym $mod+n exec $TERMINAL_EXEC --class floating -e "tt notes tui"
 
 # Rofi-wayland
 bindsym $mod+p exec "omni-menu >> ~/.error 2>&1"

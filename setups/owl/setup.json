@@ -1,4 +1,8 @@
 {
+  "dependencies": [
+    "git",
+    "rust"
+  ],
   "install": "local:install.sh",
   "links": [],
   "name": "owl"

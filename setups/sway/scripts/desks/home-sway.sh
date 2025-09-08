@@ -10,4 +10,3 @@ swaymsg output DP-3 enable mode 2560x1440 position 0 0
 swaymsg input type:keyboard repeat_delay 300
 swaymsg input type:keyboard repeat_rate 35
 swaymsg input type:keyboard xkb_options caps:super
-

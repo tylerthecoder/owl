@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 use colored::Colorize;
+use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::io::{BufRead, BufReader};
@@ -80,13 +81,20 @@ fn prompt_user_for_config() -> Config {
     }
 }
 
+static CONFIG: OnceCell<Config> = OnceCell::new();
+
 fn get_config() -> Config {
-    if let Some(cfg) = load_config() {
-        return cfg;
-    }
-    let cfg = prompt_user_for_config();
-    save_config(cfg.clone());
-    cfg
+    CONFIG
+        .get_or_init(|| {
+            if let Some(cfg) = load_config() {
+                cfg
+            } else {
+                let cfg = prompt_user_for_config();
+                save_config(cfg.clone());
+                cfg
+            }
+        })
+        .clone()
 }
 
 fn save_config(config: Config) -> Config {
@@ -923,7 +931,10 @@ enum Commands {
         shallow: bool,
     },
     SetupsValidate,
-    Update,
+    Update {
+        #[arg(long, default_value_t = false)]
+        recursive: bool,
+    },
 }
 
 #[derive(Subcommand, Clone, Copy)]
@@ -986,7 +997,7 @@ fn main() {
             }
         }
         Commands::SetupsValidate => validate_all_setups(),
-        Commands::Update => run_update(),
+        Commands::Update { recursive } => run_update(recursive),
     }
 }
 
@@ -994,13 +1005,135 @@ fn sync() {
     println!("Syncing");
 
     let config = get_config();
-    let owl_sync_script_path = config.owl_path.join("common/scripts/owl-sync.sh");
+    let owl_path = config.owl_path;
 
-    run_script(&owl_sync_script_path);
+    if !owl_path.exists() {
+        eprintln!(
+            "{} {}",
+            "Owl path does not exist:".red(),
+            owl_path.display().to_string().yellow()
+        );
+        return;
+    }
+
+    let _ = Command::new("git")
+        .arg("-C")
+        .arg(&owl_path)
+        .arg("fetch")
+        .arg("--all")
+        .arg("--prune")
+        .status();
+
+    loop {
+        let status = Command::new("git")
+            .arg("-C")
+            .arg(&owl_path)
+            .arg("merge")
+            .arg("--ff-only")
+            .status();
+        match status {
+            Ok(s) if s.success() => {
+                println!("{}", "Repository is up to date".green());
+                break;
+            }
+            _ => {
+                println!("Git merge did not succeed. Choose an option:");
+                println!("1) Resolve in VS Code");
+                println!("2) Try Again");
+                println!("3) Exit");
+                let mut input = String::new();
+                let _ = std::io::stdin().read_line(&mut input);
+                match input.trim() {
+                    "1" => {
+                        let _ = Command::new("code").arg(&owl_path).status();
+                        return;
+                    }
+                    "2" => continue,
+                    _ => return,
+                }
+            }
+        }
+    }
+
+    loop {
+        let status_output = Command::new("git")
+            .arg("-C")
+            .arg(&owl_path)
+            .arg("status")
+            .arg("--porcelain")
+            .output();
+        let has_changes = match status_output {
+            Ok(o) => !o.stdout.is_empty(),
+            Err(_) => false,
+        };
+        if !has_changes {
+            println!("{}", "No local changes to sync".green());
+            break;
+        }
+
+        println!("Uncommitted changes detected. Choose an option:");
+        println!("1) Open in VS Code");
+        println!("2) Push Them All");
+        println!("3) Try Again");
+        println!("4) Exit");
+        let mut input = String::new();
+        let _ = std::io::stdin().read_line(&mut input);
+        match input.trim() {
+            "1" => {
+                let _ = Command::new("code").arg(&owl_path).status();
+                return;
+            }
+            "2" => {
+                let add_ok = Command::new("git")
+                    .arg("-C")
+                    .arg(&owl_path)
+                    .arg("add")
+                    .arg(".")
+                    .status()
+                    .map(|s| s.success())
+                    .unwrap_or(false);
+                if !add_ok {
+                    eprintln!("{}", "git add failed".red());
+                    continue;
+                }
+                let commit_ok = Command::new("git")
+                    .arg("-C")
+                    .arg(&owl_path)
+                    .arg("commit")
+                    .arg("-m")
+                    .arg("owl sync")
+                    .status()
+                    .map(|s| s.success())
+                    .unwrap_or(false);
+                if !commit_ok {
+                    println!("{}", "Nothing to commit or commit failed".yellow());
+                }
+                let push_ok = Command::new("git")
+                    .arg("-C")
+                    .arg(&owl_path)
+                    .arg("push")
+                    .status()
+                    .map(|s| s.success())
+                    .unwrap_or(false);
+                if !push_ok {
+                    eprintln!("{}", "git push failed".red());
+                } else {
+                    println!("{}", "Changes pushed".green());
+                }
+                break;
+            }
+            "3" => continue,
+            _ => return,
+        }
+    }
+
+    println!("{}", "Sync complete".green());
 }
-fn run_update() {
+
+fn run_update(recursive: bool) {
     let s = get_setup("owl");
-    s.run_op(Operation::Install, true);
+    let shallow = !recursive;
+    s.run_op(Operation::Install, shallow);
 }
 
 // =======================================
