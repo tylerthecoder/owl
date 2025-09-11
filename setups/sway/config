@@ -42,6 +42,7 @@ bindsym $mod+Shift+Return exec $TERMINAL --class floating
 bindsym $mod+a exec pavucontrol
 bindsym $mod+n exec $TERMINAL_EXEC --class floating -e "tt notes tui"
 bindsym $mod+p exec "omni-menu >> ~/.error 2>&1"
+bindsym $mod+o exec grim -g "$(slurp)" -t png - | wl-copy -t image/png
 
 for_window [app_id="floating"] floating enable
 
