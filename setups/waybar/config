@@ -22,6 +22,16 @@
   "memory": {
     "format": " {used}/{total}"
   },
+  "battery": {
+    "bat": "BAT1",
+    "interval": 60,
+    "states": {
+        "warning": 30,
+        "critical": 15
+    },
+    "format": "{capacity}% {icon}",
+    "format-icons": ["", "", "", "", ""],
+  },
   "modules-center": [
     "clock"
   ],
@@ -32,6 +42,7 @@
   "modules-right": [
     "cpu",
     "memory",
+    "battery",
     "custom/ip",
     "temperature",
     "pulseaudio",
