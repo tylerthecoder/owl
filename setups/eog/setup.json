@@ -1,0 +1,5 @@
+{
+    "name": "eog",
+    "install": "local:install.sh"
+}
+
