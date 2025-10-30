@@ -1,0 +1,5 @@
+{
+    "name": "mpv",
+    "install": "local:install.sh"
+}
+
