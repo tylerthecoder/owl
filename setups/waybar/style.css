@@ -21,8 +21,13 @@ window#waybar {
   border-radius: 8px;
 }
 
-#workspaces button.active {
+#workspaces button.focused {
   background: #44475a;
+  color: #f8f8f2;
+}
+
+#workspaces button.urgent {
+  background: #ff5555;
   color: #f8f8f2;
 }
 

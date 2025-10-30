@@ -18,7 +18,8 @@
         "playerctl",
         "menu",
         "notes",
-        "secrets"
+        "secrets",
+        "gdm"
     ],
     "links": [
         {

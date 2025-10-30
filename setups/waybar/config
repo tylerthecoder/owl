@@ -17,6 +17,12 @@
     "interval": 1800,
     "return-type": "text"
   },
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "format": "{name}",
+    "format-focused": " {name}",
+    "format-urgent": " {name}"
+  },
   "layer": "top",
   "margin": 8,
   "memory": {
@@ -26,11 +32,17 @@
     "bat": "BAT1",
     "interval": 60,
     "states": {
-        "warning": 30,
-        "critical": 15
+      "warning": 30,
+      "critical": 15
     },
     "format": "{capacity}% {icon}",
-    "format-icons": ["", "", "", "", ""],
+    "format-icons": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
   },
   "modules-center": [
     "clock"

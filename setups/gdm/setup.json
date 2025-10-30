@@ -1,0 +1,5 @@
+{
+    "name": "gdm",
+    "install": "local:install.sh",
+    "links": []
+}
