@@ -13,6 +13,7 @@ exec_always swww-daemon
 exec_always mako
 exec_always wl-paste --watch cliphist store
 exec_always wl-paste --primary --watch cliphist store
+exec_always nm-applet &
 
 # Polkit agent (GNOME)
 exec_always /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1

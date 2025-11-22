@@ -12,7 +12,7 @@ done
 swaymsg output eDP-1 enable mode 2880x1920 position 0 0
 
 # Key repeat and caps as super in Wayland
-swaymsg input type:keyboard repeat_delay 300
-swaymsg input type:keyboard repeat_rate 20
+swaymsg input type:keyboard repeat_delay 200
+swaymsg input type:keyboard repeat_rate 40
 swaymsg input type:keyboard xkb_options caps:super
 
