@@ -9,7 +9,7 @@
       "target": "~/.local/bin/f"
     }
   ],
-  "setups": [
+  "dependencies": [
     "git",
     "nvim",
     "nvm",
@@ -23,7 +23,6 @@
     "common:fzf.sh",
     "common:base-aliases.sh",
     "common:claude.sh",
-    "local:.shenv",
-    ".secrets"
+    "local:.shenv"
   ]
 }

@@ -21,7 +21,7 @@
       "target": "~/.ssh/config"
     }
   ],
-  "setups": [
+  "dependencies": [
     "git",
     "bash",
     "i3",
