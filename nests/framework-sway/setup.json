@@ -1,4 +1,5 @@
 {
+    "name": "framework-sway",
     "dependencies": [
         "git",
         "bun",
@@ -35,18 +36,14 @@
     ],
     "menu_scripts": [
         {
-            "name": "Emoji",
-            "path": "common:emoji.sh"
-        },
-        {
-            "name": "Run Script",
-            "path": "common:run-script.sh"
+            "name": "Background Picker",
+            "path": "local:bg-picker.sh"
         }
     ],
-    "name": "framework-sway",
     "rc_scripts": [
         "common:fzf.sh",
         "common:base-aliases.sh",
         "common:systemctl-aliases.sh"
-    ]
+    ],
+    "only_own_menu_scripts": true
 }

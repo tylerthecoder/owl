@@ -190,6 +190,7 @@ struct SetupFileRaw {
     menu_scripts: Option<Vec<SetupMenuScriptItemRaw>>,
     services: Option<Vec<SetupServiceRaw>>,
     dependencies: Option<Vec<String>>,
+    only_own_menu_scripts: Option<bool>,
 }
 
 // =======================================
@@ -491,6 +492,7 @@ struct Setup {
     services: Vec<ValidatedSetupService>,
     dependencies: Vec<ValidatedSetupDependency>,
     install_script: Option<ValidatedSetupInstallScript>,
+    only_own_menu_scripts: bool,
 }
 
 impl Setup {
@@ -588,6 +590,7 @@ impl Setup {
             services,
             dependencies,
             install_script,
+            only_own_menu_scripts: setup_raw.only_own_menu_scripts.unwrap_or(false),
         })
     }
 
@@ -629,10 +632,12 @@ impl Setup {
         }
     }
 
-    fn link_once(&self) {
+    fn link_once(&self, skip_menu_scripts: bool) {
         Self::run_linkables(&self.links);
         Self::run_linkables(&self.rc_scripts);
-        Self::run_linkables(&self.menu_scripts);
+        if !skip_menu_scripts {
+            Self::run_linkables(&self.menu_scripts);
+        }
         Self::run_linkables(&self.services);
     }
 
@@ -677,7 +682,7 @@ impl Setup {
         }
     }
 
-    fn apply_operation_once(&self, op: Operation) {
+    fn apply_operation_once(&self, op: Operation, skip_menu_scripts: bool) {
         let op_description = op.description();
         let op_description_colored = op_description.magenta().bold();
         let setup_name = self.name.cyan().bold();
@@ -690,12 +695,12 @@ impl Setup {
 
         println!("{} {} ({})", op_description_colored, setup_name, setup_dir);
         match op {
-            Operation::Link => self.link_once(),
+            Operation::Link => self.link_once(skip_menu_scripts),
             Operation::Install => self.install_once(),
             Operation::Systemd => self.systemd_once(),
             Operation::Info => self.info_once(),
             Operation::All => {
-                self.link_once();
+                self.link_once(skip_menu_scripts);
                 self.install_once();
                 self.systemd_once();
             }
@@ -704,10 +709,14 @@ impl Setup {
 
     fn run_op(&self, op: Operation, shallow: bool) {
         if shallow {
-            self.apply_operation_once(op);
+            self.apply_operation_once(op, false);
         } else {
+            let skip_inherited_menu_scripts = self.only_own_menu_scripts;
             for_each_dep_depth_first(&self.name, |s| {
-                s.apply_operation_once(op);
+                // Skip menu scripts for dependencies if the root setup has only_own_menu_scripts set
+                let is_root = s.name == self.name;
+                let skip = skip_inherited_menu_scripts && !is_root;
+                s.apply_operation_once(op, skip);
             });
         }
     }
