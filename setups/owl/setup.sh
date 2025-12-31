@@ -8,6 +8,16 @@ else
     git -C "$HOME/owl" pull --ff-only || true
 fi
 
+# Install build dependencies
+echo "Installing build dependencies..."
+if command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get update && sudo apt-get install -y build-essential
+elif command -v pacman >/dev/null 2>&1; then
+    sudo pacman -S --noconfirm --needed base-devel
+elif command -v dnf >/dev/null 2>&1; then
+    sudo dnf install -y gcc
+fi
+
 # Build owl from source
 echo "Building owl from source..."
 if ! command -v cargo >/dev/null 2>&1; then
