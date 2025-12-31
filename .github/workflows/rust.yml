@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install GTK4 dependencies
+      run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev
     - name: Build
       run: cargo build --release
     - name: Upload files to a GitHub release
