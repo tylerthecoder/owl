@@ -12,5 +12,5 @@ else
     echo "owl already installed"
 fi
 
-echo "Ensuring owl dependencies are installed via owl update..."
-owl update --recursive || true
+# Note: Dependencies (git, rust) are handled by the nest/setup that depends on owl
+# Running owl update --recursive here would cause circular dependency loops
