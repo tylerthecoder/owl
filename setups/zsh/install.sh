@@ -1,3 +1,6 @@
+# Set XDG defaults if not already set
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+
 if ! command -v zsh &> /dev/null
 then
     # check user's package manager
@@ -43,6 +46,12 @@ fi
 
 
 # Check the current default shell
+echo ""
+echo "======================================"
 echo "Make sure to set zsh as your default shell"
-echo "You can do this by running 'chsh -s $(which zsh)'"
+echo "You can do this by running:"
+echo ""
+echo -e "  \033[1;36mchsh -s $(which zsh)\033[0m"
+echo ""
+echo "======================================"
 
