@@ -1,5 +1,6 @@
 {
   "name": "nvim",
+  "install": "local:install.sh",
   "links": [
     {
       "source": "setups/nvim",

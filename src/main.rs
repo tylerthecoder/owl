@@ -916,7 +916,7 @@ fn list_nests() -> Vec<SetupHeader> {
 // =======================================
 
 #[derive(Parser)]
-#[command(author, version, about, long_about = None, arg_required_else_help = true)]
+#[command(author, version, about = "Modular dotfiles and environment management CLI", long_about = None, arg_required_else_help = true)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -924,46 +924,78 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Show current owl configuration
     Config,
+
+    /// Manage the active nest (machine environment)
     Nest {
         #[command(subcommand)]
         nest_command: Option<NestCommands>,
+        /// Only apply to the nest itself, skip dependencies
         #[arg(long, default_value_t = false)]
         shallow: bool,
     },
+
+    /// Sync owl repository (fetch, merge, optionally push)
     Sync,
+
+    /// Run operations on a specific setup
     Setup {
+        /// Name of the setup to operate on
         setup_name: String,
         #[command(subcommand)]
         setup_command: SetupCommands,
+        /// Only apply to this setup, skip dependencies
         #[arg(long, default_value_t = false)]
         shallow: bool,
     },
+
+    /// Validate all setup.json files
+    #[command(name = "setups-validate")]
     SetupsValidate,
+
+    /// Update owl binary from GitHub releases
     Update {
+        /// Also update owl's dependencies (git, rust)
         #[arg(long, default_value_t = false)]
         recursive: bool,
     },
+
+    /// Pull latest changes and rebuild owl from source
+    Upgrade,
 }
 
 #[derive(Subcommand, Clone, Copy)]
 enum SetupCommands {
+    /// Create symlinks for configs, rc scripts, menu scripts, and services
     Link,
+    /// Show what operations would be performed (dry run)
     Info,
+    /// Open setup.json in your editor
     Edit,
+    /// Run the setup's install script
     Install,
+    /// Link and enable systemd services
     Systemd,
+    /// Run link, install, and systemd operations
     All,
 }
 
 #[derive(Subcommand)]
 enum NestCommands {
+    /// Create symlinks for configs, rc scripts, menu scripts, and services
     Link,
+    /// Show what operations would be performed (dry run)
     Info,
+    /// Open nest's setup.json in your editor
     Edit,
+    /// Run install scripts for nest and dependencies
     Install,
+    /// Link and enable systemd services
     Systemd,
+    /// Run link, install, and systemd operations
     All,
+    /// Switch to a different nest
     Switch,
 }
 
@@ -1007,6 +1039,7 @@ fn main() {
         }
         Commands::SetupsValidate => validate_all_setups(),
         Commands::Update { recursive } => run_update(recursive),
+        Commands::Upgrade => run_upgrade(),
     }
 }
 
@@ -1143,6 +1176,106 @@ fn run_update(recursive: bool) {
     let s = get_setup("owl");
     let shallow = !recursive;
     s.run_op(Operation::Install, shallow);
+}
+
+fn run_upgrade() {
+    let config = get_config();
+    let owl_path = &config.owl_path;
+
+    // Step 1: Pull latest changes
+    println!("{}", "Pulling latest changes...".cyan().bold());
+    let pull_status = Command::new("git")
+        .arg("-C")
+        .arg(owl_path)
+        .arg("pull")
+        .arg("--ff-only")
+        .status();
+
+    match pull_status {
+        Ok(s) if s.success() => println!("{}", "Repository updated".green()),
+        Ok(_) => {
+            eprintln!(
+                "{}",
+                "Git pull failed. You may have local changes or need to merge.".red()
+            );
+            eprintln!("Run 'owl sync' to resolve conflicts first.");
+            return;
+        }
+        Err(e) => {
+            eprintln!("{} {}", "Failed to run git pull:".red(), e);
+            return;
+        }
+    }
+
+    // Step 2: Build owl from source
+    println!("{}", "Building owl from source...".cyan().bold());
+    let build_status = Command::new("cargo")
+        .arg("build")
+        .arg("--release")
+        .current_dir(owl_path)
+        .status();
+
+    match build_status {
+        Ok(s) if s.success() => println!("{}", "Build complete".green()),
+        Ok(_) => {
+            eprintln!("{}", "Cargo build failed".red());
+            return;
+        }
+        Err(e) => {
+            eprintln!("{} {}", "Failed to run cargo build:".red(), e);
+            return;
+        }
+    }
+
+    // Step 3: Link the binary to ~/.local/bin/owl
+    println!("{}", "Linking owl binary...".cyan().bold());
+    let source_binary = owl_path.join("target/release/owl");
+    let target_binary = PathBuf::from(shellexpand::tilde("~/.local/bin/owl").into_owned());
+
+    if !source_binary.exists() {
+        eprintln!(
+            "{} {}",
+            "Built binary not found at:".red(),
+            source_binary.display()
+        );
+        return;
+    }
+
+    // Ensure target directory exists
+    if let Some(parent) = target_binary.parent() {
+        if !parent.exists() {
+            if let Err(e) = fs::create_dir_all(parent) {
+                eprintln!("{} {}", "Failed to create ~/.local/bin:".red(), e);
+                return;
+            }
+        }
+    }
+
+    // Remove existing symlink or file
+    if target_binary.exists() || target_binary.is_symlink() {
+        if let Err(e) = fs::remove_file(&target_binary) {
+            eprintln!("{} {}", "Failed to remove old binary:".red(), e);
+            return;
+        }
+    }
+
+    // Create symlink
+    match std::os::unix::fs::symlink(&source_binary, &target_binary) {
+        Ok(()) => {
+            println!(
+                "  {} → {} {}",
+                source_binary.display().to_string().blue(),
+                target_binary.display().to_string().green(),
+                "✅"
+            );
+        }
+        Err(e) => {
+            eprintln!("{} {}", "Failed to create symlink:".red(), e);
+            return;
+        }
+    }
+
+    println!("{}", "Upgrade complete!".green().bold());
 }
 
 // =======================================
