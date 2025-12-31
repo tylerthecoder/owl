@@ -176,3 +176,59 @@ Services are linked during `link` and enabled/started during `systemd`:
 - Check `~/.config/owl/config.json` for active configuration
 - RC scripts are in `~/.config/owl/rc/` as `rc-<setup>-<filename>`
 - Menu scripts are in `~/.config/owl/menu-scripts/`
+
+## Omni-Menu
+
+Omni-menu is a GTK4-based application launcher integrated into owl as a second binary. It provides a unified interface for common desktop tasks.
+
+### Architecture
+
+**Location**: `src/omni_menu/`
+
+**Binary**: Built as `omni-menu` alongside the `owl` binary in Cargo.toml
+
+**Modules**:
+- `main.rs` - Entry point with subcommand routing
+- `main_menu.rs` - Main menu UI with keyboard shortcuts
+- `search_menu.rs` - Web search (Google, ChatGPT, Notes)
+- `projects_menu.rs` - Local/remote dev project launcher
+- `scripts_menu.rs` - Owl scripts menu
+- `launch_tool_menu.rs` - Launch tools in current workspace
+- `switch_bench_menu.rs` - Yard bench switcher
+- `desk_menu.rs` - Owl desk configuration switcher
+- `emoji_menu.rs` - Emoji picker (rofi wrapper)
+- `utils.rs` - Shared utilities for list population and filtering
+
+### Usage
+
+```bash
+omni-menu              # Main menu (default)
+omni-menu search       # Web search
+omni-menu projects     # Project launcher
+omni-menu scripts      # Owl scripts
+omni-menu launch_tool  # Launch tools
+omni-menu switch_bench # Switch yard bench
+omni-menu desk         # Switch desk configuration
+omni-menu emoji        # Pick emoji
+```
+
+### Integration with Owl
+
+- **Desk Integration**: Detects Sway/i3 via `SWAYSOCK` env var, lists desk scripts from `~/.config/desks-sway/` or `~/.config/desks-i3/`
+- **Scripts Integration**: Reads from owl's menu scripts directory
+- **Setup**: Linked via `setups/menu/setup.json` to `~/.local/bin/omni-menu`
+
+### Building
+
+```bash
+cargo build --bin omni-menu    # Build omni-menu binary
+cargo build                     # Build both owl and omni-menu
+owl setup menu link             # Link binary to ~/.local/bin
+```
+
+### Design Patterns
+
+- Each menu module is self-contained with its own GTK4 application
+- Modules follow the `pub mod <name> { pub fn run_app() -> glib::ExitCode }` pattern
+- Main menu spawns submenus by re-invoking itself with different arguments
+- Utilities module provides shared list filtering and fuzzy matching functionality
