@@ -17,7 +17,8 @@
     "tmux",
     "zsh",
     "rust",
-    "ranger"
+    "ranger",
+    "claude-code"
   ],
   "rc_scripts": [
     "common:fzf.sh",
