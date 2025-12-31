@@ -1,6 +1,8 @@
 use gtk::glib;
 use std::env;
 
+mod desk_menu;
+mod emoji_menu;
 mod launch_tool_menu;
 mod main_menu;
 mod projects_menu;
@@ -20,9 +22,11 @@ fn main() -> glib::ExitCode {
             "launch_tool" => launch_tool_menu::launch_tool_menu::run_app(),
             "switch_bench" => switch_bench_menu::switch_bench_menu::run_app(),
             "scripts" => scripts_menu::scripts_menu::run_app(),
+            "desk" => desk_menu::desk_menu::run_app(),
+            "emoji" => emoji_menu::emoji_menu::run_app(),
             _ => {
                 eprintln!(
-                    "Usage: rust-menu [main|search|projects|launch_tool|switch_bench|scripts]"
+                    "Usage: omni-menu [main|search|projects|launch_tool|switch_bench|scripts|desk|emoji]"
                 );
                 glib::ExitCode::FAILURE
             }

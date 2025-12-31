@@ -42,6 +42,8 @@ pub mod main_menu {
             ("(t) Launch Tool", "Add a tool to the current workspace"),
             ("(a) Launch App", "Launch any application"),
             ("(b) Switch Bench", "Switch to a different bench"),
+            ("(d) Desk", "Switch to a different desk configuration"),
+            ("(e) Emoji", "Pick an emoji to copy"),
             ("(s) Scripts", "Run owl scripts"),
             ("(x) Search", "Search the web"),
         ];
@@ -97,6 +99,16 @@ pub mod main_menu {
                 }
                 gtk::gdk::Key::b => {
                     Command::new(&exe).arg("switch_bench").spawn().ok();
+                    window.close();
+                    return glib::Propagation::Stop;
+                }
+                gtk::gdk::Key::d => {
+                    Command::new(&exe).arg("desk").spawn().ok();
+                    window.close();
+                    return glib::Propagation::Stop;
+                }
+                gtk::gdk::Key::e => {
+                    Command::new(&exe).arg("emoji").spawn().ok();
                     window.close();
                     return glib::Propagation::Stop;
                 }
