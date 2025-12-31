@@ -9,5 +9,5 @@ export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
 # Load nvm bash_completion
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Add npm global packages to PATH
-export PATH="$NVM_DIR/versions/node/$(nvm version)/bin:$PATH"
+# Note: nvm.sh already handles adding node/bin to PATH
+# No need to manually add it here
