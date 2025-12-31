@@ -3,24 +3,17 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 if ! command -v zsh &> /dev/null
 then
-    # check user's package manager
+    echo "Installing zsh..."
+    # check user's package manager and install
     if command -v apt &> /dev/null; then
-        package_manager="apt"
+        sudo apt update && sudo apt install -y zsh
     elif command -v pacman &> /dev/null; then
-        package_manager="pacman"
+        sudo pacman -Sy --noconfirm zsh
     else
-        echo "Unsupported package manager"
+        echo "Unsupported package manager. Please install zsh manually."
         exit 1
     fi
-    echo "Would you like to install zsh? (y/n)"
-    read answer
-    if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
-        if [ "$package_manager" = "pacman" ]; then
-            sudo pacman -Sy zsh
-        elif [ "$package_manager" = "apt" ]; then
-            sudo apt install zsh
-        fi
-    fi
+    echo "zsh installed successfully"
 else
     echo "zsh is already installed"
 fi
