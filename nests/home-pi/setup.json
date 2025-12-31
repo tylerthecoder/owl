@@ -9,6 +9,6 @@
       "target": "~/.local/bin/start-eco"
     }
   ],
-  "setups": [],
+  "dependencies": [],
   "rc_scripts": []
 }
