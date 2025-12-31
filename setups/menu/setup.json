@@ -2,7 +2,7 @@
   "name": "menu",
   "links": [
     {
-      "source": "target/debug/omni-menu",
+      "source": "target/release/omni-menu",
       "target": "~/.local/bin/omni-menu"
     }
   ]

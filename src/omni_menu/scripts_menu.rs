@@ -65,9 +65,9 @@ pub mod scripts_menu {
         list_box.connect_row_activated(move |_, row| {
             if let Some(label) = row.child().and_then(|w| w.downcast::<Label>().ok()) {
                 let script_name = label.text().to_string();
-                // Run the script
+                // Run the script - follow symlink to actual script
                 let home = std::env::var("HOME").unwrap_or_default();
-                let script_path = format!("{}/owl/common/scripts/{}", home, script_name);
+                let script_path = format!("{}/.config/owl/menu-scripts/{}", home, script_name);
                 Command::new(&script_path).spawn().ok();
 
                 if let Some(window) = window_weak.upgrade() {
@@ -96,7 +96,7 @@ pub mod scripts_menu {
 
     fn get_owl_scripts() -> Vec<String> {
         let home = std::env::var("HOME").unwrap_or_default();
-        let scripts_dir = format!("{}/owl/common/scripts", home);
+        let scripts_dir = format!("{}/.config/owl/menu-scripts", home);
 
         match std::fs::read_dir(&scripts_dir) {
             Ok(entries) => {
