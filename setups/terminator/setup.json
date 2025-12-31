@@ -9,8 +9,5 @@
       "target": "~/.config/owl/programs-rc/terminator.conf"
     }
   ],
-  "name": "Terminator",
-  "rc_scripts": [
-    "local:rc.sh"
-  ]
+  "name": "Terminator"
 }

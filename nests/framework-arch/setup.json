@@ -17,10 +17,6 @@
       "target": "~/.config/X/.Xresources"
     },
     {
-      "source": "common/scripts/gpt-clip.sh",
-      "target": "~/.local/bin/gpt-clip"
-    },
-    {
       "source": "common/scripts/favs.sh",
       "target": "~/.local/bin/f"
     }

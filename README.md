@@ -5,7 +5,7 @@ A modular dotfiles and environment management system that allows you to manage c
 ## Quick Start
 
 ```bash
-curl https://raw.githubusercontent.com/tylerthecoder/owl/main/setups/owl/setup.sh | sh
+curl https://raw.githubusercontent.com/tylerthecoder/owl/main/setups/owl/setup.sh | bash
 ```
 
 This installs owl to `~/owl`
@@ -26,9 +26,11 @@ Modules that handle software installation and configuration:
   - `name` (string)
   - `links` (array of { source, target, root? })
   - `rc_scripts` (array of strings; supports `common:` and `local:`)
+  - `menu_scripts` (array of strings or objects with `path` and `name`)
   - `install` (string path to install script)
   - `services` (array of { path, type } where type is `user` or `system`; daemon-reload is triggered automatically when linking services)
   - `dependencies` (array of setup names)
+  - `only_own_menu_scripts` (boolean, optional): When true on a nest, prevents inherited menu scripts from dependencies while keeping the nest's own menu scripts
 
 ### Nests
 
@@ -161,10 +163,11 @@ Type values:
 
 The simplified startup script that:
 
-1. Sets XDG environment variables
+1. Sets XDG environment variables (`XDG_CONFIG_HOME`, `XDG_CACHE_HOME`, `XDG_DATA_HOME`, `XDG_STATE_HOME`)
 2. Adds local bin to PATH
 3. Sources all scripts from `~/.config/owl/rc/`
-4. Sources machine-specific environment from `~/.shenv`
+
+**Note**: All install scripts and rc scripts can rely on XDG variables being set when `owl-start.sh` is sourced in your shell profile.
 
 ## Commands
 

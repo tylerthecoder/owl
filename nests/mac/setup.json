@@ -7,10 +7,6 @@
     {
       "source": "common/config/.vimrc",
       "target": "~/.vimrc"
-    },
-    {
-      "source": "common/scripts/daily-note.sh",
-      "target": "~/.local/bin/daily-note"
     }
   ],
   "dependencies": [
@@ -19,11 +15,11 @@
     "nvim",
     "tmux",
     "zsh-ohmy",
-    "ranger"
+    "ranger",
+    "notes"
   ],
   "rc_scripts": [
     "common:fzf.sh",
-    "common:bun.sh",
     "common:base-aliases.sh",
     "local:.shenv",
     "local:.alias"
