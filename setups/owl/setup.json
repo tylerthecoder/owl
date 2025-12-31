@@ -4,6 +4,15 @@
     "rust"
   ],
   "install": "local:install.sh",
-  "links": [],
+  "links": [
+    {
+      "source": "target/release/owl",
+      "target": "~/.local/bin/owl"
+    },
+    {
+      "source": "target/release/omni-menu",
+      "target": "~/.local/bin/omni-menu"
+    }
+  ],
   "name": "owl"
 }

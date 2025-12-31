@@ -1227,53 +1227,9 @@ fn run_upgrade() {
         }
     }
 
-    // Step 3: Link the binary to ~/.local/bin/owl
-    println!("{}", "Linking owl binary...".cyan().bold());
-    let source_binary = owl_path.join("target/release/owl");
-    let target_binary = PathBuf::from(shellexpand::tilde("~/.local/bin/owl").into_owned());
-
-    if !source_binary.exists() {
-        eprintln!(
-            "{} {}",
-            "Built binary not found at:".red(),
-            source_binary.display()
-        );
-        return;
-    }
-
-    // Ensure target directory exists
-    if let Some(parent) = target_binary.parent() {
-        if !parent.exists() {
-            if let Err(e) = fs::create_dir_all(parent) {
-                eprintln!("{} {}", "Failed to create ~/.local/bin:".red(), e);
-                return;
-            }
-        }
-    }
-
-    // Remove existing symlink or file
-    if target_binary.exists() || target_binary.is_symlink() {
-        if let Err(e) = fs::remove_file(&target_binary) {
-            eprintln!("{} {}", "Failed to remove old binary:".red(), e);
-            return;
-        }
-    }
-
-    // Create symlink
-    match std::os::unix::fs::symlink(&source_binary, &target_binary) {
-        Ok(()) => {
-            println!(
-                "  {} → {} {}",
-                source_binary.display().to_string().blue(),
-                target_binary.display().to_string().green(),
-                "✅"
-            );
-        }
-        Err(e) => {
-            eprintln!("{} {}", "Failed to create symlink:".red(), e);
-            return;
-        }
-    }
+    // Step 3: Link binaries using the owl setup
+    let owl_setup = get_setup("owl");
+    owl_setup.run_op(Operation::Link, true);
 
     println!("{}", "Upgrade complete!".green().bold());
 }
