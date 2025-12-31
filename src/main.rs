@@ -240,7 +240,8 @@ struct ValidatedSetupLink {
 impl ValidatedSetupLink {
     fn make(raw: &SetupFileLinkRaw, setup_dir: &Path) -> Result<Self, String> {
         let source_path = replace_tokens(&tilde_expand(&raw.source), "", setup_dir);
-        ensure_exists(&source_path)?;
+        // Don't validate source existence here - it may be a build output that doesn't exist yet.
+        // The link operation will fail with a clear error if the source is missing.
         let target_path = tilde_expand_path(&raw.target);
         Ok(Self {
             source_path,
@@ -1324,6 +1325,13 @@ trait Linkable {
         let target_path = self.target_path();
         let root = self.requires_root();
         let source_path = self.source_path();
+
+        // Check source exists before attempting to link
+        if !source_path.exists() {
+            return Err(LinkingError {
+                message: format!("source not found: {}", source_path.display()),
+            });
+        }
 
         // Carefully remove existing targets:
         // - If symlink: remove the symlink only
