@@ -1,0 +1,5 @@
+{
+  "name": "zoxide",
+  "install": "local:install.sh",
+  "rc_scripts": ["local:rc.sh"]
+}

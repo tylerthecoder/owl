@@ -23,6 +23,7 @@
   ],
   "dependencies": [
     "git",
+    "zoxide",
     "bun",
     "bash",
     "i3",

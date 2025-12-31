@@ -2,6 +2,7 @@
     "name": "framework-sway",
     "dependencies": [
         "git",
+        "zoxide",
         "bun",
         "bash",
         "sway",
