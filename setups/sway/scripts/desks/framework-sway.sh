@@ -9,7 +9,7 @@ for out in $(swaymsg -t get_outputs | jq -r '.[].name'); do
   fi
 done
 
-swaymsg output eDP-1 enable mode 2880x1920 position 0 0
+swaymsg output eDP-1 enable mode 2880x1920 position 0 0 scale 1.4
 
 # Key repeat and caps as super in Wayland
 swaymsg input type:keyboard repeat_delay 200

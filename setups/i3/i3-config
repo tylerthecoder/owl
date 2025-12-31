@@ -19,8 +19,8 @@ for_window [title="ClipGPT"] floating enable
 for_window [class="Spotify"] move to workspace 9
 
 # Rofi
-bindsym $mod+i exec "~/.local/bin/omni-menu run"
-bindsym $mod+o exec "~/.local/bin/omni-menu window"
+bindsym $mod+i exec "~/.local/bin/omni-menu launch_tool"
+bindsym $mod+o exec "rofi -show window"
 bindsym $mod+p exec "~/.local/bin/omni-menu"
 bindsym $mod+n exec $TERMINAL --role floating -e "tt notes tui"
 

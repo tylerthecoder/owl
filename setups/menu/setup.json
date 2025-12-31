@@ -1,5 +1,9 @@
 {
-  "install": "local:install.sh",
   "name": "menu",
-  "links": []
+  "links": [
+    {
+      "source": "target/debug/omni-menu",
+      "target": "~/.local/bin/omni-menu"
+    }
+  ]
 }
