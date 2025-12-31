@@ -577,9 +577,11 @@ impl Setup {
             ValidatedSetupDependency::make(s)
         })?;
 
-        let install_script = setup_raw.install.as_ref().and_then(|install| {
-            ValidatedSetupInstallScript::make(install, &setup_header.setup_dir).ok()
-        });
+        let install_script = setup_raw
+            .install
+            .as_ref()
+            .map(|install| ValidatedSetupInstallScript::make(install, &setup_header.setup_dir))
+            .transpose()?;
 
         Ok(Setup {
             name: setup_header.name.clone(),
