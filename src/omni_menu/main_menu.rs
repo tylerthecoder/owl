@@ -39,9 +39,8 @@ pub mod main_menu {
         menu_box.set_margin_top(10);
 
         let options = vec![
-            ("(t) Launch Tool", "Add a tool to the current workspace"),
             ("(a) Launch App", "Launch any application"),
-            ("(b) Switch Bench", "Switch to a different bench"),
+            ("(b) Bench", "Manage benches and tools"),
             ("(d) Desk", "Switch to a different desk configuration"),
             ("(e) Emoji", "Pick an emoji to copy"),
             ("(s) Scripts", "Run owl scripts"),
@@ -87,18 +86,13 @@ pub mod main_menu {
             let exe = std::env::current_exe().unwrap_or_else(|_| "rust-menu".into());
 
             match key {
-                gtk::gdk::Key::t => {
-                    Command::new(&exe).arg("launch_tool").spawn().ok();
-                    window.close();
-                    return glib::Propagation::Stop;
-                }
                 gtk::gdk::Key::a => {
                     Command::new("rofi").args(["-show", "drun"]).spawn().ok();
                     window.close();
                     return glib::Propagation::Stop;
                 }
                 gtk::gdk::Key::b => {
-                    Command::new(&exe).arg("switch_bench").spawn().ok();
+                    Command::new(&exe).arg("bench").spawn().ok();
                     window.close();
                     return glib::Propagation::Stop;
                 }
