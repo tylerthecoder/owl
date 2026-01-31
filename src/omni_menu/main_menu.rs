@@ -39,6 +39,7 @@ pub mod main_menu {
         menu_box.set_margin_top(10);
 
         let options = vec![
+            ("(1) New App Launcher", "Launch apps with Yard integration"),
             ("(a) Launch App", "Launch any application"),
             ("(b) Bench", "Manage benches and tools"),
             ("(d) Desk", "Switch to a different desk configuration"),
@@ -86,6 +87,11 @@ pub mod main_menu {
             let exe = std::env::current_exe().unwrap_or_else(|_| "rust-menu".into());
 
             match key {
+                gtk::gdk::Key::_1 => {
+                    Command::new(&exe).arg("app_launcher").spawn().ok();
+                    window.close();
+                    return glib::Propagation::Stop;
+                }
                 gtk::gdk::Key::a => {
                     Command::new("rofi").args(["-show", "drun"]).spawn().ok();
                     window.close();

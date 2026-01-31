@@ -26,6 +26,7 @@ gtk = { version = "0.10.2", package = "gtk4", optional = true }
 fuzzy-matcher = "0.3"
 dirs = "5.0"
 regex = "1.5"
+shell-words = "1.1"
 
 [features]
 default = ["gui"]

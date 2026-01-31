@@ -1,0 +1,5 @@
+{
+  "name": "voice-type",
+  "dependencies": ["sway"],
+  "install": "local:install.sh"
+}

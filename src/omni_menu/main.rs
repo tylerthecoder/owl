@@ -2,6 +2,7 @@ use gtk::glib;
 use std::env;
 
 mod add_window_menu;
+mod app_launcher_menu;
 mod bench_menu;
 mod desk_menu;
 mod emoji_menu;
@@ -21,6 +22,7 @@ fn main() -> glib::ExitCode {
             "main" => main_menu::main_menu::run_app(),
             "bench" => bench_menu::bench_menu::run_app(),
             "add_window" => add_window_menu::add_window_menu::run_app(),
+            "app_launcher" => app_launcher_menu::app_launcher_menu::run_app(),
             "search" => search_menu::search_menu::run_app(),
             "projects" => projects_menu::projects_menu::run_app(),
             "launch_tool" => launch_tool_menu::launch_tool_menu::run_app(),
@@ -30,7 +32,7 @@ fn main() -> glib::ExitCode {
             "emoji" => emoji_menu::emoji_menu::run_app(),
             _ => {
                 eprintln!(
-                    "Usage: omni-menu [main|bench|add_window|search|projects|launch_tool|switch_bench|scripts|desk|emoji]"
+                    "Usage: omni-menu [main|bench|add_window|app_launcher|search|projects|launch_tool|switch_bench|scripts|desk|emoji]"
                 );
                 glib::ExitCode::FAILURE
             }

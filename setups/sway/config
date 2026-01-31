@@ -170,5 +170,6 @@ client.background       #F8F8F2
 bindsym $mod+b exec ~/.local/bin/bg-picker
 bindsym $mod+c exec ~/.local/bin/cliphist-rofi
 bindsym $mod+Shift+d exec desk-sway
+bindsym $mod+t exec voice-type toggle
 
 
