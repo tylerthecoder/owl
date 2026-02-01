@@ -880,9 +880,9 @@ fn switch_nest() -> Setup {
     if !std::io::stdin().is_terminal() {
         eprintln!(
             "{}",
-            "No nest configured and stdin is not interactive. Run `owl nest switch` manually."
-                .red()
+            "No nest configured and stdin is not interactive.".red()
         );
+        eprintln!("Run: {} < /dev/tty", "owl nest switch".cyan());
         std::process::exit(1);
     }
 
