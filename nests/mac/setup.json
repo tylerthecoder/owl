@@ -17,7 +17,8 @@
     "bun",
     "rust",
     "claude-code",
-    "codex"
+    "codex",
+    "machines"
   ],
   "rc_scripts": [
     "common:fzf.sh",
