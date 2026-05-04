@@ -1,5 +1,6 @@
 {
   "name": "machines",
+  "install": "local:setup.sh",
   "links": [
     {
       "source": "local:ssh_config.secret",
