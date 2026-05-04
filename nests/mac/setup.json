@@ -1,26 +1,28 @@
 {
   "links": [
     {
-      "source": "target/debug/owl",
-      "target": "~/.local/bin/owl"
-    },
-    {
-      "source": "common/config/.vimrc",
+      "source": "common:config/.vimrc",
       "target": "~/.vimrc"
     }
   ],
   "dependencies": [
+    "owl",
     "git",
     "node",
     "nvim",
     "tmux",
     "zsh-ohmy",
     "ranger",
-    "notes"
+    "notes",
+    "bun",
+    "rust",
+    "claude-code",
+    "codex"
   ],
   "rc_scripts": [
     "common:fzf.sh",
     "common:base-aliases.sh",
+    "common:claude.sh",
     "local:.shenv",
     "local:.alias"
   ]

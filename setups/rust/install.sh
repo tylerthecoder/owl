@@ -20,6 +20,10 @@ else
         # Ubuntu/Debian
         echo "Detected Ubuntu/Debian, installing rustup via official installer..."
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    elif [ "$(uname)" = "Darwin" ]; then
+        # macOS
+        echo "Detected macOS, installing rustup via official installer..."
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     else
         echo "Unsupported operating system. Please install rustup manually."
         exit 1
