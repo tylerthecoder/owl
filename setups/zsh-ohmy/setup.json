@@ -1,5 +1,6 @@
 {
   "name": "zsh",
+  "install": "local:install.sh",
   "links": [
     {
       "source": "setups/zsh-ohmy/.zshrc",

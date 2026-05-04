@@ -1,0 +1,5 @@
+{
+  "name": "codex",
+  "dependencies": ["bun"],
+  "install": "local:install.sh"
+}
