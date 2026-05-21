@@ -36,5 +36,6 @@ echo "Linked owl to ~/.local/bin/owl"
 # Ensure ~/.local/bin is in PATH for this session
 export PATH="$HOME/.local/bin:$PATH"
 
-owl nest all
+# Redirect stdin from /dev/tty to allow interactive nest selection even when piped from curl
+owl nest all < /dev/tty
 

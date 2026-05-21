@@ -875,6 +875,17 @@ fn get_nest() -> Setup {
 }
 
 fn switch_nest() -> Setup {
+    use std::io::IsTerminal;
+
+    if !std::io::stdin().is_terminal() {
+        eprintln!(
+            "{}",
+            "No nest configured and stdin is not interactive.".red()
+        );
+        eprintln!("Run: {} < /dev/tty", "owl nest switch".cyan());
+        std::process::exit(1);
+    }
+
     let mut config = get_config();
 
     let nests = list_nests();
