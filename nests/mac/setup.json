@@ -18,7 +18,8 @@
     "rust",
     "claude-code",
     "codex",
-    "machines"
+    "machines",
+    "universe-gdrive-backup"
   ],
   "rc_scripts": [
     "common:fzf.sh",
