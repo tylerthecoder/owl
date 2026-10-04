@@ -1,0 +1,9 @@
+{
+  "install": "local:install.sh",
+  "links": [
+    {
+      "source": "local:backup.py",
+      "target": "~/.local/bin/universe-gdrive-backup"
+    }
+  ]
+}
